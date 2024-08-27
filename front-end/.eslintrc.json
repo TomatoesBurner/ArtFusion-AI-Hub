@@ -1,13 +1,13 @@
 {
-  "extends": "next/core-web-vitals",
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "moduleDirectory": ["node_modules", "src/"]
-      },
-      "typescript": {
-        "alwaysTryTypes": true
-      }
-    }
-  }
+  "extends": "next/core-web-vitals"
+  // "settings": {
+  //   "import/resolver": {
+  //     "node": {
+  //       "moduleDirectory": ["node_modules", "src/"]
+  //     },
+  //     "typescript": {
+  //       "alwaysTryTypes": true
+  //     }
+  //   }
+  // }
 }

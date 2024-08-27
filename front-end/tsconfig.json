@@ -1,18 +1,10 @@
 {
   "compilerOptions": {
-    "importHelpers": true,
-    "checkJs": true,
-    "target": "ES6",
     "lib": ["dom", "dom.iterable", "esnext"],
-    // "lib": ["es6", "dom"],
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -26,13 +18,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@views/*": ["./src/views/*"]
+      "@/*": ["./src/*"]
     }
   },
-  // "include": ["src"]
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
