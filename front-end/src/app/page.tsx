@@ -34,7 +34,7 @@ export default function Home() {
           >
             Let's start making magic today.
           </Button>
-          <Link href="/signin" passHref>
+          <Link href="/login" passHref>
             <Button
               variant="outlined"
               color="inherit"
