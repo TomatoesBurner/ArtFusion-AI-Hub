@@ -5,6 +5,7 @@ import Image from "next/image";
 // import styles from "./page.module.css";
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Instagram, Facebook, Phone, Email } from "@mui/icons-material";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -33,13 +34,16 @@ export default function Home() {
           >
             Let's start making magic today.
           </Button>
-          <Button
-            variant="outlined"
-            color="inherit"
-            sx={{ borderColor: "#fff", color: "#fff" }}
-          >
-            Get Started
-          </Button>
+          <Link href="/signin" passHref>
+            <Button
+              variant="outlined"
+              color="inherit"
+              sx={{ borderColor: "#fff", color: "#fff" }}
+              component="a"
+            >
+              Get Started
+            </Button>
+          </Link>
         </Box>
       </Box>
 
