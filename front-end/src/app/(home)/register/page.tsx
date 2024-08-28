@@ -71,9 +71,7 @@ const RegisterPage = () => {
         >
           Sign up with Instagram
         </Button>
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          Use Single Sign-On (SSO)
-        </Typography>
+
         <Typography variant="body2" sx={{ mt: 2 }}>
           By clicking “Next”, “Sign up with Google” or “Sign up with Instagram”
           you agree to our Terms of Use and acknowledge that you have read and

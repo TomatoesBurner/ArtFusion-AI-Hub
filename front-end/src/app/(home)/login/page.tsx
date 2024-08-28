@@ -102,10 +102,6 @@ export default function Login() {
             Log in with Instagram
           </Button>
 
-          <Typography variant="body2" sx={{ mb: 2 }}>
-            Use Single Sign-On (SSO)
-          </Typography>
-
           <Button variant="text" color="inherit">
             Forgot Password
           </Button>
