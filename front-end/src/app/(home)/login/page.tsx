@@ -1,8 +1,11 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import HomeLayout from "@/layouts/HomeLayout/HomeLayout";
 import { Box, Typography, TextField, Button, Divider } from "@mui/material";
 import { Google, Instagram } from "@mui/icons-material";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 
 export default function Login() {
   return (
@@ -83,15 +86,9 @@ export default function Login() {
             OR
           </Typography>
 
-          <Button
-            variant="outlined"
-            color="inherit"
-            startIcon={<Google />}
-            fullWidth
-            sx={{ mb: 1 }}
-          >
-            Log in with Google
-          </Button>
+          {/* Use the GoogleLoginButton component */}
+          <GoogleLoginButton />
+
           <Button
             variant="outlined"
             color="inherit"
@@ -101,10 +98,6 @@ export default function Login() {
           >
             Log in with Instagram
           </Button>
-
-          <Typography variant="body2" sx={{ mb: 2 }}>
-            Use Single Sign-On (SSO)
-          </Typography>
 
           <Button variant="text" color="inherit">
             Forgot Password
