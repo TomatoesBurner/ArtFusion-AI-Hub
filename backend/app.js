@@ -1,32 +1,35 @@
+/*****************************************************
+ *                 BACKEND INITIALIZATION
+ *       Setting up core configurations and routes
+ *****************************************************/
 const express =require('express')
+const morgan =require('morgan')
 const app = express();
-const port =3000;
+
+// ***************************************************
+//               MIDDLEWARE SETUP
+// ***************************************************
 
 // Body parser, reading data from body into req.body
+app.use(morgan('dev'))
 app.use(express.json());
+app.use((req, res, next)=>{
+    req.requestTime = new Date().toISOString();
+    next();
+})
+// ***************************************************
+//               ROUTE HANDLING
+// ***************************************************
 
-// Middleware demon
-// app.use((req,res,next)=>{
-//     console.log("")
-// })
-// app.use((req,res,next)=>{
-//     req.requestTime =new Date().toISOString()
-//     next();
-// })
 
-// //Demon
-// app.post('/api/v1/users',(req,res)=>{
-//     console.log(req.body)
-//     res.send('Done')
-// })
-// app.get('/api/v1/users/:id/:x/:y?',(req,res)=>{
-//     console.log(req.params);
-//     res.status(200).json(
-//         {
-//             status:'success'
-//         }
-//     )
-// })
-app.listen(port,()=>{
+// ***************************************************
+//               ROUTES
+// ***************************************************
+
+
+// ***************************************************
+//              SERVER STARTUP
+// ***************************************************
+app.listen(3000,()=>{
     console.log(`App running on port ${port}...`)
 });
