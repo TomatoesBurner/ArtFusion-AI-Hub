@@ -4,7 +4,7 @@
   "description": "backend section(node.js,express.js,MongoDB)",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js"
   },
   "author": "cits5206-teams-13",
   "license": "ISC",

@@ -6,6 +6,8 @@ const express =require('express')
 const morgan =require('morgan')
 const app = express();
 
+const userRouter = require('./routers/userRoutes') //user
+
 // ***************************************************
 //               MIDDLEWARE SETUP
 // ***************************************************
@@ -17,19 +19,11 @@ app.use((req, res, next)=>{
     req.requestTime = new Date().toISOString();
     next();
 })
-// ***************************************************
-//               ROUTE HANDLING
-// ***************************************************
-
 
 // ***************************************************
-//               ROUTES
+//              ROUTES
 // ***************************************************
+app.use('/api/v1/users', userRouter)
 
+module.exports =app;
 
-// ***************************************************
-//              SERVER STARTUP
-// ***************************************************
-app.listen(3000,()=>{
-    console.log(`App running on port ${port}...`)
-});
