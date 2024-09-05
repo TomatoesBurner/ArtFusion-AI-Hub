@@ -27,3 +27,7 @@ app.use('/api/v1/users', userRouter)
 
 module.exports =app;
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the backend of this project cits5206!');
+  });
+  
