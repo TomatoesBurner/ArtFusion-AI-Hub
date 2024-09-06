@@ -6,7 +6,9 @@ const express =require('express')
 const morgan =require('morgan')
 const app = express();
 
+
 const userRouter = require('./routers/userRoutes') //user
+const imageRoutes = require('./routers/imageRoutes'); //text to image api 
 
 // ***************************************************
 //               MIDDLEWARE SETUP
@@ -24,6 +26,9 @@ app.use((req, res, next)=>{
 //              ROUTES
 // ***************************************************
 app.use('/api/v1/users', userRouter)
+
+// Text to image API
+app.use('/api/text_to_image', imageRoutes);
 
 module.exports =app;
 
