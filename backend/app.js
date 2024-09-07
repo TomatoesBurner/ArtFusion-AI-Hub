@@ -13,9 +13,11 @@ const imageRoutes = require('./routers/imageRoutes'); //text to image api
 // ***************************************************
 //               MIDDLEWARE SETUP
 // ***************************************************
-
+console.log(process.env.NODE_ENV)
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 // Body parser, reading data from body into req.body
-app.use(morgan('dev'))
 app.use(express.json());
 app.use((req, res, next)=>{
     req.requestTime = new Date().toISOString();
