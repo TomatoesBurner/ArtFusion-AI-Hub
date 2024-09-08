@@ -1,95 +1,102 @@
+// src/app/page.tsx
+import React from "react";
+import HomeLayout from "@/layouts/HomeLayout/HomeLayout";
 import Image from "next/image";
-import styles from "./page.module.css";
+// import styles from "./page.module.css";
+import { Box, Typography, Button, IconButton } from "@mui/material";
+import { Instagram, Facebook, Phone, Email } from "@mui/icons-material";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <HomeLayout>
+      {/* Main Content */}
+      <Box
+        sx={{
+          backgroundColor: "#000",
+          color: "#fff",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h3" gutterBottom>
+          Ready to make some visual wonders?
+        </Typography>
+        <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            sx={{ borderColor: "#fff", color: "#fff" }}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+            Let's start making magic today.
+          </Button>
+          <Link href="/login" passHref>
+            <Button
+              variant="outlined"
+              color="inherit"
+              sx={{ borderColor: "#fff", color: "#fff" }}
+              component="a"
+            >
+              Get Started
+            </Button>
+          </Link>
+        </Box>
+      </Box>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+      {/* Footer */}
+      <Box
+        sx={{
+          p: 2,
+          borderTop: "1px solid #444",
+          mt: "auto",
+          textAlign: "center",
+          backgroundColor: "#000",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            maxWidth: "lg",
+            mx: "auto",
+          }}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          {/* Add logo here */}
+          <Box
+            component="img"
+            src="/path/to/logo.png"
+            alt="Logo"
+            sx={{ height: 40 }}
+          />
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+          {/* Social Media Icons */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <IconButton sx={{ color: "#fff" }}>
+              <Instagram />
+            </IconButton>
+            <IconButton sx={{ color: "#fff" }}>
+              <Facebook />
+            </IconButton>
+            <IconButton sx={{ color: "#fff" }}>
+              <Phone />
+            </IconButton>
+            <IconButton sx={{ color: "#fff" }}>
+              <Email />
+            </IconButton>
+          </Box>
+        </Box>
+        <Typography
+          variant="caption"
+          sx={{ mt: 2, display: "block", color: "#aaa" }}
         >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          Copyright © www.gtlstudio.com
+        </Typography>
+      </Box>
+    </HomeLayout>
   );
 }
