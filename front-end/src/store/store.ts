@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slices/userSlice";
 import imagesReducer from "./slices/imagesSlice";
-import videosReducer from "./slices/videoSlice";
+import videosReducer from "./slices/videosSlice";
 
 export type RootState = ReturnType<typeof store.getState>;
 
