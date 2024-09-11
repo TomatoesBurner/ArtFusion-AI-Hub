@@ -3,6 +3,7 @@ import createPalette, {
   PaletteColor,
   SimplePaletteColorOptions,
 } from "@mui/material/styles/createPalette";
+import { getBaseTypographyOverrides } from "./typographyOverride";
 
 export const appColours = {
   cLightBlue: "#3d86e8",
@@ -59,6 +60,7 @@ const createMuiTheme = (mode: MuiThemeMode) => {
   if (mode === "dark") {
     return createTheme({
       palette: getDarkPalette(),
+      typography: getBaseTypographyOverrides(),
     });
   } else {
     return createTheme({
