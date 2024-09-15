@@ -7,6 +7,11 @@ import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Instagram, Facebook, Phone, Email } from "@mui/icons-material";
 import Link from "next/link";
 
+// TODO:
+// Move the home page code into a file in /views
+// Put the components in /components. Example, /components/home/footer
+// There is error with nested a tags below.
+
 export default function Home() {
   return (
     <HomeLayout>
@@ -32,7 +37,7 @@ export default function Home() {
             color="inherit"
             sx={{ borderColor: "#fff", color: "#fff" }}
           >
-            Let's start making magic today.
+            {"Let's start making magic today."}
           </Button>
           <Link href="/login" passHref>
             <Button

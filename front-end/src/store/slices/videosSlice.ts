@@ -12,12 +12,30 @@ export enum VideoModel {
   VintageStyle = "vintage_style",
 }
 
+/**
+ * The filters that users can set in the vidoe prompt page
+ */
+type VideoPromptFilter = {
+  width: number;
+  // TODO: more
+};
+
+/**
+ * Represents one single prompt
+ */
+type VideoPrompt = {
+  // TODO: the definition against the API
+};
+
 type VideoSliceState = {
   model: VideoModel;
-  filter: {
-    width: number;
-  };
+  filter: VideoPromptFilter;
   // TODO: more
+  /**
+   * Video prompts to be retrieved and then stored as the SPA loads in the
+   * memory
+   */
+  prompts: VideoPrompt[];
 };
 
 const initialState: VideoSliceState = {
@@ -25,6 +43,7 @@ const initialState: VideoSliceState = {
   filter: {
     width: 0,
   },
+  prompts: [],
 };
 
 const slice = createSlice({
@@ -35,8 +54,16 @@ const slice = createSlice({
       const { model } = action.payload;
       state.model = model;
     },
+
+    setFilter(state, action: { payload: { filter: VideoPromptFilter } }) {
+      const { filter } = action.payload;
+      state.filter = {
+        ...state.filter,
+        ...filter,
+      };
+    },
   },
 });
 
 export default slice.reducer;
-export const videoSliceAtions = slice.actions;
+export const videoSliceActions = slice.actions;

@@ -9,19 +9,19 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import { VideoModel, videoSliceAtions } from "@/store/slices/videosSlice";
+import { VideoModel, videoSliceActions } from "@/store/slices/videosSlice";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { APP_PATH } from "@/utils/constant";
 
-interface IModel {
+interface IVideoModel {
   title: string;
   value: VideoModel;
   img: string;
 }
 
-const models: IModel[] = [
+const models: IVideoModel[] = [
   {
     title: "Natural scenery",
     value: VideoModel.NaturalScenery,
@@ -65,8 +65,8 @@ const ImageModels = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleModelSelect = (model: IModel) => {
-    dispatch(videoSliceAtions.setModel({ model: model.value }));
+  const handleVideoModelSelect = (model: IVideoModel) => {
+    dispatch(videoSliceActions.setModel({ model: model.value }));
     router.push(APP_PATH.CREATE_VIDEOS);
   };
 
@@ -79,14 +79,13 @@ const ImageModels = () => {
       <Typography variant="h3" align="center" gutterBottom>
         Video Models
       </Typography>
-
       <Grid container spacing={4} justifyContent="center">
         {models.map((model, index) => (
           <Grid item key={index} xs={12} sm={6} md={3}>
             <Card
               component={Box}
               sx={{ cursor: "pointer" }}
-              onClick={() => handleModelSelect(model)}
+              onClick={() => handleVideoModelSelect(model)}
             >
               <CardMedia
                 component="img"

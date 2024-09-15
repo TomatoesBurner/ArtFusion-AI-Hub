@@ -9,7 +9,9 @@ const DashBoardLayout = ({ children }: { children: React.ReactNode }) => {
     <Box display={"flex"}>
       <CssBaseline />
       <DashBoardAppBar />
-      <Box component={"main"}>{children}</Box>
+      <Box component={"main"} width={"100%"} pt={8}>
+        {children}
+      </Box>
     </Box>
   );
 };
