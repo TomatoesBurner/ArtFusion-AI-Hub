@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production nodemon server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon server.js"
+    "start:dev": "cross-env NODE_ENV=development nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "cits5206-teams-13",
   "license": "ISC",
