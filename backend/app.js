@@ -33,6 +33,8 @@ app.use('/api/text_to_image', imageRoutes); //// Text to image API
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
+
+//global error handling middleware
 app.use(globalErrorHandler);
 
 module.exports =app;
