@@ -32,7 +32,7 @@ const sendErrorProd = (err, req, res) => {
         // Operational, trusted error: send message to client
         if (err.isOperational) {
             return res.status(err.statusCode).json({
-                staus: err.status,
+                status: err.status,
                 message: err.message
             });
         }
@@ -41,7 +41,7 @@ const sendErrorProd = (err, req, res) => {
         console.error('ERROR!!', err);
         // 2) Send genric message
         return res.status(500).json({
-            staus: 'error',
+            status: 'error',
             message: 'Something went very wrong! (in production)'
         });
     }
@@ -68,10 +68,9 @@ module.exports = (err, req, res, next)=>{
     err.status =err.status || 'error';
 
     if(process.env.NODE_ENV ==='development'){
-        sendErrorDev(err,res);
+        sendErrorDev(err,req,res);
     } else if (process.env.NODE_ENV === 'production') {
         let error = { ...err };
-
         error.message = err.message;
         if(error.name ==='CastError')error = handleCastErrorDB(error)
         if(error.code ===11000) error = handleDuplicateFieldsDB(error)
