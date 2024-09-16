@@ -11,10 +11,10 @@ const video_creation = () => {
 
             {/* Left side panel */}
             <Grid item xs={12} sm={4} md={3}>
-              <Box sx={{ border: '1px solid #fff', padding: '16px' }}>
+              <Box sx={{ border: '1px solid #fff', padding: '16px', height: '180%' }}>
                 <Link href="/videos/models">
                     <Box sx={{ textAlign: 'center', marginBottom: '16px' }}>
-                    <img src="/path_to_your_uploaded_image" alt="Avatar" width="100%" />
+                    <img src="/path_to_your_uploaded_image" alt="Model image" width="100%" />
                     <Typography variant="h6" sx={{ color: '#fff' }}>Switch</Typography>
                     </Box>
                 </Link>
@@ -52,7 +52,10 @@ const video_creation = () => {
     
             {/* Prompt Input */}
             <Grid item xs={12} sm={8} md={9}>
-              <Box sx={{ border: '1px solid #fff', padding: '16px', height: '100%' }}>
+                <Box sx={{ border: '1px solid #fff', padding: '16px', height: '100%' }}>
+                    <Typography variant="h6" sx={{ color: '#fff' }}>Generation: </Typography>
+                </Box>
+              <Box sx={{ border: '1px solid #fff', padding: '16px', height: '80%' }}>
                 <Typography variant="h6" sx={{ color: '#fff' }}>Input your Prompt:</Typography>
                 <TextField
                   fullWidth
