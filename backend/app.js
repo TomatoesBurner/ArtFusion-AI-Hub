@@ -9,6 +9,7 @@ const app = express();
 
 const userRouter = require('./routers/userRoutes') //user
 const textToImageApiRoutes = require('./routers/textToImageApiRoutes'); //text to image api 
+const textToVideoApiRoutes = require('./routers/textToVideoApiRoutes'); //text to image api 
 
 // ***************************************************
 //               MIDDLEWARE SETUP
@@ -31,6 +32,9 @@ app.use('/api/v1/users', userRouter)
 
 // Text to image API
 app.use('/api/text_to_image', textToImageApiRoutes);
+
+// Text to video API
+app.use('/api/text_to_video', textToVideoApiRoutes);
 
 module.exports =app;
 
