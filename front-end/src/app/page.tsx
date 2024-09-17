@@ -39,12 +39,13 @@ export default function Home() {
           >
             {"Let's start making magic today."}
           </Button>
+
+          {/* 将 Link 放在外部，Button 在内部 */}
           <Link href="/login" passHref>
             <Button
               variant="outlined"
               color="inherit"
               sx={{ borderColor: "#fff", color: "#fff" }}
-              component="a"
             >
               Get Started
             </Button>
@@ -74,7 +75,7 @@ export default function Home() {
           {/* Add logo here */}
           <Box
             component="img"
-            src="/path/to/logo.png"
+            src="/images/logo.png"
             alt="Logo"
             sx={{ height: 40 }}
           />
