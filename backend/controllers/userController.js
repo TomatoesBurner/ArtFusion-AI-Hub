@@ -1,4 +1,5 @@
 const express = require('express')
+const User = require('../models/userModels');
 
 
 exports.getAllUsers =(req,res)=>{
