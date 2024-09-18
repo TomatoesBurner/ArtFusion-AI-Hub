@@ -3,6 +3,7 @@ const User = require('../models/userModels');
 const AppError = require('./../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const { promisify } = require('util');
+const sendEmail = require('./../utils/email')
 
 
 const signToken = id => {
