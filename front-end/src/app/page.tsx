@@ -32,13 +32,15 @@ export default function Home() {
           Ready to make some visual wonders?
         </Typography>
         <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
-          <Button
-            variant="outlined"
-            color="inherit"
-            sx={{ borderColor: "#fff", color: "#fff" }}
-          >
-            {"Let's start making magic today."}
-          </Button>
+          <Link href="/video" passHref>
+            <Button
+              variant="outlined"
+              color="inherit"
+              sx={{ borderColor: "#fff", color: "#fff" }}
+            >
+              {"Let's start making magic today."}
+            </Button>
+          </Link>
 
           {/* 将 Link 放在外部，Button 在内部 */}
           <Link href="/login" passHref>
