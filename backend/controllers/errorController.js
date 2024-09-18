@@ -44,7 +44,7 @@ const sendErrorProd = (err, req, res) => {
         // Programming or other unknow error: don't leak error details
         // 1) Log error
         console.error('ERROR!!', err);
-        // 2) Send genric message
+        // 2) Send generic message
         return res.status(500).json({
             status: 'error',
             message: 'Something went very wrong! (in production)'
