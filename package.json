@@ -1,0 +1,14 @@
+{
+  "name": "art-fusion-ai-hub",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint": "next lint",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "git-format-staged": "^3.1.1",
+    "husky": "^9.1.6",
+    "prettier": "^3.3.3"
+  }
+}
