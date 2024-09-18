@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import BaseWrapper from "@/views/BaseWrapper";
 
+const autoFormatTestVal = 123123123;
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
