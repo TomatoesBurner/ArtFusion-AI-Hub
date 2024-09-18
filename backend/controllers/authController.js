@@ -71,6 +71,12 @@ exports.logout = (req, res) => {
     res.status(200).json({ status: 'success' });
 };
 
+/**
+ * Middleware to protect routes and ensure the user is authenticated.
+ * This function verifies the JWT token, checks if the user still exists,
+ * and ensures that the user has not changed their password after the token was issued.
+ * If all checks pass, the user is allowed access to the protected route.
+ */
 exports.protect = catchAsync(async (req, res, next) => {
     // 1) Getting token and check of it's there
     let token;
@@ -103,6 +109,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     next();
 });
 
+//forgotPassword
 exports.forgotPassword = catchAsync(async (req, res, next) => {
     // 1) Get user based on POSTed email
     const user = await User.findOne({ email: req.body.email });
@@ -138,6 +145,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     }
 });
 
+//resetPassword
 exports.resetPassword = catchAsync(async (req, res, next) => {
     // 1) Get user based on the token
     const hashedToken = crypto
