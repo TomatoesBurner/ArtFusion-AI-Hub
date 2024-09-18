@@ -5,16 +5,25 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { TextField, Button } from "@mui/material";
 
+// Validation schema for form fields
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Required"),
-  password: Yup.string().required("Required"),
+  username: Yup.string().required("Username is required"), // Username field validation
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string().required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match") // Confirm password validation
+    .required("Confirm Password is required"),
 });
 
 const ClientRegisterForm = () => {
   const formik = useFormik({
     initialValues: {
+      username: "",
       email: "",
       password: "",
+      confirmPassword: "", // Added confirmPassword field
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -37,6 +46,18 @@ const ClientRegisterForm = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
+      <TextField
+        label="Username"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        {...formik.getFieldProps("username")}
+        error={formik.touched.username && Boolean(formik.errors.username)}
+        helperText={formik.touched.username && formik.errors.username}
+        sx={{ mb: 2 }}
+        InputProps={{ sx: { color: "#fff" } }}
+        InputLabelProps={{ sx: { color: "#fff" } }}
+      />
       <TextField
         label="Email Address"
         type="email"
@@ -63,6 +84,24 @@ const ClientRegisterForm = () => {
         InputProps={{ sx: { color: "#fff" } }}
         InputLabelProps={{ sx: { color: "#fff" } }}
       />
+      <TextField
+        label="Confirm Password"
+        type="password"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        {...formik.getFieldProps("confirmPassword")}
+        error={
+          formik.touched.confirmPassword &&
+          Boolean(formik.errors.confirmPassword)
+        }
+        helperText={
+          formik.touched.confirmPassword && formik.errors.confirmPassword
+        }
+        sx={{ mb: 2 }}
+        InputProps={{ sx: { color: "#fff" } }}
+        InputLabelProps={{ sx: { color: "#fff" } }}
+      />
       <Button
         type="submit"
         variant="contained"
@@ -70,7 +109,7 @@ const ClientRegisterForm = () => {
         fullWidth
         sx={{ mb: 2 }}
       >
-        Next
+        Register
       </Button>
     </form>
   );

@@ -26,7 +26,7 @@ export default function Login() {
         </Typography>
         <Typography variant="body1" sx={{ mb: 4 }}>
           Don't have an account?{" "}
-          <Link href="/register" passHref>
+          <Link href="/signup" passHref>
             <Button
               color="inherit"
               sx={{
