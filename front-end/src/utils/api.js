@@ -28,14 +28,13 @@ const handleError = (error) => {
 
 // API call for user signup
 export const signup = async (userData) => {
-  console.log("User Data:", userData); // 在请求前打印 userData
-
+  console.log("User Data:", userData);
   try {
     const response = await apiClient.post("/users/signup", userData);
-    return response.data; // Return the response data
+    return response.data;
   } catch (error) {
     const errorMessage = handleError(error);
-    throw new Error(errorMessage);
+    throw new Error(JSON.stringify(errorMessage));
   }
 };
 
@@ -43,7 +42,12 @@ export const signup = async (userData) => {
 export const login = async (credentials) => {
   try {
     const response = await apiClient.post("/users/login", credentials);
-    return response.data; // Return the response data (token)
+    
+    // Store the JWT token in localStorage or sessionStorage
+    const { token } = response.data;
+    localStorage.setItem("jwt", token);  // Store JWT in localStorage
+
+    return response.data; // Return response data (including token)
   } catch (error) {
     const errorMessage = handleError(error);
     throw new Error(errorMessage);
@@ -54,7 +58,7 @@ export const login = async (credentials) => {
 export const forgetPassword = async (email) => {
   try {
     const response = await apiClient.post("/users/forgetPassword", { email });
-    return response.data; // Return the response data
+    return response.data;
   } catch (error) {
     const errorMessage = handleError(error);
     throw new Error(errorMessage);
@@ -65,7 +69,7 @@ export const forgetPassword = async (email) => {
 export const resetPassword = async (token, newPassword) => {
   try {
     const response = await apiClient.post(`/resetPassword/${token}`, { password: newPassword });
-    return response.data; // Return the response data
+    return response.data;
   } catch (error) {
     const errorMessage = handleError(error);
     throw new Error(errorMessage);
@@ -76,7 +80,11 @@ export const resetPassword = async (token, newPassword) => {
 export const logout = async () => {
   try {
     const response = await apiClient.post("/users/logout");
-    return response.data; // Return the response data
+    
+    // Remove the JWT token from localStorage or sessionStorage
+    localStorage.removeItem("jwt");
+
+    return response.data;
   } catch (error) {
     const errorMessage = handleError(error);
     throw new Error(errorMessage);

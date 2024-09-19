@@ -5,41 +5,43 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { TextField, Button } from "@mui/material";
 import { signup } from "../utils/api";
+import { useRouter } from "next/navigation"; // 修改这里
 
 // Validation schema for form fields
 const validationSchema = Yup.object({
-  username: Yup.string().required("Username is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  username: Yup.string().min(3, "Username must be at least 3 characters").required("Username is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
+  password: Yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
   passwordConfirm: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm Password is required"),
 });
 
 const ClientRegisterForm = () => {
+  const router = useRouter(); // 修改这里
+
   const formik = useFormik({
     initialValues: {
       username: "",
       email: "",
       password: "",
-      passwordConfirm: "", // Update name to match backend requirement
+      passwordConfirm: "",
     },
     validationSchema,
     onSubmit: async (values) => {
-  try {
-    const data = await signup({
-      name: values.username, // 显式设置 name 字段
-      email: values.email,
-      password: values.password,
-      passwordConfirm: values.passwordConfirm,
-    });
-    console.log("Registration successful", data);
-  } catch (error) {
-    console.error("Error during signup:", error);
-  }
-},
+      try {
+        const data = await signup({
+          name: values.username,
+          email: values.email,
+          password: values.password,
+          passwordConfirm: values.passwordConfirm,
+        });
+        console.log("Registration successful", data);
+        router.push("/login"); // 注册成功后跳转到登录页面
+      } catch (error) {
+        console.error("Error during signup:", error);
+      }
+    },
   });
 
   return (
@@ -51,7 +53,9 @@ const ClientRegisterForm = () => {
         margin="normal"
         {...formik.getFieldProps("username")}
         error={formik.touched.username && Boolean(formik.errors.username)}
-        helperText={formik.touched.username && formik.errors.username}
+        helperText={
+          formik.touched.username && (formik.errors.username || "Must be at least 3 characters")
+        }
         sx={{ mb: 2 }}
         InputProps={{ sx: { color: "#fff" } }}
         InputLabelProps={{ sx: { color: "#fff" } }}
@@ -77,7 +81,9 @@ const ClientRegisterForm = () => {
         margin="normal"
         {...formik.getFieldProps("password")}
         error={formik.touched.password && Boolean(formik.errors.password)}
-        helperText={formik.touched.password && formik.errors.password}
+        helperText={
+          formik.touched.password && (formik.errors.password || "Must be at least 6 characters")
+        }
         sx={{ mb: 2 }}
         InputProps={{ sx: { color: "#fff" } }}
         InputLabelProps={{ sx: { color: "#fff" } }}
@@ -88,11 +94,8 @@ const ClientRegisterForm = () => {
         variant="outlined"
         fullWidth
         margin="normal"
-        {...formik.getFieldProps("passwordConfirm")} // Updated key
-        error={
-          formik.touched.passwordConfirm &&
-          Boolean(formik.errors.passwordConfirm)
-        }
+        {...formik.getFieldProps("passwordConfirm")}
+        error={formik.touched.passwordConfirm && Boolean(formik.errors.passwordConfirm)}
         helperText={
           formik.touched.passwordConfirm && formik.errors.passwordConfirm
         }
