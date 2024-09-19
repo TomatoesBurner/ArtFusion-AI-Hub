@@ -4,7 +4,7 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { TextField, Button } from "@mui/material";
-import { signup } from '../utils/api';
+import { signup } from "../utils/api";
 
 // Validation schema for form fields
 const validationSchema = Yup.object({
@@ -13,7 +13,7 @@ const validationSchema = Yup.object({
     .email("Invalid email address")
     .required("Email is required"),
   password: Yup.string().required("Password is required"),
-  confirmPassword: Yup.string()
+  passwordConfirm: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm Password is required"),
 });
@@ -24,12 +24,12 @@ const ClientRegisterForm = () => {
       username: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      passwordConfirm: "", // Update name to match backend requirement
     },
     validationSchema,
-    onSubmit: async (values) => {  // 修改这里
+    onSubmit: async (values) => {
       try {
-        const data = await signup(values);
+        const data = await signup(values); // Pass the entire values object directly
         console.log("Registration successful", data);
       } catch (error) {
         console.error("Error:", error);
@@ -83,13 +83,13 @@ const ClientRegisterForm = () => {
         variant="outlined"
         fullWidth
         margin="normal"
-        {...formik.getFieldProps("confirmPassword")}
+        {...formik.getFieldProps("passwordConfirm")} // Updated key
         error={
-          formik.touched.confirmPassword &&
-          Boolean(formik.errors.confirmPassword)
+          formik.touched.passwordConfirm &&
+          Boolean(formik.errors.passwordConfirm)
         }
         helperText={
-          formik.touched.confirmPassword && formik.errors.confirmPassword
+          formik.touched.passwordConfirm && formik.errors.passwordConfirm
         }
         sx={{ mb: 2 }}
         InputProps={{ sx: { color: "#fff" } }}
