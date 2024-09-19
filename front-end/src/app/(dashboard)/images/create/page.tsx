@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Box, Grid, Typography, IconButton, Slider, TextField, Button, MenuItem, Select } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Link from 'next/link';
 import axios from 'axios';
@@ -64,9 +65,12 @@ try{
                <Typography variant="h6" sx={{color: '#fff' }}>Size of Image</Typography>
                <Typography variant="body2" sx={{color: '#fff', marginBottom:'8px' }}>Aspect Ratio</Typography>
                <Select
+                IconComponent={(props) => (
+                    <ArrowDropDownIcon {...props} sx={{ color: 'gray' }} />
+                  )}
                 value={aspectRatio}
                 onChange={(e) => setAspectRatio(Number(e.target.value))}
-                sx={{ marginBottom: '16px', backgroundColor: '#fff' }}
+                sx={{ marginBottom: '16px', backgroundColor: '#fff', color: '#000' }}
                >
                     <MenuItem value={16/9}>16:9</MenuItem>
                     <MenuItem value={4/3}>4:3</MenuItem>
