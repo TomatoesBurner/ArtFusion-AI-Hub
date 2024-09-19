@@ -83,9 +83,9 @@ try{
                       </Box>
                     )}
                 </Box>
-              <Box sx={{ border: '1px solid #fff', padding: '16px', height: '80%' }}>
+              <Box sx={{ border: '1px solid #fff', padding: '16px', height: '80%'}}>
                 <Typography variant="h6" sx={{ color: '#fff' }}>Input your Prompt:</Typography>
-                <TextField
+                <TextField 
                   fullWidth
                   variant="outlined"
                   multiline
@@ -93,7 +93,7 @@ try{
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   placeholder="Type your prompt here..."
-                  sx={{ backgroundColor: '#fff', marginTop: '16px', marginBottom: '16px' }}
+                  sx={{ backgroundColor: '778890', marginTop: '16px', marginBottom: '16px' }}
                 />
                 <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>{loading ? 'Generating...' : 'Submit'}</Button>
               </Box>
