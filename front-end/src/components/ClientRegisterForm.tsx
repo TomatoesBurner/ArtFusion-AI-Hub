@@ -4,16 +4,17 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { TextField, Button } from "@mui/material";
+import { signup } from '../utils/api';
 
 // Validation schema for form fields
 const validationSchema = Yup.object({
-  username: Yup.string().required("Username is required"), // Username field validation
+  username: Yup.string().required("Username is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
   password: Yup.string().required("Password is required"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match") // Confirm password validation
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm Password is required"),
 });
 
@@ -23,21 +24,13 @@ const ClientRegisterForm = () => {
       username: "",
       email: "",
       password: "",
-      confirmPassword: "", // Added confirmPassword field
+      confirmPassword: "",
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values) => {  // 修改这里
       try {
-        const response = await fetch("http://localhost:5000/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
-        if (!response.ok) throw new Error("Network response was not ok");
-        // Handle successful registration
-        console.log("Registration successful");
+        const data = await signup(values);
+        console.log("Registration successful", data);
       } catch (error) {
         console.error("Error:", error);
       }

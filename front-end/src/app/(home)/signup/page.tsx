@@ -4,6 +4,7 @@ import { Button, Box, Typography, Divider } from "@mui/material";
 import { Google, Instagram } from "@mui/icons-material";
 import ClientRegisterForm from "@/components/ClientRegisterForm";
 
+
 const RegisterPage = () => {
   return (
     <Box
