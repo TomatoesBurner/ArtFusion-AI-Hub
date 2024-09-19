@@ -32,7 +32,7 @@ export default function Home() {
           Ready to make some visual wonders?
         </Typography>
         <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
-          <Link href="/video" passHref>
+          <Link href="/mode" passHref>
             <Button
               variant="outlined"
               color="inherit"

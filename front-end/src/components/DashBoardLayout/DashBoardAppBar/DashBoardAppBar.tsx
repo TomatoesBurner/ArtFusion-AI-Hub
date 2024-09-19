@@ -11,14 +11,17 @@ const DashBoardAppBar = () => {
   return (
     <AppBar>
       <Toolbar>
-        <Link href="/video">
-          <Image src="/images/Logo.png" alt="Logo" width={48} height={48}></Image>
+        <Link href="/">
+          <Image
+            src="/images/Logo.png"
+            alt="Logo"
+            width={48}
+            height={48}
+          ></Image>
         </Link>
-        <Link href="/video">
-          <Typography ml={1} variant="h6">
-              {APP_NAME}
-          </Typography>
-        </Link>
+        <Typography ml={1} variant="h6">
+          {APP_NAME}
+        </Typography>
         <Stack flexGrow={1}></Stack>
         <Button
           LinkComponent={NextLink}
