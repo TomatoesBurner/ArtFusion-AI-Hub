@@ -13,16 +13,14 @@ const apiClient = axios.create({
 
 // Generic error handling function
 const handleError = (error) => {
+  console.error("Full error object:", error); // Log the full error object
   if (error.response) {
-    // Server responded with a status code outside the 2xx range
     console.error("Error response data:", error.response.data);
     return error.response.data; // Return the specific error response
   } else if (error.request) {
-    // Request was made but no response was received
     console.error("No response received:", error.request);
     return { message: "No response from server" };
   } else {
-    // Something happened while setting up the request
     console.error("Error setting up request:", error.message);
     return { message: error.message };
   }
@@ -30,23 +28,14 @@ const handleError = (error) => {
 
 // API call for user signup
 export const signup = async (userData) => {
+  console.log("User Data:", userData); // 在请求前打印 userData
+
   try {
-    const response = await axios.post('http://localhost:3000/api/v1/users/signup', userData);
+    const response = await apiClient.post("/users/signup", userData);
     return response.data; // Return the response data
   } catch (error) {
-    if (error.response) {
-      // Server responded with a status other than 2xx
-      console.error("Error response data:", error.response.data);
-      throw new Error(error.response.data.message || 'An error occurred');
-    } else if (error.request) {
-      // Request was made but no response received
-      console.error("No response received from server");
-      throw new Error('No response from server');
-    } else {
-      // Something happened in setting up the request
-      console.error("Error:", error.message);
-      throw new Error('An unexpected error occurred');
-    }
+    const errorMessage = handleError(error);
+    throw new Error(errorMessage);
   }
 };
 

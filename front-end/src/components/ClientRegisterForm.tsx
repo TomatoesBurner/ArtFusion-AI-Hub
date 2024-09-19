@@ -28,13 +28,18 @@ const ClientRegisterForm = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
-      try {
-        const data = await signup(values); // Pass the entire values object directly
-        console.log("Registration successful", data);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    },
+  try {
+    const data = await signup({
+      name: values.username, // 显式设置 name 字段
+      email: values.email,
+      password: values.password,
+      passwordConfirm: values.passwordConfirm,
+    });
+    console.log("Registration successful", data);
+  } catch (error) {
+    console.error("Error during signup:", error);
+  }
+},
   });
 
   return (
