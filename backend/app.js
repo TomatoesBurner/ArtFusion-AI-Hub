@@ -6,7 +6,8 @@ const express =require('express')
 const morgan =require('morgan')
 const app = express();
 
-
+const AppError = require('./utils/appError')
+const globalErrorHandler = require('./controllers/errorController')
 const userRouter = require('./routers/userRoutes') //user
 const textToImageApiRoutes = require('./routers/textToImageApiRoutes'); //text to image api 
 
@@ -28,6 +29,13 @@ app.use((req, res, next)=>{
 //              ROUTES
 // ***************************************************
 app.use('/api/v1/users', userRouter)
+app.use('/api/text_to_image', imageRoutes); //// Text to image API
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+//global error handling middleware
+app.use(globalErrorHandler);
 
 // Text to image API
 app.use('/api/text_to_image', textToImageApiRoutes);
