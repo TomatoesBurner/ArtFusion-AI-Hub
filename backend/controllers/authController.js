@@ -34,14 +34,20 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 //signup
-exports.signup = catchAsync(async (req, res) => {
-    const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
-    });
-    createSendToken(newUser, 201, req, res);
+exports.signup = catchAsync(async (req, res, next) => {
+    try {
+        const newUser = await User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            passwordConfirm: req.body.passwordConfirm
+        });
+
+        createSendToken(newUser, 201, req, res);
+    } catch (err) {
+        console.error('Error during signup:', err);
+        next(err); // This will trigger your global error handler
+    }
 });
 
 //login
