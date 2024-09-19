@@ -12,10 +12,7 @@ const ImagePromptInputSchema = new Schema(
         },
         message: String,
         fullMessage: String,
-        model: {
-            type: String,
-            enum: IMAGE_PROMPT_MODEL_VALUES,
-        },
+        model: String,
     },
     { _id: false }
 );
@@ -54,6 +51,8 @@ const ImagePromptSchema = new Schema(
     },
     { timestamps: true }
 );
+
+ImagePromptSchema.index({ promptSpaceId: 1, createdAt: -1 });
 
 const ImagePrompt = mongoose.model("ImagePrompt", ImagePromptSchema);
 
