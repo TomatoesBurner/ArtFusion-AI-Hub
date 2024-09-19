@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 
-// new Email(user, url).sendWelcome();
 const sendEmail = async options => {
     // 1) Create a transporter
     const transporter = nodemailer.createTransport({

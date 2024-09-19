@@ -6,16 +6,17 @@ const bcrypt = require('bcryptjs');
 //name email,password,images,videos,passwordConfirm
 const userSchema = new mongoose.Schema({
     name:{
-        type:String,
-        required:[true,'Please tell us your name!']
-
+        type: String,
+        unique: true,
+        maxlength: [20, 'A user name must have less or equal than 20 characters'],
+        minlength: [4, 'A user name must have more or equal than 4 characters.']
     },
     email:{
-        type:String,
-        required:[true,'Please provide your email!'],
-        unique:true,
-        lowercase:true,
-        validate:[validator.isEmail,'Please provide a valida email']
+        type: String,
+        trim: true,
+        required: [true, 'Please provide your email.'],
+        unique: true,
+        validate: [validator.isEmail, 'Please provide a valid email.']
     },
     images:String,
     videos:String,
@@ -40,6 +41,7 @@ const userSchema = new mongoose.Schema({
     passwordResetToken: String,
     passwordResetExpires: Date
 });
+
 userSchema.pre('save', async function(next) {
     // Only run this function if password was actually modified
     if (!this.isModified('password')) return next();
@@ -47,6 +49,12 @@ userSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, 12);
     // Delete passwordConfirm field
     this.passwordConfirm = undefined;
+    next();
+});
+
+userSchema.pre('save', function(next) {
+    if (!this.isModified('password') || this.isNew) return next();
+    this.passwordChangedAt = Date.now() - 1000;
     next();
 });
 
