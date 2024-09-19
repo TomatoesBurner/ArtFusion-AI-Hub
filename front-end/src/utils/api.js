@@ -31,11 +31,22 @@ const handleError = (error) => {
 // API call for user signup
 export const signup = async (userData) => {
   try {
-    const response = await apiClient.post("/users/signup", userData);
+    const response = await axios.post('http://localhost:3000/api/v1/users/signup', userData);
     return response.data; // Return the response data
   } catch (error) {
-    const errorMessage = handleError(error);
-    throw new Error(errorMessage); // Throw a more specific error
+    if (error.response) {
+      // Server responded with a status other than 2xx
+      console.error("Error response data:", error.response.data);
+      throw new Error(error.response.data.message || 'An error occurred');
+    } else if (error.request) {
+      // Request was made but no response received
+      console.error("No response received from server");
+      throw new Error('No response from server');
+    } else {
+      // Something happened in setting up the request
+      console.error("Error:", error.message);
+      throw new Error('An unexpected error occurred');
+    }
   }
 };
 
