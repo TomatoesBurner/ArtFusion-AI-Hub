@@ -39,6 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ```bash
 npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm install @mui/icons-material
 ```
 
 form and authentication
