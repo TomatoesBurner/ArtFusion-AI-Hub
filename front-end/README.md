@@ -39,10 +39,19 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ```bash
 npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm install @mui/icons-material
 ```
 
-form and authentication
+## form and authentication
 
 ```bash
 npm install formik yup
+```
+
+## integrate Prettier for consistent styling
+
+```
+npm install --save-dev prettier
+npx prettier --write path/to/your/file.js
+
 ```
