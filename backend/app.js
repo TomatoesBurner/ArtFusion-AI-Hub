@@ -17,7 +17,6 @@ const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text t
 const app = express();
 
 // CORS configuration
-const cors = require("cors");
 app.use(
     cors({
         origin: "http://localhost:3001", // Allow your frontend to access the backend
@@ -31,6 +30,7 @@ app.use(
 // ***************************************************
 // Set security HTTP headers
 app.use(helmet());
+
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
