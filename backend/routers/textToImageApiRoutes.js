@@ -12,6 +12,11 @@ const axios = require('axios');  // For making API calls
 router.post('/', async (req, res) => {
     const { text_prompt } = req.body;  // Expecting text input from the request
 
+    // Check if text_prompt is provided
+    if (!text_prompt) {
+        return res.status(500).json({ error: 'Image generation failed' });
+    }
+
     // Construct the image URL by encoding the text prompt
     var image_url = encodeURI('https://image.pollinations.ai/prompt/' + text_prompt);
     try {
@@ -26,7 +31,10 @@ router.post('/', async (req, res) => {
         // Send the generated image URL or data back to the frontend / client
         res.status(200).json({
             status: "success",
-            image_url: image_url
+            data: {
+                image_url: image_url
+            },
+            message: "Image generation success."
         });
     } catch (error) {
         res.status(500).json({ error: 'Image generation failed' });
@@ -37,6 +45,11 @@ router.post('/', async (req, res) => {
 // Route for text-to-image generation (for backup)
 router.post('/backup', async (req, res) => {
     const { text_prompt } = req.body;  // Expecting text input from the request
+
+    // Check if text_prompt is provided
+    if (!text_prompt) {
+        return res.status(500).json({ error: 'Image generation failed' });
+    }
 
     const options = {
         method: 'POST',
@@ -68,7 +81,10 @@ router.post('/backup', async (req, res) => {
 
         res.status(200).json({
             status: response.data.status,
-            image_url: response.data.output
+            data:{
+                image_url: response.data.output
+            },
+            message: "Image generation success."
         });
     } catch (error) {
         console.error('API call failed:', error);
