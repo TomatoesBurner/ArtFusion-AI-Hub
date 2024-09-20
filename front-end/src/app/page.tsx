@@ -28,11 +28,39 @@ export default function Home() {
           textAlign: "center",
         }}
       >
-        <Typography variant="h3" gutterBottom>
-          Ready to make some visual wonders?
-        </Typography>
-        <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
           <Link href="/video" passHref>
+          <Typography
+            variant="h3"
+            gutterBottom
+            sx={{
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontFamily: "'Tahoma', sans-serif",
+              letterSpacing: "0.03em",
+              fontSize: "3.7rem",
+              transition: "background 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s",
+              padding: "120px 70px",
+              background: "transparent",
+              backgroundImage: "url('/images/eye-forhome.jpg')", 
+              backgroundSize: "cover", // Ensure the background covers the entire area
+              backgroundPosition: "center",
+              borderRadius: "8px", // Add rounded corners
+              border: "2px solid transparent", // Start with a transparent border
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)", // Add shadow for depth
+              "&:hover": {
+                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 215, 0, 0.3))", // Gradient effect on hover
+                color: "#fff", // Keep text color white for contrast
+                
+                transform: "scale(1.05)", // Slightly enlarge text on hover
+                boxShadow: "0 8px 20px rgba(0, 0, 0, 0.4)", // Deeper shadow on hover
+              },
+            }}
+          >
+            Ready to make some visual wonders?    
+          </Typography>
+        </Link>
+        <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
+          <Link href="/mode" passHref>
             <Button
               variant="outlined"
               color="inherit"
