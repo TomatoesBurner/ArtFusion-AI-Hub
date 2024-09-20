@@ -14,6 +14,7 @@ const textToImageApiRoutes = require("./routers/textToImageApiRoutes"); //text t
 const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text to image api
 
 
+
 // CORS configuration
 const cors = require("cors");
 app.use(cors({
@@ -41,7 +42,6 @@ app.use(cors());
 //              ROUTES
 // ***************************************************
 app.use("/api/v1/users", userRouter);
-
 // Text to image API
 app.use('/api/v1/image-prompt', textToImageApiRoutes);
 // Text to video API
@@ -52,6 +52,8 @@ app.all("*", (req, res, next) => {
 
 //global error handling middleware
 app.use(globalErrorHandler);
+
+
 
 module.exports = app;
 
