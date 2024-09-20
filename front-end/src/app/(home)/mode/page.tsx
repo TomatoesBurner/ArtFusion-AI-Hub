@@ -8,7 +8,6 @@ const mode_selection = () => {
     <Box
       sx={{
         height: "100vh",
-        backgroundColor: "black",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -22,7 +21,6 @@ const mode_selection = () => {
           <Box
             sx={{
               height: "300px",
-              backgroundColor: "black",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
