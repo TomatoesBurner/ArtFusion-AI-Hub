@@ -1,78 +1,97 @@
-// src/components/Footer.jsx
 "use client";
 
-import React from 'react';
+import React from "react";
+import { Box, Container, Typography, Link } from "@mui/material";
 
 const Footer = () => {
-    return (
-        <footer
-            style={{
-                backgroundColor: "#1A1A1A",
-                color: "#FFFFFF",
-                padding: "1rem 0",
-                textAlign: "center",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
+  return (
+    <Box
+      component="footer"
+      sx={{
+        backgroundColor: "background.default",
+        color: "text.primary",
+        py: 3,
+        textAlign: "center",
+      }}
+    >
+      <Container maxWidth="lg">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 2,
+          }}
         >
-            <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 2rem" }}>
-                <a
-                    href="mailto:info@artfusion.com"
-                    style={{
-                        fontSize: "1rem",
-                        color: "#FFFFFF",
-                        textDecoration: "none",
-                        borderBottom: "2px solid #FFFFFF",
-                        paddingBottom: "0.2rem",
-                        transition: "border-color 0.3s",
-                    }}
-                    className="contact-link"
-                >
-                    Contact Us: info@artfusion.com
-                </a>
-                <ul
-                    style={{
-                        listStyleType: "none",
-                        padding: 0,
-                        margin: 0,
-                        display: "flex",
-                        gap: "2rem",
-                    }}
-                >
-                    <li>
-                        <a href="#" className="footer-link">Privacy Policy</a>
-                    </li>
-                    <li>
-                        <a href="#" className="footer-link">Terms of Service</a>
-                    </li>
-                    <li>
-                        <a href="#" className="footer-link">Support</a>
-                    </li>
-                </ul>
-            </div>
-
-            <p style={{ fontSize: "0.7rem", marginTop: "0.8rem" }}>
-                © 2024 GTL ArtFusion. All rights reserved.
-            </p>
-
-            {/* Add CSS styles for hover effects */}
-            <style jsx>{`
-                .contact-link:hover {
-                    border-color: #FFD700;
-                }
-                .footer-link {
-                    color: #FFFFFF;
-                    text-decoration: none;
-                    transition: color 0.3s;
-                }
-                .footer-link:hover {
-                    color: #FFD700;
-                }
-            `}</style>
-        </footer>
-    );
+          <Link
+            href="mailto:info@artfusion.com"
+            underline="none"
+            sx={{
+              fontSize: "1rem",
+              color: "inherit",
+              borderBottom: 2,
+              borderColor: "text.primary",
+              pb: 0.2,
+              "&:hover": { borderColor: "primary.main" },
+            }}
+          >
+            Contact Us: info@artfusion.com
+          </Link>
+          <Box
+            component="ul"
+            sx={{
+              display: "flex",
+              gap: 3,
+              listStyle: "none",
+              p: 0,
+              m: 0,
+            }}
+          >
+            <li>
+              <Link
+                href="#"
+                sx={{
+                  color: "inherit",
+                  textDecoration: "none",
+                  "&:hover": { color: "primary.main" },
+                }}
+              >
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="#"
+                sx={{
+                  color: "inherit",
+                  textDecoration: "none",
+                  "&:hover": { color: "primary.main" },
+                }}
+              >
+                Terms of Service
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="#"
+                sx={{
+                  color: "inherit",
+                  textDecoration: "none",
+                  "&:hover": { color: "primary.main" },
+                }}
+              >
+                Support
+              </Link>
+            </li>
+          </Box>
+        </Box>
+        <Typography variant="caption" display="block" sx={{ mt: 2 }}>
+          © 2024 GTL ArtFusion. All rights reserved.
+        </Typography>
+      </Container>
+    </Box>
+  );
 };
 
 export default Footer;
