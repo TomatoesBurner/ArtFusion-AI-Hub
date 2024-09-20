@@ -17,7 +17,7 @@ const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text t
 const app = express();
 
 // CORS configuration
-
+const cors = require("cors");
 app.use(
     cors({
         origin: "http://localhost:3001", // Allow your frontend to access the backend
