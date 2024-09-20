@@ -4,16 +4,20 @@
  *****************************************************/
 const express = require("express");
 const morgan = require("morgan");
-const app = express();
+const cors = require("cors");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const userRouter = require("./routers/userRoutes"); //user
-const imageRoutes = require("./routers/imageRoutes"); //text to image api
-const rateLimit = require("express-rate-limit");
+const textToImageApiRoutes = require("./routers/textToImageApiRoutes"); //text to image api
+const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text to image api
+
+const app = express();
 
 // CORS configuration
-const cors = require("cors");
+
 app.use(
     cors({
         origin: "http://localhost:3001", // Allow your frontend to access the backend
@@ -25,6 +29,8 @@ app.use(
 // ***************************************************
 //               GLOBAL MIDDLEWARE SETUP
 // ***************************************************
+// Set security HTTP headers
+app.use(helmet());
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "development") {
     app.use(morgan("dev"));
@@ -50,7 +56,10 @@ app.use(cors());
 //              ROUTES
 // ***************************************************
 app.use("/api/v1/users", userRouter);
-app.use("/api/text_to_image", imageRoutes); //// Text to image API
+// Text to image API
+app.use("/api/v1/image-prompt", textToImageApiRoutes);
+// Text to video API
+app.use("/api/v1/video-prompt", textToVideoApiRoutes);
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
