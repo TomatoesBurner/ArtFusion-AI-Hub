@@ -10,7 +10,9 @@ const app = express();
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const userRouter = require("./routers/userRoutes"); //user
-const textToImageApiRoutes = require("./routers/textToImageApiRoutes"); //text to image api
+const textToImageApiRoutes = require("./routers/textToImageApiRoutes"); //text to image api 
+const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text to image api
+
 
 
 // CORS configuration
@@ -42,6 +44,8 @@ app.use(cors());
 app.use("/api/v1/users", userRouter);
 // Text to image API
 app.use('/api/v1/image-prompt', textToImageApiRoutes);
+// Text to video API
+app.use('/api/v1/video-prompt', textToVideoApiRoutes);
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
