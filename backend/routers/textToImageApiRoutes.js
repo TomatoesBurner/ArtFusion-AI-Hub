@@ -3,63 +3,66 @@
 //Send the request to this API URL: http://localhost:3000/api/vi/image-prompt
 //You can test the API with Postman
 
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const axios = require('axios');  // For making API calls
+const axios = require("axios"); // For making API calls
 
 // Route for text-to-image generation
-router.post('/', async (req, res) => {
-    const { text_prompt } = req.body;  // Expecting text input from the request
+router.post("/", async (req, res) => {
+    const { text_prompt } = req.body; // Expecting text input from the request
 
     // Check if text_prompt is provided
     if (!text_prompt) {
-        return res.status(500).json({ error: 'Image generation failed' });
+        return res.status(500).json({ error: "Image generation failed" });
     }
 
     // Construct the image URL by encoding the text prompt
-    var image_url = encodeURI('https://image.pollinations.ai/prompt/' + text_prompt);
+    var image_url = encodeURI(
+        "https://image.pollinations.ai/prompt/" + text_prompt
+    );
     try {
         // Example API call to an external image generation service
-        const response = await axios.post(image_url, {
-        }, {
-            headers: {
-                //'Authorization': 'Bearer API_KEY'  
+        const response = await axios.post(
+            image_url,
+            {},
+            {
+                headers: {
+                    //'Authorization': 'Bearer API_KEY'
+                },
             }
-        });
+        );
 
         // Send the generated image URL or data back to the frontend / client
         res.status(200).json({
             status: "success",
             data: {
-                image_url: image_url
+                image_url: image_url,
             },
-            message: "Image generation success."
+            message: "Image generation success.",
         });
     } catch (error) {
-        res.status(500).json({ error: 'Image generation failed' });
+        res.status(500).json({ error: "Image generation failed" });
     }
 });
 
-
 // Route for text-to-image generation (for backup)
-router.post('/backup', async (req, res) => {
-    const { text_prompt } = req.body;  // Expecting text input from the request
+router.post("/backup", async (req, res) => {
+    const { text_prompt } = req.body; // Expecting text input from the request
 
     // Check if text_prompt is provided
     if (!text_prompt) {
-        return res.status(500).json({ error: 'Image generation failed' });
+        return res.status(500).json({ error: "Image generation failed" });
     }
 
     const options = {
-        method: 'POST',
-        url: 'https://modelslab.com/api/v6/realtime/text2img',
+        method: "POST",
+        url: "https://modelslab.com/api/v6/realtime/text2img",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
         data: {
-            key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l",  // Replace with actual API key
-            prompt: text_prompt,  // Using the user-provided prompt
+            key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l", // Replace with actual API key
+            prompt: text_prompt, // Using the user-provided prompt
             negative_prompt: "bad quality",
             width: "512",
             height: "512",
@@ -68,8 +71,8 @@ router.post('/backup', async (req, res) => {
             samples: 1,
             base64: false,
             webhook: null,
-            track_id: null
-        }
+            track_id: null,
+        },
     };
 
     try {
@@ -81,21 +84,19 @@ router.post('/backup', async (req, res) => {
 
         res.status(200).json({
             status: response.data.status,
-            data:{
-                image_url: response.data.output
+            data: {
+                image_url: response.data.output,
             },
-            message: "Image generation success."
+            message: "Image generation success.",
         });
     } catch (error) {
-        console.error('API call failed:', error);
-        res.status(500).json({ 
+        console.error("API call failed:", error);
+        res.status(500).json({
             status: "error",
-            message: 'Image generation failed' 
+            message: "Image generation failed",
         });
     }
-
 });
-
 
 // Export the router for use in the main application
 module.exports = router;
