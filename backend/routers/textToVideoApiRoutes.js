@@ -12,6 +12,11 @@ const axios = require('axios');  // For making API calls
 router.post('/', async (req, res) => {
     const { text_prompt } = req.body;  // Expecting text input from the request
 
+    // Check if text_prompt is provided
+    if (!text_prompt) {
+        return res.status(500).json({ error: 'Video generation failed' });
+    }
+
     const requestBody = {
         // key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l", //API key
         key: "XTBQisoBZAhY5En42W74MjvTrN8dAazWV8udk5KpoF29dhG3xijjculBExZf",  // API key 
@@ -40,8 +45,6 @@ router.post('/', async (req, res) => {
                 'Content-Type': 'application/json'
             }
         });
-
-        console.log(response.data);
 
         // Send the generated video URL or data back to the frontend
         res.status(200).json(response.data);
