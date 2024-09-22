@@ -5,6 +5,9 @@ export const SOUND_TRACK_EXTENSION = {
     OGG: "ogg",
 };
 
-export const SOUND_TRACK_EXTENSION_VALUES = Object.values(
-    SOUND_TRACK_EXTENSION
-);
+const SOUND_TRACK_EXTENSION_VALUES = Object.values(SOUND_TRACK_EXTENSION);
+
+module.exports = {
+    SOUND_TRACK_EXTENSION,
+    SOUND_TRACK_EXTENSION_VALUES,
+};

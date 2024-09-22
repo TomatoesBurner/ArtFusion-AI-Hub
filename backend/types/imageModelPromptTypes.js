@@ -9,4 +9,9 @@ export const IMAGE_PROMPT_MODEL = {
     Realism: "realism",
 };
 
-export const IMAGE_PROMPT_MODEL_VALUES = Object.values(IMAGE_PROMPT_MODEL);
+const IMAGE_PROMPT_MODEL_VALUES = Object.values(IMAGE_PROMPT_MODEL);
+
+module.exports = {
+    IMAGE_PROMPT_MODEL,
+    IMAGE_PROMPT_MODEL_VALUES,
+};

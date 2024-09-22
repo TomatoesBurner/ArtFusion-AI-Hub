@@ -13,4 +13,9 @@ export const VIDEO_EXTENSION = {
     VOB: "vob",
 };
 
-export const VIDEO_EXTENSION_VALUES = Object.values(VIDEO_EXTENSION);
+const VIDEO_EXTENSION_VALUES = Object.values(VIDEO_EXTENSION);
+
+module.exports = {
+    VIDEO_EXTENSION,
+    VIDEO_EXTENSION_VALUES,
+};

@@ -56,4 +56,4 @@ ImagePromptSchema.index({ promptSpaceId: 1, createdAt: -1 });
 
 const ImagePrompt = mongoose.model("ImagePrompt", ImagePromptSchema);
 
-export default ImagePrompt;
+module.export = ImagePrompt;

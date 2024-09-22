@@ -26,4 +26,4 @@ PromptSpaceSchema.index({ users: 1 }, { updatedAt: -1 });
 
 const PromptSpace = mongoose.model("PromptSpace", PromptSpaceSchema);
 
-export default PromptSpace;
+module.exports = PromptSpace;
