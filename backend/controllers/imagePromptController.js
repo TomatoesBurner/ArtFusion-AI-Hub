@@ -1,4 +1,4 @@
-import ImagePrompt from "../models/imagePrompt.js";
+import ImagePrompt from "../models/imagePromptModel.js/index.js";
 
 const getAllImagePrompts = async (req, res) => {
     const { promptSpaceId } = req.params;

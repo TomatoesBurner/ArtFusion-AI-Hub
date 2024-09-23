@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
                 "A user name must have more or equal than 4 characters.",
             ],
         },
+        firstName: String,
+        lastName: String,
         email: {
             type: String,
             trim: true,
@@ -27,25 +29,13 @@ const userSchema = new mongoose.Schema(
             unique: true,
             validate: [validator.isEmail, "Please provide a valid email."],
         },
-        images: String,
-        videos: String,
         password: {
             type: String,
             required: [true, "Please provide a password!"],
             minlength: 8,
             select: false,
         },
-        passwordConfirm: {
-            type: String,
-            required: [true, "Please reconfirm your password"],
-            validate: {
-                // This only works on CREATE and SAVE!!!
-                validator: function (el) {
-                    return el === this.password;
-                },
-                message: "Passwords are not the same",
-            },
-        },
+
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,

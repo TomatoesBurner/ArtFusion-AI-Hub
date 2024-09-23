@@ -1,17 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const { PROMPT_SPACE_TYPE_VALUES } = require("../types/promptSpaceTypes");
 
-export const PromptSpaceType = {
-    Image: "image",
-    Video: "video",
-};
-
-export const PromptSpaceTypeValues = Object.values(PromptSpaceType);
-
-const PromptSpaceSchema = new Schema(
+const PromptSpaceSchema = new mongoose.Schema(
     {
         type: {
             type: String,
-            enum: PromptSpaceTypeValues,
+            enum: PROMPT_SPACE_TYPE_VALUES,
             required: true,
         },
         name: String,

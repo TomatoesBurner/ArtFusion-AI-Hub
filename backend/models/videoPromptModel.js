@@ -64,4 +64,4 @@ VideoPromptSchema.index({ promptSpaceId: 1, createdAt: -1 });
 
 const VideoPrompt = mongoose.model("VideoPrompt", VideoPromptSchema);
 
-module.export = VideoPrompt;
+module.exports = VideoPrompt;

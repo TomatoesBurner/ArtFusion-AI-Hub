@@ -4,6 +4,7 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const { promisify } = require("util");
 const sendEmail = require("./../utils/email");
+const authService = require("../services/authService");
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -34,13 +35,11 @@ const createSendToken = (user, statusCode, req, res) => {
 
 //signup
 exports.signup = catchAsync(async (req, res) => {
-    const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-    });
-    createSendToken(newUser, 201, req, res);
+    const data = await authService.register(req.body);
+
+    if (data.error) {
+        next(data.error);
+    }
 });
 
 //login
@@ -176,7 +175,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
         return next(new AppError("Token is invalid or has expired", 400));
     }
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    // user.passwordConfirm = req.body.passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
@@ -201,7 +200,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     }
     // 3) If so, update password
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    // user.passwordConfirm = req.body.passwordConfirm;
     await user.save();
     // 4) Log user in, send JWT
     createSendToken(user, 200, req, res);
