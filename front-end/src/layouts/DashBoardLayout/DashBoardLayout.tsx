@@ -6,10 +6,10 @@ import DashBoardAppBar from "@/components/DashBoardLayout/DashBoardAppBar/DashBo
 
 const DashBoardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box display={"flex"}>
+    <Box display={"flex"} minHeight={"100vh"}>
       <CssBaseline />
       <DashBoardAppBar />
-      <Box component={"main"} width={"100%"} pt={8}>
+      <Box component={"main"} flexGrow={1} width={"100%"} pt={8}>
         {children}
       </Box>
     </Box>

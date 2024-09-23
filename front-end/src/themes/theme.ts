@@ -16,6 +16,8 @@ export const appColours = {
   cBlack: "#161717",
 };
 
+export const appColourKeys = Object.keys(appColours);
+
 export type MuiThemeMode = "dark" | "light";
 
 const getBasePalette = (mode: MuiThemeMode): PaletteOptions => {
