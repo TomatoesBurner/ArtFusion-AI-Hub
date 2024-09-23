@@ -35,11 +35,14 @@ const createSendToken = (user, statusCode, req, res) => {
 
 //signup
 exports.signup = catchAsync(async (req, res) => {
-    const data = await authService.register(req.body);
+    // const data = await authService.register(req.body);
+    // if (data.error) {
+    //     next(data.error);
+    // }
 
-    if (data.error) {
-        next(data.error);
-    }
+    res.status(200).json({
+        test: "test",
+    });
 });
 
 //login

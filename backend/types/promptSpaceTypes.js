@@ -3,7 +3,7 @@ const PROMPT_SPACE_TYPE = {
     Video: "video",
 };
 
-const PROMPT_SPACE_TYPE_VALUES = Object.values(PromptSpaceType);
+const PROMPT_SPACE_TYPE_VALUES = Object.values(PROMPT_SPACE_TYPE);
 
 module.exports = {
     PROMPT_SPACE_TYPE,

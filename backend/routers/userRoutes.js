@@ -1,10 +1,16 @@
 const express = require("express");
 const userController = require("./../controllers/userController");
 const authController = require("./../controllers/authController");
+const { reqDataValidate } = require("../middlewares/validationMiddleware");
+const { userRegisterJoiSchema } = require("../dtos/userRegisterDto");
 
 const router = express.Router();
 
-router.post("/signup", authController.signup);
+router.post(
+    "/signup",
+    reqDataValidate(userRegisterJoiSchema),
+    authController.signup
+);
 router.post("/login", authController.login);
 router.get("/logout", authController.logout);
 
