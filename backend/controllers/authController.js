@@ -94,12 +94,27 @@ exports.tokenRefresh = catchAsync(async (req, res, next) => {
 });
 
 //logout
-exports.logout = (req, res) => {
-    res.cookie("jwt", "loggedout", {
-        expires: new Date(Date.now() + 10 * 1000),
-        httpOnly: true,
+exports.logout = async (req, res, next) => {
+    const token = req.params.token;
+
+    if (!token) {
+        return next(new AppError("No token provided", 400));
+    }
+
+    const userId = req.user._id;
+
+    const { error } = await authService.logout({
+        data: {
+            userId,
+            refreshToken: token,
+        },
     });
-    res.status(200).json({ status: "success" });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({ status: "success", message: "Logged out" });
 };
 
 /**

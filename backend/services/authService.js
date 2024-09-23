@@ -297,8 +297,39 @@ const refreshUserToken = async ({ data, ipAddress, userAgent }) => {
     };
 };
 
+/**
+ * Logs out a user by invalidating the given access and refresh tokens.
+ *
+ * This will set the found userSerssion's expiresAt to the current time
+ *
+ * @param {{ userId: string, refreshToken: string }} data
+ * @returns {Promise<{ error: AppError } | {}}}
+ */
+const logout = async ({ data }) => {
+    const { userId, refreshToken } = data;
+    const now = Date.now();
+
+    const userSession = await UserSession.findOne({
+        userId,
+        refreshToken,
+        expiresAt: { $gt: now },
+    });
+
+    if (!userSession) {
+        return {
+            error: new AppError("Invalid refresh token", 401),
+        };
+    }
+
+    userSession.expiresAt = new Date(now);
+    await userSession.save();
+
+    return {};
+};
+
 module.exports = {
     register,
     login,
     refreshUserToken,
+    logout,
 };

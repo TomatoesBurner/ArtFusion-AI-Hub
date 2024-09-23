@@ -18,7 +18,8 @@ router.post(
     reqDataValidate(userLoginJoiSchema),
     authController.login
 );
-router.get("/logout", authController.logout);
+
+router.post("/logout/:token", authController.protect, authController.logout);
 
 router.post(
     "/tokenRefresh",
