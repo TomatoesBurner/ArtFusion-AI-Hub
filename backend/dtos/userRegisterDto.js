@@ -20,6 +20,10 @@ class UserRegisterDto extends BaseDto {
         this.password = data.password;
     }
 
+    static fromRequest(data) {
+        return new UserRegisterDto(data);
+    }
+
     static fromModel(user) {
         return new UserRegisterDto({
             email: user.email,

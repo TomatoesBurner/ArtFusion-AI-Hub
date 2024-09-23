@@ -5,6 +5,9 @@ const catchAsync = require("../utils/catchAsync");
 const { promisify } = require("util");
 const sendEmail = require("./../utils/email");
 const authService = require("../services/authService");
+const { UserLoginDto } = require("../dtos/userLoginDto");
+const { UserRegisterDto } = require("../dtos/userRegisterDto");
+const { TokenRefreshInputDto } = require("../dtos/tokenRefreshInputDto");
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -38,7 +41,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const ipAddress = req.ip;
     const userAgent = req.get("User-Agent");
     const { data, error } = await authService.register({
-        ...req.body,
+        input: UserRegisterDto.fromRequest(req.body),
         ipAddress,
         userAgent,
     });
@@ -54,20 +57,40 @@ exports.signup = catchAsync(async (req, res, next) => {
 
 //login
 exports.login = catchAsync(async (req, res, next) => {
-    // const email = req.body.email;
-    const { email, password } = req.body;
-    // 1) Check if email and password exist
-    if (!email || !password) {
-        return next(new AppError("Please provide email and password!", 400));
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error } = await authService.login({
+        input: UserLoginDto.fromRequest(req.body),
+        ipAddress,
+        userAgent,
+    });
+
+    if (error) {
+        return next(error);
     }
-    // 2) Check if user exists && password is correct
-    const user = await User.findOne({ email }).select("+password");
-    // find a user by their email
-    if (!user || !(await user.correctPassword(password, user.password))) {
-        return next(new AppError("Incorrect email or password"), 401);
+
+    res.status(200).json({
+        data: data,
+    });
+});
+
+// token refresh
+exports.tokenRefresh = catchAsync(async (req, res, next) => {
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error } = await authService.refreshUserToken({
+        data: new TokenRefreshInputDto(req.body),
+        ipAddress,
+        userAgent,
+    });
+
+    if (error) {
+        return next(error);
     }
-    // 3) If everything is OK,send token to client
-    createSendToken(user, 200, req, res);
+
+    res.status(200).json({
+        data: data,
+    });
 });
 
 //logout

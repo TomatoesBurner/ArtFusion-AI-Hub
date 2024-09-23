@@ -8,6 +8,7 @@ const PromptSpace = require("../models/promptSpaceModel");
 const crypto = require("crypto");
 const { default: mongoose } = require("mongoose");
 const UserSession = require("../models/userSessionModel");
+const { UserTokensDto } = require("../dtos/userTokensDto");
 
 /**
  * Creates a JSON Web Token for the user specified in the `user` parameter.
@@ -43,6 +44,13 @@ const _signToken = (user) => {
             expiresIn: process.env.JWT_EXPIRES_IN,
         }
     );
+};
+
+const _createNewRefreshToken = () => {
+    return crypto
+        .createHash("sha256")
+        .update(crypto.randomUUID())
+        .digest("hex");
 };
 
 /**
@@ -92,10 +100,7 @@ const _createInitialPromptSpaceForuser = async (user, session) => {
  */
 const _createSession = async ({ userId, ipAddress, userAgent }, session) => {
     // It seems that sha256 is 64 byte that is used for now
-    const newRefreshToken = crypto
-        .createHash("sha256")
-        .update(crypto.randomUUID())
-        .digest("hex");
+    const newRefreshToken = _createNewRefreshToken();
     // Default expire is put in constants of 7 days in seconds
     const expiresIn =
         Number(process.env.REFRESH_TOKEN_EXPIRES_IN) ||
@@ -114,24 +119,15 @@ const _createSession = async ({ userId, ipAddress, userAgent }, session) => {
 };
 
 /**
- * Registers a new user to the application. This will create a new user object
- * in the database and also create 2 new spaces for the user. One for video and
- * one for video.
+ * Registers a new user with the given data, ipAddress and userAgent.
  *
- * @param {Object} param - Input parameters
- * @param {string} param.name - The username
- * @param {string} param.email - The email
- * @param {string} param.firstName - The first name
- * @param {string} param.lastName - The last name
- * @param {string} param.password - The password
- * @param {string} param.ipAddress - The IP address
- * @param {string} param.userAgent - The user agent
+ * Also creates two spaces for the user, one for video and one for image.
  *
- * @returns {Promise<Object>|Promise<AppError>}
+ * @param {{ input: UserRegisterDto, ipAddress: string, userAgent: string }} param
+ * @returns {Promise<{ input: UserTokensDto } | { error: AppError}>}
  */
-const register = async (param) => {
-    const { name, email, firstName, lastName, password, ipAddress, userAgent } =
-        param;
+const register = async ({ input, ipAddress, userAgent }) => {
+    const { name, email, firstName, lastName, password } = input;
 
     const foundUser = await User.findOne({ email });
 
@@ -184,7 +180,7 @@ const register = async (param) => {
         session.endSession();
 
         return {
-            data: new UserMeDto({
+            data: new UserTokensDto({
                 accessToken: accessToken,
                 refreshToken: userSession.refreshToken,
                 refreshTokenExpirsAt: userSession.expiresAt,
@@ -201,6 +197,108 @@ const register = async (param) => {
     }
 };
 
+/**
+ * Logs in a user with the given email and password.
+ *
+ * @param {{ input: { email: string, password: string }, ipAddress: string, userAgent: string }} param
+ * @returns {Promise<{ error: AppError } | { input: UserTokensDto }>} The login result
+ */
+const login = async ({ input, ipAddress, userAgent }) => {
+    const { email, password } = input;
+
+    const foundUser = await User.findOne({ email }).select("+password");
+
+    if (
+        !foundUser ||
+        !(await foundUser.correctPassword(password, foundUser.password))
+    ) {
+        return {
+            error: new AppError("Invalid credentials", 400),
+        };
+    }
+
+    const accessToken = _signToken(foundUser);
+    // TODO: Can add session limit if need later
+    const userSession = await _createSession({
+        userId: foundUser._id,
+        ipAddress,
+        userAgent,
+    });
+
+    return {
+        data: new UserTokensDto({
+            accessToken: accessToken,
+            refreshToken: userSession.refreshToken,
+            refreshTokenExpirsAt: userSession.expiresAt,
+        }),
+    };
+};
+
+/**
+ * Refreshes the access token for the user specified in the `data` parameter.
+ * Verifies the refresh token and then creates a new one and updates the user
+ * session. Returns a new `UserTokensDto` with the new access token and
+ * refresh token.
+ *
+ * @param {{ data: { accessToken: string, refreshToken: string }, ipAddress: string, userAgent: string }} param
+ * @returns {Promise<{ data: UserTokensDto } | { error: AppError }>} The refreshed tokens or an AppError
+ */
+const refreshUserToken = async ({ data, ipAddress, userAgent }) => {
+    const { accessToken, refreshToken } = data;
+    const now = Date.now();
+
+    const payload = jwt.decode(accessToken);
+
+    if (!payload) {
+        return {
+            error: new AppError("Invalid access token", 400),
+        };
+    }
+
+    const userId = payload.sub;
+
+    const foundUser = await User.findById(userId);
+
+    if (!foundUser) {
+        return {
+            error: new AppError("User not found", 400),
+        };
+    }
+
+    const userSession = await UserSession.findOne({
+        userId,
+        refreshToken,
+        expiresAt: { $gt: now },
+    });
+
+    if (!userSession) {
+        return {
+            error: new AppError("Invalid refresh token", 401),
+        };
+    }
+
+    const newAccessToken = _signToken(foundUser);
+    const expiresAt =
+        Number(process.env.REFRESH_TOKEN_EXPIRES_IN) ||
+        REFRESH_TOKEN_EXPIRES_IN;
+    userSession.refreshToken = _createNewRefreshToken();
+    userSession.expiresAt = new Date(now + expiresAt * 1000);
+    userSession.ipAddress = ipAddress;
+    userSession.userAgent = userAgent;
+
+    await userSession.save();
+
+    return {
+        data: new UserTokensDto({
+            accessToken: newAccessToken,
+            refreshToken: userSession.refreshToken,
+            refreshTokenExpirsAt: userSession.expiresAt,
+        }),
+    };
+};
+
 module.exports = {
     register,
+    login,
+    refreshUserToken,
 };

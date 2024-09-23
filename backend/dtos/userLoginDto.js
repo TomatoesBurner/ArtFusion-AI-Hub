@@ -1,4 +1,6 @@
 const Joi = require("joi");
+const { userJoiSchema } = require("./userDto");
+const BaseDto = require("./baseDto");
 
 const userLoginJoiSchema = Joi.object({
     email: userJoiSchema.extract("email"),
@@ -12,12 +14,11 @@ class UserLoginDto extends BaseDto {
         this.password = data.password;
     }
 
-    static fromModel(user) {
-        return new UserLoginDto({
-            email: user.email,
-            password: user.password,
-        });
+    static fromRequest(data) {
+        return new UserLoginDto(data);
     }
+
+    static fromModel(user) {}
 
     toModel() {}
 }
