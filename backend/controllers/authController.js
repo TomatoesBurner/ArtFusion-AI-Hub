@@ -34,14 +34,21 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 //signup
-exports.signup = catchAsync(async (req, res) => {
-    // const data = await authService.register(req.body);
-    // if (data.error) {
-    //     next(data.error);
-    // }
+exports.signup = catchAsync(async (req, res, next) => {
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error } = await authService.register({
+        ...req.body,
+        ipAddress,
+        userAgent,
+    });
+
+    if (error) {
+        return next(error);
+    }
 
     res.status(200).json({
-        test: "test",
+        data: data,
     });
 });
 

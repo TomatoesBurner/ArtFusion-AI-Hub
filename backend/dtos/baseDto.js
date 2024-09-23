@@ -1,10 +1,16 @@
 class BaseDto {
-    static fromModel(data) {
-        this.id = data._id;
+    constructor(data) {
+        this.Id = data._id;
     }
 
+    static fromRequest(data) {}
+
+    static fromModel(data) {}
+
     toModel() {
-        return {};
+        return {
+            _id: this.Id,
+        };
     }
 }
 
