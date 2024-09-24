@@ -6,14 +6,19 @@ import React, { ReactNode } from "react";
 import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
 import ThemeWrapper from "@/themes/ThemeWrapper";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const BaseWrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <Provider store={store}>
-      <ThemeWrapper>
-        <SnackbarProvider /> {children}
-      </ThemeWrapper>
-    </Provider>
+    <GoogleOAuthProvider
+      clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+    >
+      <Provider store={store}>
+        <ThemeWrapper>
+          <SnackbarProvider /> {children}
+        </ThemeWrapper>
+      </Provider>
+    </GoogleOAuthProvider>
   );
 };
 

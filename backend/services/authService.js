@@ -9,6 +9,21 @@ const crypto = require("crypto");
 const { default: mongoose } = require("mongoose");
 const UserSession = require("../models/userSessionModel");
 const { UserTokensDto } = require("../dtos/userTokensDto");
+const { OAuth2Client } = require("google-auth-library");
+const { AUTH_METHOD } = require("../types/authMethodTypes");
+const { UserRegisterDto } = require("../dtos/userRegisterDto");
+const { generateUsername } = require("unique-username-generator");
+
+const client = new OAuth2Client();
+
+/**
+ * Generates a random password of length 20 bytes.
+ *
+ * @returns {string} The generated password
+ */
+const _generateRandomPassword = () => {
+    return crypto.randomBytes(20).toString("hex");
+};
 
 /**
  * Creates a JSON Web Token for the user specified in the `user` parameter.
@@ -46,6 +61,47 @@ const _signToken = (user) => {
     );
 };
 
+/**
+ * Generate a pair of the required tokens for the user. This includes an access
+ * token and a refresh token.
+ *
+ * User requires some data for creating access tokens
+ *
+ * @param {Object} user - The user object to generate the token pair for.
+ * @param {string} user._id - The user id
+ * @param {string} user.name - The user name
+ * @param {string} user.email - The user email
+ * @param {string} user.firstName - The user first name
+ * @param {string} user.lastName - The user last name
+ *
+ * @returns {Promise<{ data: UserTokensDto }>} The
+ * generated token pair or an AppError
+ */
+const _generateTokenPair = async ({ user, ipAddress, userAgent }) => {
+    const accessToken = _signToken(user);
+    // TODO: Can add session limit if need later
+    const userSession = await _createSession({
+        userId: user._id,
+        ipAddress,
+        userAgent,
+    });
+
+    return {
+        data: new UserTokensDto({
+            accessToken: accessToken,
+            refreshToken: userSession.refreshToken,
+            refreshTokenExpirsAt: userSession.expiresAt,
+        }),
+    };
+};
+
+/**
+ * Generates a new random refresh token.
+ *
+ * The token is a sha256 hash of a random UUID that is 64 bytes long it seems.
+ *
+ * @returns {string} The generated token
+ */
 const _createNewRefreshToken = () => {
     return crypto
         .createHash("sha256")
@@ -217,21 +273,11 @@ const login = async ({ input, ipAddress, userAgent }) => {
         };
     }
 
-    const accessToken = _signToken(foundUser);
-    // TODO: Can add session limit if need later
-    const userSession = await _createSession({
-        userId: foundUser._id,
+    return await _generateTokenPair({
+        user: foundUser,
         ipAddress,
         userAgent,
     });
-
-    return {
-        data: new UserTokensDto({
-            accessToken: accessToken,
-            refreshToken: userSession.refreshToken,
-            refreshTokenExpirsAt: userSession.expiresAt,
-        }),
-    };
 };
 
 /**
@@ -302,6 +348,7 @@ const refreshUserToken = async ({ data, ipAddress, userAgent }) => {
  *
  * This will set the found userSerssion's expiresAt to the current time
  *
+ *
  * @param {{ userId: string, refreshToken: string }} data
  * @returns {Promise<{ error: AppError } | {}}}
  */
@@ -327,9 +374,62 @@ const logout = async ({ data }) => {
     return {};
 };
 
+/**
+ * Will login user throug the providered oAuth credentials.
+ * Expected to have accessToken and a provider.
+ *
+ * New user is created if not exists with random password hashed and a random
+ * user name based on the name of the user from the provider.
+ *
+ * If user exists then will create app credentials for the user and return it.
+ *
+ * @param {{ accessToken: string, provider: AUTH_METHOD }} data
+ * @param {string} ipAddress The IP address of the request
+ * @param {string} userAgent The user agent of the request
+ * @returns {Promise<{ data: UserTokensDto } | { error: AppError}>}
+ */
+const oAuthLogin = async ({ data, ipAddress, userAgent }) => {
+    const { accessToken, provider } = data;
+
+    const user = new User();
+
+    if (provider == AUTH_METHOD.GOOGLE) {
+        const ticket = await client.verifyIdToken({
+            idToken: accessToken,
+            audience: "",
+        });
+        const payload = ticket.getPayload();
+        const userid = payload["sub"];
+        user.name = generateUsername(payload["name"] || "", 3);
+        user.email = payload["email"];
+        user.firstName = payload["given_name"];
+        user.lastName = payload["family_name"];
+        user.password = _generateRandomPassword();
+    } else if (provider == AUTH_METHOD.FACEBOOK) {
+        throw new Error("Not supported");
+    } else {
+        throw new Error("Not supported");
+    }
+
+    const foundUser = await User.findOne({ email: user.email });
+
+    if (!foundUser) {
+        return await register({
+            data: UserRegisterDto.fromModel(user),
+        });
+    }
+
+    return await _generateTokenPair({
+        user: foundUser,
+        ipAddress,
+        userAgent,
+    });
+};
+
 module.exports = {
     register,
     login,
     refreshUserToken,
     logout,
+    oAuthLogin,
 };

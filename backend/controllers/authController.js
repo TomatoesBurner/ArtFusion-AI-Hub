@@ -75,26 +75,28 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 // token refresh
-exports.tokenRefresh = catchAsync(async (req, res, next) => {
-    const ipAddress = req.ip;
-    const userAgent = req.get("User-Agent");
-    const { data, error } = await authService.refreshUserToken({
-        data: new TokenRefreshInputDto(req.body),
-        ipAddress,
-        userAgent,
-    });
+exports.tokenRefresh = catchAsync(
+    catchAsync(async (req, res, next) => {
+        const ipAddress = req.ip;
+        const userAgent = req.get("User-Agent");
+        const { data, error } = await authService.refreshUserToken({
+            data: new TokenRefreshInputDto(req.body),
+            ipAddress,
+            userAgent,
+        });
 
-    if (error) {
-        return next(error);
-    }
+        if (error) {
+            return next(error);
+        }
 
-    res.status(200).json({
-        data: data,
-    });
-});
+        res.status(200).json({
+            data: data,
+        });
+    })
+);
 
 //logout
-exports.logout = async (req, res, next) => {
+exports.logout = catchAsync(async (req, res, next) => {
     const token = req.params.token;
 
     if (!token) {
@@ -115,7 +117,22 @@ exports.logout = async (req, res, next) => {
     }
 
     res.status(200).json({ status: "success", message: "Logged out" });
-};
+});
+
+// OAuth login
+exports.oAuthLogin = catchAsync(async (req, res, next) => {
+    const { data, error } = await authService.oAuthLogin({
+        data: new TokenRefreshInputDto(req.body),
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({
+        data: data,
+    });
+});
 
 /**
  * Middleware to protect routes and ensure the user is authenticated.

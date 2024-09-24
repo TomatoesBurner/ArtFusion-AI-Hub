@@ -5,6 +5,7 @@ const { reqDataValidate } = require("../middlewares/validationMiddleware");
 const { userRegisterJoiSchema } = require("../dtos/userRegisterDto");
 const { userLoginJoiSchema } = require("../dtos/userLoginDto");
 const { tokenRefreshJoiSchema } = require("../dtos/tokenRefreshInputDto");
+const { oAuthLoginJoiSchema } = require("../dtos/oAuthLoginDto");
 
 const router = express.Router();
 
@@ -25,6 +26,12 @@ router.post(
     "/tokenRefresh",
     reqDataValidate(tokenRefreshJoiSchema),
     authController.tokenRefresh
+);
+
+router.post(
+    "/oAuthLogin",
+    reqDataValidate(oAuthLoginJoiSchema),
+    authController.oAuthLogin
 );
 
 router.post("/forgetPassword", authController.forgotPassword);
