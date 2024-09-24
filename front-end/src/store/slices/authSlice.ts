@@ -47,3 +47,4 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+export const authSliceActions = slice.actions;

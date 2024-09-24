@@ -1,4 +1,8 @@
 import { PaletteColorOptions } from "@mui/material";
+import {
+  Palette as MuiPallete,
+  PaletteOptions as MuiPaletteOptions,
+} from "@mui/material/styles/createPalette";
 
 // declare module "@mui/material/styles" {
 //   interface CustomPalette {
@@ -23,5 +27,33 @@ declare module "@mui/material/Button" {
     cGrey: true;
     cGreyBlack: true;
     cBlack: true;
+  }
+}
+
+type MuiPaletteColor = {
+  light: string;
+  main: string;
+  dark: string;
+};
+
+declare module "@mui/material/styles/createPalette" {
+  interface Palette extends MuiPallete {
+    cLightBlue: MuiPaletteColor;
+    cGold: MuiPaletteColor;
+    cBlueGrey: MuiPaletteColor;
+    cWhiteGrey: MuiPaletteColor;
+    cGrey: MuiPaletteColor;
+    cGreyBlack: MuiPaletteColor;
+    cBlack: MuiPaletteColor;
+  }
+
+  interface PaletteOptions extends MuiPaletteOptions {
+    cLightBlue: MuiPaletteColor;
+    cGold: MuiPaletteColor;
+    cBlueGrey: MuiPaletteColor;
+    cWhiteGrey: MuiPaletteColor;
+    cGrey: MuiPaletteColor;
+    cGreyBlack: MuiPaletteColor;
+    cBlack: MuiPaletteColor;
   }
 }

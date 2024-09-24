@@ -21,12 +21,12 @@ const RegisterView = () => {
         <Typography variant="body1" sx={{ mb: 4 }}>
           {"Already have an account? "}
           <Link
-            href="/signup"
+            href="/login"
             component={NextLink}
             underline="none"
             color={"cGold.main"}
           >
-            Sign up for free
+            Sign In
           </Link>
         </Typography>
 

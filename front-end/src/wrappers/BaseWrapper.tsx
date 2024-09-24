@@ -8,6 +8,7 @@ import { SnackbarProvider } from "notistack";
 import ThemeWrapper from "@/themes/ThemeWrapper";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CssBaseline } from "@mui/material";
 
 const BaseWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -16,6 +17,7 @@ const BaseWrapper = ({ children }: { children: ReactNode }) => {
     >
       <Provider store={store}>
         <ThemeWrapper>
+          <CssBaseline />
           <AuthProvider>
             <SnackbarProvider /> {children}
           </AuthProvider>
