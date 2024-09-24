@@ -8,4 +8,11 @@ export const APP_PATH = {
   CREATE_IMAGES: "/images/create",
 };
 
+export const localStorageKey = {
+  accessToken: "accessToken",
+  accessTokenExpiresAt: "accessTokenExpiresAt",
+  refreshToken: "refreshToken",
+  refreshTokenExpiresAt: "refreshTokenExpiresAt",
+};
+
 export const APP_NAME = "GTL Studio";
