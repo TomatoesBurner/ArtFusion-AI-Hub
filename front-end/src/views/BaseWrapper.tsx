@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
 import ThemeWrapper from "@/themes/ThemeWrapper";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const BaseWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -15,7 +16,9 @@ const BaseWrapper = ({ children }: { children: ReactNode }) => {
     >
       <Provider store={store}>
         <ThemeWrapper>
-          <SnackbarProvider /> {children}
+          <AuthProvider>
+            <SnackbarProvider /> {children}
+          </AuthProvider>
         </ThemeWrapper>
       </Provider>
     </GoogleOAuthProvider>
