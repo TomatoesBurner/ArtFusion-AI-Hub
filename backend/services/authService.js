@@ -396,7 +396,7 @@ const oAuthLogin = async ({ data, ipAddress, userAgent }) => {
     if (provider == AUTH_METHOD.GOOGLE) {
         const ticket = await client.verifyIdToken({
             idToken: accessToken,
-            audience: "",
+            audience: process.env.DEV_GOOGLE_CLIENT_ID,
         });
         const payload = ticket.getPayload();
         const userid = payload["sub"];
