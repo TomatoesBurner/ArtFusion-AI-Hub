@@ -1,6 +1,8 @@
 class BaseDto {
     constructor(data) {
-        this.Id = data._id;
+        if (data) {
+            this.Id = data._id;
+        }
     }
 
     static fromRequest(data) {}

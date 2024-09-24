@@ -383,15 +383,19 @@ const logout = async ({ data }) => {
  *
  * If user exists then will create app credentials for the user and return it.
  *
- * @param {{ accessToken: string, provider: AUTH_METHOD }} data
+ * @param {{ accessToken: string, provider: AUTH_METHOD }} input
  * @param {string} ipAddress The IP address of the request
  * @param {string} userAgent The user agent of the request
- * @returns {Promise<{ data: UserTokensDto } | { error: AppError}>}
+ * @returns {Promise<{ input: UserTokensDto } | { error: AppError}>}
  */
-const oAuthLogin = async ({ data, ipAddress, userAgent }) => {
-    const { accessToken, provider } = data;
+const oAuthLogin = async ({ input, ipAddress, userAgent }) => {
+    const { accessToken, provider } = input;
 
     const user = new User();
+
+    console.log("input", input);
+
+    console.log("provider", provider);
 
     if (provider == AUTH_METHOD.GOOGLE) {
         const ticket = await client.verifyIdToken({

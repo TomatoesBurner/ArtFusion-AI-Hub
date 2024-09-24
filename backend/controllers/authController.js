@@ -8,6 +8,7 @@ const authService = require("../services/authService");
 const { UserLoginDto } = require("../dtos/userLoginDto");
 const { UserRegisterDto } = require("../dtos/userRegisterDto");
 const { TokenRefreshInputDto } = require("../dtos/tokenRefreshInputDto");
+const { OAuthLoginDto } = require("../dtos/oAuthLoginDto");
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -122,7 +123,9 @@ exports.logout = catchAsync(async (req, res, next) => {
 // OAuth login
 exports.oAuthLogin = catchAsync(async (req, res, next) => {
     const { data, error } = await authService.oAuthLogin({
-        data: new TokenRefreshInputDto(req.body),
+        input: new OAuthLoginDto(req.body),
+        ipAddress: req.ip,
+        userAgent: req.get("User-Agent"),
     });
 
     if (error) {
