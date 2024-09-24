@@ -4,7 +4,8 @@ const BaseDto = require("./baseDto");
 const { AUTH_METHOD_VALUES } = require("../types/authMethodTypes");
 
 const oAuthLoginJoiSchema = Joi.object({
-    accessToken: Joi.string().required(),
+    // accessToken: Joi.string().required(),
+    googleAuthCode: Joi.string(),
     provider: Joi.string()
         .valid(...AUTH_METHOD_VALUES)
         .required(),
@@ -13,7 +14,7 @@ const oAuthLoginJoiSchema = Joi.object({
 class OAuthLoginDto extends BaseDto {
     constructor(data) {
         super(data);
-        this.accessToken = data.accessToken;
+        this.googleAuthCode = data.googleAuthCode;
         this.provider = data.provider;
     }
 

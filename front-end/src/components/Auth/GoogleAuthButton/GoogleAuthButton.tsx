@@ -2,14 +2,7 @@
 
 import { Google } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
-import {
-  CredentialResponse,
-  GoogleLogin,
-  googleLogout,
-  TokenResponse,
-  useGoogleLogin,
-} from "@react-oauth/google";
-import axios from "axios";
+import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import React from "react";
 
 const GoogleAuthButton = () => {
@@ -17,31 +10,15 @@ const GoogleAuthButton = () => {
     onSuccess: (credentialResponse) => {
       handleLoginSuccess(credentialResponse);
     },
+
     onError: () => {
       handleLoginFail();
     },
+    flow: "auth-code",
   });
 
-  const handleLoginSuccess = (credentialResponse: TokenResponse) => {
-    if (credentialResponse) {
-      axios
-        .get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${credentialResponse.access_token}`,
-          {
-            headers: {
-              Authorization: `Bearer ${credentialResponse.access_token}`,
-              Accept: "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          console.log("res", res);
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          googleLogout();
-        });
-    }
+  const handleLoginSuccess = (credentialResponse: CodeResponse) => {
+    console.log("credentialResponse", credentialResponse);
   };
 
   const handleLoginFail = () => {};

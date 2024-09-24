@@ -13,8 +13,14 @@ const { OAuth2Client } = require("google-auth-library");
 const { AUTH_METHOD } = require("../types/authMethodTypes");
 const { UserRegisterDto } = require("../dtos/userRegisterDto");
 const { generateUsername } = require("unique-username-generator");
+const { default: axios } = require("axios");
 
-const client = new OAuth2Client();
+const googleAuthClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    // "http://localhost:3000"
+    process.env.CLIENT_APP_URL
+);
 
 /**
  * Generates a random password of length 20 bytes.
@@ -389,26 +395,30 @@ const logout = async ({ data }) => {
  * @returns {Promise<{ input: UserTokensDto } | { error: AppError}>}
  */
 const oAuthLogin = async ({ input, ipAddress, userAgent }) => {
-    const { accessToken, provider } = input;
+    const { provider } = input;
 
     const user = new User();
 
-    console.log("input", input);
-
-    console.log("provider", provider);
-
     if (provider == AUTH_METHOD.GOOGLE) {
-        const ticket = await client.verifyIdToken({
-            idToken: accessToken,
-            audience: process.env.DEV_GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
-        const userid = payload["sub"];
-        user.name = generateUsername(payload["name"] || "", 3);
-        user.email = payload["email"];
-        user.firstName = payload["given_name"];
-        user.lastName = payload["family_name"];
-        user.password = _generateRandomPassword();
+        try {
+            const code = input.googleAuthCode;
+
+            if (!code) {
+                throw new Error("Invalid google code");
+            }
+
+            const { tokens } = await googleAuthClient.getToken(code);
+
+            const payload = jwt.decode(tokens.id_token);
+            const userid = payload["sub"];
+            user.name = generateUsername(payload["name"] || "", 3);
+            user.email = payload["email"];
+            user.firstName = payload["given_name"];
+            user.lastName = payload["family_name"];
+            user.password = _generateRandomPassword();
+        } catch (error) {
+            throw new Error("Failed to authenticate with google");
+        }
     } else if (provider == AUTH_METHOD.FACEBOOK) {
         throw new Error("Not supported");
     } else {
