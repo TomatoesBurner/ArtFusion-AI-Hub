@@ -4,13 +4,18 @@ const BaseDto = require("./baseDto");
 // Retrieved below regex from ChatGPT
 // Date: 23/09/2024
 const userJoiSchema = Joi.object({
-    name: Joi.string().max(50).pattern(/^\S*$/).required().messages({
+    name: Joi.string().min(3).max(50).pattern(/^\S*$/).required().messages({
         "string.pattern.base": '"name" must not contain spaces',
     }),
-    firstName: Joi.string().max(50).pattern(/^\S*$/).required().messages({
-        "string.pattern.base": '"firstName" must not contain spaces',
-    }),
-    lastName: Joi.string().max(50).pattern(/^\S*$/).required().messages({
+    firstName: Joi.string()
+        .min(2)
+        .max(50)
+        .pattern(/^\S*$/)
+        .required()
+        .messages({
+            "string.pattern.base": '"firstName" must not contain spaces',
+        }),
+    lastName: Joi.string().min(2).max(50).pattern(/^\S*$/).required().messages({
         "string.pattern.base": '"lastName" must not contain spaces',
     }),
     email: Joi.string().email().required(),

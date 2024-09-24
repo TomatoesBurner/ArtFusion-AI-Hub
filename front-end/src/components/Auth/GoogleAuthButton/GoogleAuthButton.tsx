@@ -1,11 +1,13 @@
 "use client";
 
 import { Google } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
+import { Box, Button, ButtonProps } from "@mui/material";
 import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import React from "react";
 
-const GoogleAuthButton = () => {
+type GoogleAuthButtonProps = {} & ButtonProps;
+
+const GoogleAuthButton = ({ children, ...others }: GoogleAuthButtonProps) => {
   const googleLogin = useGoogleLogin({
     onSuccess: (credentialResponse) => {
       handleLoginSuccess(credentialResponse);
@@ -39,6 +41,7 @@ const GoogleAuthButton = () => {
       fullWidth
       sx={{ mb: 1 }}
       onClick={() => googleLogin()}
+      {...others}
     >
       Log in with Google
     </Button>

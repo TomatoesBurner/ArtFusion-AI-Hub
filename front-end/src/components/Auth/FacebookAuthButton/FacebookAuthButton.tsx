@@ -1,10 +1,15 @@
 "use client";
 
 import { Instagram } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
 import React from "react";
 
-const FacebookAuthButton = () => {
+type FacebookAuthButtonProps = {} & ButtonProps;
+
+const FacebookAuthButton = ({
+  children,
+  ...others
+}: FacebookAuthButtonProps) => {
   return (
     <Button
       variant="outlined"
@@ -12,6 +17,8 @@ const FacebookAuthButton = () => {
       startIcon={<Instagram />}
       fullWidth
       sx={{ mb: 2 }}
+      disabled
+      {...others}
     >
       Log in with Facebook
     </Button>

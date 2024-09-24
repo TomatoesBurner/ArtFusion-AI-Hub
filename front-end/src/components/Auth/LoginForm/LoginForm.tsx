@@ -38,6 +38,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
     <form onSubmit={formik.handleSubmit}>
       <TextField
         variant="outlined"
+        size="small"
         id="email"
         name="email"
         label="Email"
@@ -52,6 +53,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       />
       <TextField
         variant="outlined"
+        size="small"
         id="password"
         name="password"
         type="password"
@@ -67,7 +69,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       />
       <Button
         variant="contained"
-        size="large"
+        size="medium"
         fullWidth
         color="cGold"
         type="submit"
