@@ -188,7 +188,12 @@ const _createSession = async ({ userId, ipAddress, userAgent }, session) => {
  * @param {{ input: UserRegisterDto, ipAddress: string, userAgent: string }} param
  * @returns {Promise<{ input: UserTokensDto } | { error: AppError}>}
  */
-const register = async ({ input, ipAddress, userAgent }) => {
+const register = async ({
+    input,
+    ipAddress,
+    userAgent,
+    provider = AUTH_METHOD.EMAIL,
+}) => {
     const { name, email, firstName, lastName, password } = input;
 
     const foundUser = await User.findOne({ email });
@@ -217,6 +222,8 @@ const register = async ({ input, ipAddress, userAgent }) => {
             lastName,
             email,
             password,
+            registerMethod: provider,
+            lastLoginAt: new Date(),
         });
         await newUser.save({ session });
 
@@ -278,6 +285,10 @@ const login = async ({ input, ipAddress, userAgent }) => {
             error: new AppError("Invalid credentials", 400),
         };
     }
+
+    foundUser.lastLoginAt = Date.now();
+
+    await foundUser.save();
 
     return await _generateTokenPair({
         user: foundUser,
@@ -430,8 +441,15 @@ const oAuthLogin = async ({ input, ipAddress, userAgent }) => {
     if (!foundUser) {
         return await register({
             input: UserRegisterDto.fromModel(user),
+            ipAddress: ipAddress,
+            userAgent: userAgent,
+            provider: AUTH_METHOD.GOOGLE,
         });
     }
+
+    foundUser.lastLoginAt = Date.now();
+
+    await foundUser.save();
 
     return await _generateTokenPair({
         user: foundUser,
@@ -440,10 +458,42 @@ const oAuthLogin = async ({ input, ipAddress, userAgent }) => {
     });
 };
 
+const userMe = async ({ userId }) => {
+    const foundUser = await User.findById(userId);
+
+    if (!foundUser) {
+        return {
+            error: new AppError("User not found", 400),
+        };
+    }
+
+    const ips = await PromptSpace.findOne({
+        createdBy: userId,
+        type: PROMPT_SPACE_TYPE.Image,
+    });
+
+    const vps = await PromptSpace.findOne({
+        createdBy: userId,
+        type: PROMPT_SPACE_TYPE.Video,
+    });
+
+    const userMeDto = new UserMeDto({
+        ...foundUser._doc,
+        userId: foundUser._id,
+        imagePromptSpaceId: ips?._id,
+        videoPromptSpaceId: vps?._id,
+    });
+
+    return {
+        data: userMeDto,
+    };
+};
+
 module.exports = {
     register,
     login,
     refreshUserToken,
     logout,
     oAuthLogin,
+    userMe,
 };

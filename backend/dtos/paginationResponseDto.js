@@ -1,5 +1,8 @@
-class PaginationResponse extends BaseNoIdDto {
+const { BaseNoIdDto } = require("./baseNoIdDto");
+
+class PaginationResponseDto extends BaseNoIdDto {
     constructor(data) {
+        super();
         this.cursor = data.cursor;
         this.limit = data.limit;
         this.hasNext = data.hasNext;
@@ -7,5 +10,5 @@ class PaginationResponse extends BaseNoIdDto {
 }
 
 module.exports = {
-    PaginationResponse,
+    PaginationResponseDto,
 };

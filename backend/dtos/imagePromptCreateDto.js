@@ -1,8 +1,9 @@
 const Joi = require("joi");
+const { BaseNoIdDto } = require("./baseNoIdDto");
 
 const imagePromptCreateJoiSchema = Joi.object({
-    width: Joi.number().min(20).max(1024).required(),
-    height: Joi.number().min(20).max(1024).required(),
+    width: Joi.number().multiple(8).min(20).max(1024).required(),
+    height: Joi.number().multiple(8).min(20).max(1024).required(),
     dpi: Joi.number().required(),
     aspectRatio: Joi.string()
         .pattern(/^[0-9]+:[0-9]+$/)
@@ -13,6 +14,7 @@ const imagePromptCreateJoiSchema = Joi.object({
 
 class ImagePromptCreateDto extends BaseNoIdDto {
     constructor(data) {
+        super();
         this.width = data.width;
         this.height = data.height;
         this.dpi = data.dpi;

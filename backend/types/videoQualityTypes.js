@@ -1,4 +1,4 @@
-export const VIDEO_QUALITY = {
+const VIDEO_QUALITY = {
     LOW: "low",
     MEDIUM: "medium",
     HIGH: "high",

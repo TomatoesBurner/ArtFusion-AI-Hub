@@ -1,4 +1,4 @@
-export const VIDEO_EXTENSION = {
+const VIDEO_EXTENSION = {
     MP4: "mp4",
     AVI: "avi",
     MKV: "mkv",

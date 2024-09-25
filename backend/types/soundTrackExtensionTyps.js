@@ -1,4 +1,4 @@
-export const SOUND_TRACK_EXTENSION = {
+const SOUND_TRACK_EXTENSION = {
     MP3: "mp3",
     WAV: "wav",
     FLAC: "flac",

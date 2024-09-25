@@ -8,4 +8,6 @@ class BaseNoIdDto {
     toModel() {}
 }
 
-module.exports = BaseNoIdDto;
+module.exports = {
+    BaseNoIdDto,
+};

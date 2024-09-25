@@ -9,15 +9,15 @@ const router = express.Router();
 
 // /:ipsId/image-prompts?cursor="123"&limit=10
 router.get(
-    "/:ipsId/image-prompts",
-    reqDataValidate(paginationInputJoiSchema, "query"),
+    "/:ipsId/imagePrompts",
     authController.protect,
+    reqDataValidate(paginationInputJoiSchema, "query"),
     imagePromptController.getAllImagePrompts
 );
 router.post(
-    "/:ipsId/image-prompts",
-    reqDataValidate(imagePromptCreateJoiSchema),
+    "/:ipsId/imagePrompts",
     authController.protect,
+    reqDataValidate(imagePromptCreateJoiSchema),
     imagePromptController.createImagePrompt
 );
 

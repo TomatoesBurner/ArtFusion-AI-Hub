@@ -1,12 +1,15 @@
-const { catchAsync } = require("../utils/catchAsync.js");
+const catchAsync = require("../utils/catchAsync.js");
 const imagePromptService = require("../services/imagePromptService.js");
-const { ImagePromptCreateDto } = require("../dtos/imagePromptCreateDto.js");
-const { GetAllImagePromptsInputDto } = require("../dtos/imagePromptDto.js");
 
 const getAllImagePrompts = catchAsync(async (req, res, next) => {
-    const { data, error } = await imagePromptService.getAllImagePrompts({
-        input: GetAllImagePromptsInputDto.fromRequest(req.query),
-    });
+    const { data, error, pagination } =
+        await imagePromptService.getAllImagePrompts({
+            input: {
+                ...req.query,
+            },
+            userId: req.user._id,
+            ipsId: req.params.ipsId,
+        });
 
     if (error) {
         return next(error);
@@ -14,12 +17,15 @@ const getAllImagePrompts = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         data: data,
+        pagination: pagination,
     });
 });
 
 const createImagePrompt = catchAsync(async (req, res, next) => {
     const { data, error } = await imagePromptService.createImagePrompt({
-        input: ImagePromptCreateDto.fromRequest(req.body),
+        input: req.body,
+        ipsId: req.params.ipsId,
+        userId: req.user._id,
     });
 
     if (error) {

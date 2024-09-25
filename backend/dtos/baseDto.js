@@ -1,7 +1,10 @@
+const { BaseNoIdDto } = require("./baseNoIdDto");
+
 class BaseDto extends BaseNoIdDto {
     constructor(data) {
+        super();
         if (data) {
-            this.Id = data._id;
+            this.id = data._id;
         }
     }
 
@@ -11,7 +14,7 @@ class BaseDto extends BaseNoIdDto {
 
     toModel() {
         return {
-            _id: this.Id,
+            _id: this.id,
         };
     }
 }

@@ -1,8 +1,9 @@
 const Joi = require("joi");
+const { BaseNoIdDto } = require("./baseNoIdDto");
 
 const paginationInputJoiSchemaObj = {
-    cursor: Joi.string().required(),
-    limit: Joi.number().min(1).max(100).required(),
+    cursor: Joi.string().min(1).max(255),
+    limit: Joi.number().min(1).max(100),
 };
 
 const paginationInputJoiSchema = Joi.object({
@@ -11,8 +12,9 @@ const paginationInputJoiSchema = Joi.object({
 
 class PaginationInputDto extends BaseNoIdDto {
     constructor(data) {
-        this.cursor = data.cursor;
-        this.limit = data.limit;
+        super();
+        this.cursor = data?.cursor || null;
+        this.limit = data?.limit || 10;
     }
 
     static fromRequest(data) {

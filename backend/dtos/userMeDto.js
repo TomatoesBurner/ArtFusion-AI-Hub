@@ -1,22 +1,19 @@
 const BaseDto = require("./baseDto");
-const jwt = require("jsonwebtoken");
-const { TokenDto } = require("./tokenDto");
 
 class UserMeDto extends BaseDto {
     constructor(data) {
         super(data);
-        const { userId, accessToken, refreshToken, refreshTokenExpirsAt } =
-            data;
-        const accessTokenPayload = jwt.decode(accessToken);
-        this.userId = userId;
-        this.accessToken = new TokenDto({
-            token: accessToken,
-            expiresAt: new Date(accessTokenPayload * 1000),
-        });
-        this.refreshToken = new TokenDto({
-            token: refreshToken,
-            expiresAt: refreshTokenExpirsAt,
-        });
+        this.userId = data.userId;
+        this.name = data.name;
+        this.firstName = data.firstName;
+        this.lastName = data.lastName;
+        this.email = data.email;
+        this.registerMethod = data.registerMethod;
+        this.themeMode = data.themeMode;
+        this.joinedAt = data.joinedAt;
+        this.lastLoginAt = data.lastLoginAt;
+        this.imagePromptSpaceId = data.imagePromptSpaceId;
+        this.videoPromptSpaceId = data.videoPromptSpaceId;
     }
 }
 

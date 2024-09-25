@@ -1,4 +1,4 @@
-export const IMAGE_PROMPT_MODEL = {
+const IMAGE_PROMPT_MODEL = {
     Animate: "animate",
     AbstractArt: "abstract art",
     OilPaintingStyle: "oil painting style",
