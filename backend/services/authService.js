@@ -411,7 +411,7 @@ const oAuthLogin = async ({ input, ipAddress, userAgent }) => {
 
             const payload = jwt.decode(tokens.id_token);
             const userid = payload["sub"];
-            user.name = generateUsername(payload["name"] || "", 3);
+            user.name = generateUsername("", 3, 12, payload["name"] || "");
             user.email = payload["email"];
             user.firstName = payload["given_name"];
             user.lastName = payload["family_name"];
@@ -429,7 +429,7 @@ const oAuthLogin = async ({ input, ipAddress, userAgent }) => {
 
     if (!foundUser) {
         return await register({
-            data: UserRegisterDto.fromModel(user),
+            input: UserRegisterDto.fromModel(user),
         });
     }
 

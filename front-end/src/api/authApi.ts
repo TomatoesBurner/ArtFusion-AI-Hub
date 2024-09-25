@@ -24,7 +24,7 @@ export class AuthApi {
   }
 
   public static async oAuthLogin(oAuthLoginDto: OAuthLoginDto) {
-    return (await nonAuthAppApi.post("/users/oauth/login", oAuthLoginDto))
+    return (await nonAuthAppApi.post("/users/oAuthLogin", oAuthLoginDto))
       .data as { data: UserTokensDto };
   }
 }

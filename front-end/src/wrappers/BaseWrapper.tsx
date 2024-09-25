@@ -24,6 +24,7 @@ const BaseWrapper = ({ children }: { children: ReactNode }) => {
             <CssBaseline />
             <AuthProvider>
               <SnackbarProvider
+                autoHideDuration={3000}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
               />{" "}
               {children}
