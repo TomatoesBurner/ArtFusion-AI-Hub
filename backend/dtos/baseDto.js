@@ -1,4 +1,4 @@
-class BaseDto {
+class BaseDto extends BaseNoIdDto {
     constructor(data) {
         if (data) {
             this.Id = data._id;
