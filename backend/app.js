@@ -19,7 +19,7 @@ const app = express();
 // CORS configuration
 app.use(
     cors({
-        origin: "http://localhost:3001", // Allow your frontend to access the backend
+        origin: "*", // Allow your frontend to access the backend
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
         allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
     })

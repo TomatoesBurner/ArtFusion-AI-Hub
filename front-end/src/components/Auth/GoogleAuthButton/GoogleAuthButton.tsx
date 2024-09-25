@@ -1,13 +1,19 @@
 "use client";
 
 import { Google } from "@mui/icons-material";
-import { Box, Button, ButtonProps } from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
 import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import React from "react";
 
-type GoogleAuthButtonProps = {} & ButtonProps;
+type GoogleAuthButtonProps = {
+  onAuthSuccess: (codeResponse: CodeResponse) => void;
+} & ButtonProps;
 
-const GoogleAuthButton = ({ children, ...others }: GoogleAuthButtonProps) => {
+const GoogleAuthButton = ({
+  children,
+  onAuthSuccess,
+  ...others
+}: GoogleAuthButtonProps) => {
   const googleLogin = useGoogleLogin({
     onSuccess: (credentialResponse) => {
       handleLoginSuccess(credentialResponse);
@@ -20,7 +26,7 @@ const GoogleAuthButton = ({ children, ...others }: GoogleAuthButtonProps) => {
   });
 
   const handleLoginSuccess = (credentialResponse: CodeResponse) => {
-    console.log("credentialResponse", credentialResponse);
+    onAuthSuccess(credentialResponse);
   };
 
   const handleLoginFail = () => {};

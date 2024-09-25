@@ -9,6 +9,9 @@ import ThemeWrapper from "@/themes/ThemeWrapper";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CssBaseline } from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const BaseWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -16,12 +19,14 @@ const BaseWrapper = ({ children }: { children: ReactNode }) => {
       clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
     >
       <Provider store={store}>
-        <ThemeWrapper>
-          <CssBaseline />
-          <AuthProvider>
-            <SnackbarProvider /> {children}
-          </AuthProvider>
-        </ThemeWrapper>
+        <QueryClientProvider client={queryClient}>
+          <ThemeWrapper>
+            <CssBaseline />
+            <AuthProvider>
+              <SnackbarProvider /> {children}
+            </AuthProvider>
+          </ThemeWrapper>
+        </QueryClientProvider>
       </Provider>
     </GoogleOAuthProvider>
   );

@@ -8,9 +8,61 @@ import ClientRegisterForm, {
 } from "@/components/ClientRegisterForm";
 import GoogleAuthButton from "@/components/Auth/GoogleAuthButton/GoogleAuthButton";
 import FacebookAuthButton from "@/components/Auth/FacebookAuthButton/FacebookAuthButton";
+import useAuth from "@/hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import { AuthApi } from "@/api/authApi";
+import { AUTH_METHOD } from "@/utils/constant";
+import { enqueueSnackbar } from "notistack";
+import { CodeResponse } from "@react-oauth/google";
 
 const RegisterView = () => {
-  const handleRegisterFormSubmit = (values: TRegisterValues) => {};
+  const { register, login } = useAuth();
+  const { isPending: oAuthGooglePending, mutate: oAuthGoogleLoginMutate } =
+    useMutation({
+      mutationFn: AuthApi.oAuthLogin,
+    });
+  const { isPending: registerPending, mutate: registerMutate } = useMutation({
+    mutationFn: AuthApi.register,
+  });
+
+  const handleRegisterFormSubmit = (values: TRegisterValues) => {
+    registerMutate(
+      {
+        name: values.username,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: (data) => {
+          register(data.data);
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to register", { variant: "error" });
+        },
+      }
+    );
+  };
+
+  const handleGoogleAuthSuccess = (codeResponse: CodeResponse) => {
+    oAuthGoogleLoginMutate(
+      {
+        googleAuthCode: codeResponse.code,
+        provider: AUTH_METHOD.GOOGLE,
+      },
+      {
+        onSuccess: (data) => {
+          login(data.data);
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to login with google", { variant: "error" });
+        },
+      }
+    );
+  };
+
+  const anyLoading = oAuthGooglePending || registerPending;
 
   return (
     <Stack height={"100%"} alignItems={"center"} alignContent={"center"}>
@@ -43,7 +95,7 @@ const RegisterView = () => {
           <Divider sx={{ my: 2 }}>OR</Divider>
 
           {/* External Auth */}
-          <GoogleAuthButton />
+          <GoogleAuthButton onAuthSuccess={handleGoogleAuthSuccess} />
           <FacebookAuthButton />
         </Paper>
       </Stack>

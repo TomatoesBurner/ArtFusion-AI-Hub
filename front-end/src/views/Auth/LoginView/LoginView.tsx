@@ -1,19 +1,59 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import { Typography, Stack, Link, Paper, Divider } from "@mui/material";
 import GoogleAuthButton from "@/components/Auth/GoogleAuthButton/GoogleAuthButton";
 import FacebookAuthButton from "@/components/Auth/FacebookAuthButton/FacebookAuthButton";
 import LoginForm, { TLoginValues } from "@/components/Auth/LoginForm/LoginForm";
+import useAuth from "@/hooks/useAuth";
+import { AuthApi } from "@/api/authApi";
+import { useMutation } from "@tanstack/react-query";
+import { enqueueSnackbar } from "notistack";
+import { CodeResponse } from "@react-oauth/google";
+import { AUTH_METHOD } from "@/utils/constant";
 
 const LoginView = () => {
-  const router = useRouter();
+  const { isPending: oAuthGooglePending, mutate: oAuthGoogleLoginMutate } =
+    useMutation({
+      mutationFn: AuthApi.oAuthLogin,
+    });
+  const { isPending: loginPending, mutate: loginMutate } = useMutation({
+    mutationFn: AuthApi.login,
+  });
+
+  const { login } = useAuth();
 
   const handleLoginFormSubmit = (values: TLoginValues) => {
-    console.log("Login form values:", values);
+    loginMutate(values, {
+      onSuccess: (data) => {
+        login(data.data);
+      },
+      onError: () => {
+        enqueueSnackbar("Invalid credentials", { variant: "error" });
+      },
+    });
   };
+
+  const handleGoogleAuthSuccess = (codeResponse: CodeResponse) => {
+    oAuthGoogleLoginMutate(
+      {
+        googleAuthCode: codeResponse.code,
+        provider: AUTH_METHOD.GOOGLE,
+      },
+      {
+        onSuccess: (data) => {
+          login(data.data);
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to login with google", { variant: "error" });
+        },
+      }
+    );
+  };
+
+  const anyLoading = loginPending || oAuthGooglePending;
 
   return (
     <Stack height={"100%"} alignItems={"center"} alignContent={"center"}>
@@ -51,7 +91,7 @@ const LoginView = () => {
           <Divider sx={{ my: 2 }}>OR</Divider>
 
           {/* External Auth */}
-          <GoogleAuthButton />
+          <GoogleAuthButton onAuthSuccess={handleGoogleAuthSuccess} />
           <FacebookAuthButton />
 
           {/* TODO: forgot password page */}

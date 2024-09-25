@@ -1,16 +1,33 @@
 import { TokenDto } from "@/dtos/TokenDto";
 import { createSlice } from "@reduxjs/toolkit";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+type TAuthUser = {
+  userId: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+};
 
 type AuthSliceState = {
-  initalised: boolean;
-  userId: string | null;
+  initialised: boolean;
+  loggedIn: boolean;
+  user: TAuthUser;
   accessToken: TokenDto | null;
   refreshToken: TokenDto | null;
 };
 
 const initialState: AuthSliceState = {
-  initalised: false,
-  userId: null,
+  initialised: false,
+  loggedIn: false,
+  user: {
+    userId: "",
+    name: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+  },
   accessToken: null,
   refreshToken: null,
 };
@@ -21,11 +38,37 @@ const slice = createSlice({
   reducers: {
     setInitialised: (state, action: { payload: { initialised: boolean } }) => {
       const { initialised } = action.payload;
-      state.initalised = initialised;
+      state.initialised = initialised;
     },
-    setUserId: (state, action: { payload: { userId: string } }) => {
-      const { userId } = action.payload;
-      state.userId = userId;
+    setLoggedIn: (state, action: { payload: { loggedIn: boolean } }) => {
+      const { loggedIn } = action.payload;
+      state.loggedIn = loggedIn;
+    },
+    setUser: (state, action: { payload: { user: TAuthUser } }) => {
+      const { user } = action.payload;
+      state.user = user;
+    },
+    setUserTokens: (
+      state,
+      action: {
+        payload: {
+          accessToken: TokenDto;
+          refreshToken: TokenDto;
+          userId: string;
+        };
+      }
+    ) => {
+      const { accessToken, refreshToken } = action.payload;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+      const payload = jwtDecode(accessToken.token) as JwtPayload & TAuthUser;
+      state.user = {
+        userId: payload.sub || "",
+        name: payload.name || "",
+        firstName: payload.firstName || "",
+        lastName: payload.lastName || "",
+        email: payload.email || "",
+      };
     },
     setAccessToken: (state, action: { payload: { accessToken: TokenDto } }) => {
       const { accessToken } = action.payload;

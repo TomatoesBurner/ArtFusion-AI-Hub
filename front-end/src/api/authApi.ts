@@ -1,23 +1,30 @@
 import { UserLoginDto } from "@/dtos/UserLoginDto";
-import appApi from "./baseApi";
+import { appApi, nonAuthAppApi } from "./baseApi";
 import { UserRegisterDto } from "@/dtos/UserRegisterDto";
 import { TokenRefreshInputDto } from "@/dtos/TokenRefreshInputDto";
 import { OAuthLoginDto } from "@/dtos/OAuthLoginDto";
+import { UserTokensDto } from "@/dtos/UserTokensDto";
 
 export class AuthApi {
-  public static login(userLoginDto: UserLoginDto) {
-    return appApi.post("/login", userLoginDto);
+  public static async login(userLoginDto: UserLoginDto) {
+    return (await nonAuthAppApi.post("/users/login", userLoginDto)).data as {
+      data: UserTokensDto;
+    };
   }
 
-  public static register(userRegisterDto: UserRegisterDto) {
-    return appApi.post("/register", userRegisterDto);
+  public static async register(userRegisterDto: UserRegisterDto) {
+    return (await nonAuthAppApi.post("/users/register", userRegisterDto))
+      .data as { data: UserTokensDto };
   }
 
-  public static tokenRefresh(tokenRefreshInputDto: TokenRefreshInputDto) {
-    return appApi.post("/token/refresh", tokenRefreshInputDto);
+  public static async tokenRefresh(tokenRefreshInputDto: TokenRefreshInputDto) {
+    return (
+      await nonAuthAppApi.post("/users/token/refresh", tokenRefreshInputDto)
+    ).data as { data: UserTokensDto };
   }
 
-  public static oAuthLogin(oAuthLoginDto: OAuthLoginDto) {
-    return appApi.post("/oauth/login", oAuthLoginDto);
+  public static async oAuthLogin(oAuthLoginDto: OAuthLoginDto) {
+    return (await nonAuthAppApi.post("/users/oauth/login", oAuthLoginDto))
+      .data as { data: UserTokensDto };
   }
 }
