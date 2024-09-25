@@ -3,7 +3,18 @@
 import React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Button, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export type TLoginValues = {
   email: string;
@@ -11,6 +22,8 @@ export type TLoginValues = {
 };
 
 export type LoginFormProps = {
+  disableAll?: boolean;
+  isLoading?: boolean;
   onSubmit: (values: TLoginValues) => void;
 };
 
@@ -21,7 +34,13 @@ const loginValidationSchema = Yup.object({
     .required("Password is required"),
 });
 
-const LoginForm = ({ onSubmit }: LoginFormProps) => {
+const LoginForm = ({
+  onSubmit,
+  disableAll = false,
+  isLoading = false,
+}: LoginFormProps) => {
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -34,9 +53,24 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
     },
   });
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <TextField
+        disabled={disableAll}
         variant="outlined"
         size="small"
         id="email"
@@ -51,7 +85,40 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         helperText={formik.touched.email && formik.errors.email}
         sx={{ mb: 2 }}
       />
-      <TextField
+      <FormControl sx={{ mb: 2 }} variant="outlined" size="small" fullWidth>
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          disabled={disableAll}
+          id="password"
+          name="password"
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          type={showPassword ? "text" : "password"}
+          onChange={formik.handleChange}
+          placeholder="Password"
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                onMouseUp={handleMouseUpPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+        />
+        <FormHelperText
+          error={formik.touched.password && Boolean(formik.errors.password)}
+        >
+          {formik.touched.password && formik.errors.password}
+        </FormHelperText>
+      </FormControl>
+      {/* <TextField
         variant="outlined"
         size="small"
         id="password"
@@ -66,15 +133,19 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         error={formik.touched.password && Boolean(formik.errors.password)}
         helperText={formik.touched.password && formik.errors.password}
         sx={{ mb: 2 }}
-      />
+      /> */}
       <Button
+        disabled={disableAll}
         variant="contained"
         size="medium"
         fullWidth
         color="cGold"
         type="submit"
+        sx={{
+          minHeight: "40px",
+        }}
       >
-        Login
+        {isLoading ? <CircularProgress size={"1.5rem"} /> : "Login"}
       </Button>
     </form>
   );

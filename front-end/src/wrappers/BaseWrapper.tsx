@@ -23,7 +23,10 @@ const BaseWrapper = ({ children }: { children: ReactNode }) => {
           <ThemeWrapper>
             <CssBaseline />
             <AuthProvider>
-              <SnackbarProvider /> {children}
+              <SnackbarProvider
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              />{" "}
+              {children}
             </AuthProvider>
           </ThemeWrapper>
         </QueryClientProvider>

@@ -28,7 +28,10 @@ const setAccessToken = (token: TokenDto | null) => {
 
   const { token: accessToken, expiresAt: accessTokenExpiresAt } = token;
   set(localStorageKey.accessToken, accessToken);
-  set(localStorageKey.accessTokenExpiresAt, accessTokenExpiresAt.toUTCString());
+  set(
+    localStorageKey.accessTokenExpiresAt,
+    new Date(accessTokenExpiresAt).toISOString()
+  );
 };
 
 const getRefreshToken = (): TokenDto => {
@@ -53,7 +56,7 @@ const setRefreshToken = (token: TokenDto | null) => {
   set(localStorageKey.refreshToken, refreshToken);
   set(
     localStorageKey.refreshTokenExpiresAt,
-    refreshTokenExpiresAt.toUTCString()
+    new Date(refreshTokenExpiresAt).toISOString()
   );
 };
 

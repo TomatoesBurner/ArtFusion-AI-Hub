@@ -2,6 +2,7 @@
 
 import { AuthApi } from "@/api/authApi";
 import { appApi } from "@/api/baseApi";
+import { TokenDto } from "@/dtos/TokenDto";
 import { UserTokensDto } from "@/dtos/UserTokensDto";
 import { authSliceActions } from "@/store/slices/authSlice";
 import { imageSliceActions } from "@/store/slices/imagesSlice";
@@ -16,6 +17,7 @@ import { createContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export type TAuthContext = {
+  initialised: boolean;
   loggedIn: boolean;
   logout: () => void;
   login: (userTokensDto: UserTokensDto) => void;
@@ -24,6 +26,7 @@ export type TAuthContext = {
 };
 
 const AuthContextInitialValue: TAuthContext = {
+  initialised: false,
   loggedIn: false,
   logout: () => {},
   login: () => {},
@@ -38,12 +41,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const authData = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
-  const { loggedIn, initialised: initalised, refreshToken } = authData;
+  const { loggedIn, initialised: initialised, refreshToken } = authData;
 
   // On app load
   useEffect(() => {
-    const localRefreshToken = localStorageHelper.getRefreshToken();
-
     appApi.interceptors.response.use(
       (response) => {
         return response;
@@ -51,12 +52,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (error) => {
         if (error.response.status === 401) {
           const accessToken = localStorageHelper.getAccessToken();
-          if (!accessToken || accessToken.expiresAt < new Date()) {
+          if (!authHelper.isTokenValid(accessToken)) {
             const refreshToken = localStorageHelper.getRefreshToken();
             if (!refreshToken || !accessToken) {
               logout();
             }
-            if (refreshToken.expiresAt < new Date()) {
+            if (!authHelper.isTokenValid(refreshToken)) {
               logout();
               return Promise.reject(error);
             } else {
@@ -73,20 +74,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
-    if (authHelper.isTokenValid(localRefreshToken)) {
-      dispatch(authSliceActions.setLoggedIn({ loggedIn: true }));
-    }
+    const localRefreshToken = localStorageHelper.getRefreshToken();
+    const localAccessToken = localStorageHelper.getAccessToken();
 
+    const tokens: UserTokensDto = {
+      accessToken: {
+        token: localAccessToken.token,
+        expiresAt: new Date(localAccessToken.expiresAt).toISOString(),
+      },
+      refreshToken: {
+        token: localRefreshToken.token,
+        expiresAt: new Date(localRefreshToken.expiresAt).toISOString(),
+      },
+      userId: "",
+    };
+
+    dispatch(authSliceActions.setUserTokens(tokens));
+    updateTokens(tokens);
+    checkRefreshTokenAndNotify(tokens.refreshToken);
     dispatch(authSliceActions.setInitialised({ initialised: true }));
   }, []);
 
   useEffect(() => {
-    if (authHelper.isTokenValid(refreshToken)) {
-      dispatch(authSliceActions.setLoggedIn({ loggedIn: true }));
-    } else {
-      dispatch(authSliceActions.setLoggedIn({ loggedIn: false }));
+    if (initialised) {
+      checkRefreshTokenAndNotify(refreshToken);
     }
-  }, [refreshToken]);
+  }, [initialised, refreshToken]);
 
   const logout = () => {
     dispatch(imageSliceActions.clearState({}));
@@ -97,13 +110,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     router.replace(APP_PATH.LOGIN);
   };
 
+  const checkRefreshTokenAndNotify = (refreshToken: TokenDto | null) => {
+    if (authHelper.isTokenValid(refreshToken)) {
+      dispatch(authSliceActions.setLoggedIn({ loggedIn: true }));
+    } else {
+      dispatch(authSliceActions.setLoggedIn({ loggedIn: false }));
+    }
+  };
+
   const updateTokens = (userTokensDto: UserTokensDto) => {
     localStorageHelper.setAccessToken(userTokensDto.accessToken);
     localStorageHelper.setRefreshToken(userTokensDto.refreshToken);
     dispatch(authSliceActions.setUserTokens(userTokensDto));
   };
 
-  const logIn = (userTokensDto: UserTokensDto) => {
+  const login = (userTokensDto: UserTokensDto) => {
     updateTokens(userTokensDto);
   };
 
@@ -119,13 +140,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     updateTokens(userTokensDto);
   };
 
-  if (!initalised) {
+  if (!initialised) {
     return <AppLoader />;
   }
 
   return (
     <AuthContext.Provider
-      value={{ loggedIn, logout, login: logIn, register, oAuthLogin }}
+      value={{
+        initialised,
+        loggedIn,
+        logout,
+        login: login,
+        register,
+        oAuthLogin,
+      }}
     >
       {children}
     </AuthContext.Provider>

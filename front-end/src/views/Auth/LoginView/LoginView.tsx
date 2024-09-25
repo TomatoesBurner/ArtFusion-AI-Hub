@@ -30,7 +30,8 @@ const LoginView = () => {
       onSuccess: (data) => {
         login(data.data);
       },
-      onError: () => {
+
+      onError: (err) => {
         enqueueSnackbar("Invalid credentials", { variant: "error" });
       },
     });
@@ -86,12 +87,20 @@ const LoginView = () => {
           </Typography>
 
           {/* Email and password login form */}
-          <LoginForm onSubmit={handleLoginFormSubmit} />
+          <LoginForm
+            isLoading={loginPending}
+            disableAll={anyLoading}
+            onSubmit={handleLoginFormSubmit}
+          />
 
           <Divider sx={{ my: 2 }}>OR</Divider>
 
           {/* External Auth */}
-          <GoogleAuthButton onAuthSuccess={handleGoogleAuthSuccess} />
+          <GoogleAuthButton
+            disabled={anyLoading}
+            loading={oAuthGooglePending}
+            onAuthSuccess={handleGoogleAuthSuccess}
+          />
           <FacebookAuthButton />
 
           {/* TODO: forgot password page */}

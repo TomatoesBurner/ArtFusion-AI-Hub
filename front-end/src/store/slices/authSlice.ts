@@ -59,8 +59,14 @@ const slice = createSlice({
       }
     ) => {
       const { accessToken, refreshToken } = action.payload;
-      state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
+      state.accessToken = {
+        token: accessToken.token,
+        expiresAt: new Date(accessToken.expiresAt).toISOString(),
+      };
+      state.refreshToken = {
+        token: refreshToken.token,
+        expiresAt: new Date(refreshToken.expiresAt).toISOString(),
+      };
       const payload = jwtDecode(accessToken.token) as JwtPayload & TAuthUser;
       state.user = {
         userId: payload.sub || "",
@@ -72,14 +78,20 @@ const slice = createSlice({
     },
     setAccessToken: (state, action: { payload: { accessToken: TokenDto } }) => {
       const { accessToken } = action.payload;
-      state.accessToken = accessToken;
+      state.accessToken = {
+        token: accessToken.token,
+        expiresAt: new Date(accessToken.expiresAt).toISOString(),
+      };
     },
     setRefreshToken: (
       state,
       action: { payload: { refreshToken: TokenDto } }
     ) => {
       const { refreshToken } = action.payload;
-      state.refreshToken = refreshToken;
+      state.refreshToken = {
+        token: refreshToken.token,
+        expiresAt: new Date(refreshToken.expiresAt).toISOString(),
+      };
     },
     clearState: (state, action) => {
       return {
