@@ -6,7 +6,6 @@ import { CodeResponse, useGoogleLogin } from "@react-oauth/google";
 import React from "react";
 
 type GoogleAuthButtonProps = {
-  disabled?: boolean;
   loading?: boolean;
   onAuthSuccess: (codeResponse: CodeResponse) => void;
 } & ButtonProps;
@@ -14,7 +13,6 @@ type GoogleAuthButtonProps = {
 const GoogleAuthButton = ({
   children,
   onAuthSuccess,
-  disabled = false,
   loading = false,
   ...others
 }: GoogleAuthButtonProps) => {
@@ -47,7 +45,6 @@ const GoogleAuthButton = ({
     <>
       {loading && <LinearProgress />}
       <Button
-        disabled={disabled}
         variant="outlined"
         color="inherit"
         startIcon={<Google />}

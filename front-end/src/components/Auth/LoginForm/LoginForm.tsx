@@ -86,7 +86,7 @@ const LoginForm = ({
         sx={{ mb: 2 }}
       />
       <FormControl sx={{ mb: 2 }} variant="outlined" size="small" fullWidth>
-        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <InputLabel htmlFor="password">Password</InputLabel>
         <OutlinedInput
           disabled={disableAll}
           id="password"
@@ -100,7 +100,6 @@ const LoginForm = ({
           endAdornment={
             <InputAdornment position="end">
               <IconButton
-                aria-label="toggle password visibility"
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
                 onMouseUp={handleMouseUpPassword}
@@ -118,22 +117,6 @@ const LoginForm = ({
           {formik.touched.password && formik.errors.password}
         </FormHelperText>
       </FormControl>
-      {/* <TextField
-        variant="outlined"
-        size="small"
-        id="password"
-        name="password"
-        type="password"
-        label="Password"
-        placeholder="Password"
-        fullWidth
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.password}
-        error={formik.touched.password && Boolean(formik.errors.password)}
-        helperText={formik.touched.password && formik.errors.password}
-        sx={{ mb: 2 }}
-      /> */}
       <Button
         disabled={disableAll}
         variant="contained"

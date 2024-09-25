@@ -3,7 +3,19 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { TextField, Button, Stack } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Stack,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  FormHelperText,
+  CircularProgress,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export type TRegisterValues = {
   username: string;
@@ -14,6 +26,8 @@ export type TRegisterValues = {
 };
 
 export type ClientRegisterFormProps = {
+  disableAll?: boolean;
+  isLoading?: boolean;
   onSubmit: (values: TRegisterValues) => void;
 };
 
@@ -38,7 +52,13 @@ const validationSchema = Yup.object({
     .required("Confirm Password is required"),
 });
 
-const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
+const ClientRegisterForm = ({
+  disableAll = false,
+  isLoading = false,
+  onSubmit,
+}: ClientRegisterFormProps) => {
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -54,9 +74,24 @@ const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
     },
   });
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <TextField
+        disabled={disableAll}
         label="Username"
         variant="outlined"
         size="small"
@@ -72,6 +107,7 @@ const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
 
       <Stack direction={"row"} gap={2}>
         <TextField
+          disabled={disableAll}
           label="Firstname"
           variant="outlined"
           size="small"
@@ -85,6 +121,7 @@ const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
           sx={{ mb: 2 }}
         />
         <TextField
+          disabled={disableAll}
           label="Lastname"
           variant="outlined"
           size="small"
@@ -100,6 +137,7 @@ const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
       </Stack>
 
       <TextField
+        disabled={disableAll}
         label="Email Address"
         type="email"
         name="email"
@@ -113,48 +151,87 @@ const ClientRegisterForm = ({ onSubmit }: ClientRegisterFormProps) => {
         helperText={formik.touched.email && formik.errors.email}
         sx={{ mb: 2 }}
       />
-      <TextField
-        label="Password"
-        size="small"
-        id="password"
-        name="password"
-        type="password"
-        variant="outlined"
-        fullWidth
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.password}
-        error={formik.touched.password && Boolean(formik.errors.password)}
-        helperText={formik.touched.password && formik.errors.password}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        label="Confirm Password"
-        id="passwordConfirm"
-        size="small"
-        name="passwordConfirm"
-        type="password"
-        variant="outlined"
-        fullWidth
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={
-          formik.touched.passwordConfirm &&
-          Boolean(formik.errors.passwordConfirm)
-        }
-        helperText={
-          formik.touched.passwordConfirm && formik.errors.passwordConfirm
-        }
-        sx={{ mb: 2 }}
-      />
+      <FormControl sx={{ mb: 2 }} variant="outlined" size="small" fullWidth>
+        <InputLabel htmlFor="password">Password</InputLabel>
+        <OutlinedInput
+          disabled={disableAll}
+          id="password"
+          name="password"
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          type={showPassword ? "text" : "password"}
+          onChange={formik.handleChange}
+          placeholder="Password"
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                onMouseUp={handleMouseUpPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+        />
+        <FormHelperText
+          error={formik.touched.password && Boolean(formik.errors.password)}
+        >
+          {formik.touched.password && formik.errors.password}
+        </FormHelperText>
+      </FormControl>
+
+      <FormControl sx={{ mb: 2 }} variant="outlined" size="small" fullWidth>
+        <InputLabel htmlFor="passwordConfirm">Confirm Password</InputLabel>
+        <OutlinedInput
+          disabled={disableAll}
+          id="passwordConfirm"
+          name="passwordConfirm"
+          error={
+            formik.touched.passwordConfirm &&
+            Boolean(formik.errors.passwordConfirm)
+          }
+          type={showPassword ? "text" : "password"}
+          onChange={formik.handleChange}
+          placeholder="Password"
+          onBlur={formik.handleBlur}
+          value={formik.values.passwordConfirm}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                onMouseUp={handleMouseUpPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+        />
+        <FormHelperText
+          error={
+            formik.touched.passwordConfirm &&
+            Boolean(formik.errors.passwordConfirm)
+          }
+        >
+          {formik.touched.passwordConfirm && formik.errors.passwordConfirm}
+        </FormHelperText>
+      </FormControl>
       <Button
+        disabled={disableAll}
         type="submit"
         variant="contained"
+        size="medium"
         color="cGold"
         fullWidth
-        sx={{ mb: 2 }}
+        sx={{ minHeight: "40px" }}
       >
-        Register
+        {isLoading ? <CircularProgress size={"1.5rem"} /> : "Register"}
       </Button>
     </form>
   );

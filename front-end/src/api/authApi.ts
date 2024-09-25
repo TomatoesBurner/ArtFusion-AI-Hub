@@ -13,7 +13,7 @@ export class AuthApi {
   }
 
   public static async register(userRegisterDto: UserRegisterDto) {
-    return (await nonAuthAppApi.post("/users/register", userRegisterDto))
+    return (await nonAuthAppApi.post("/users/signup", userRegisterDto))
       .data as { data: UserTokensDto };
   }
 

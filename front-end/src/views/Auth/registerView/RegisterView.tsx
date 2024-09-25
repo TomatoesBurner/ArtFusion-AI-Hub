@@ -90,12 +90,20 @@ const RegisterView = () => {
           alignContent={"center"}
           justifyContent={"center"}
         >
-          <ClientRegisterForm onSubmit={handleRegisterFormSubmit} />
+          <ClientRegisterForm
+            disableAll={anyLoading}
+            isLoading={registerPending}
+            onSubmit={handleRegisterFormSubmit}
+          />
 
           <Divider sx={{ my: 2 }}>OR</Divider>
 
           {/* External Auth */}
-          <GoogleAuthButton onAuthSuccess={handleGoogleAuthSuccess} />
+          <GoogleAuthButton
+            disabled={anyLoading}
+            loading={oAuthGooglePending}
+            onAuthSuccess={handleGoogleAuthSuccess}
+          />
           <FacebookAuthButton />
         </Paper>
       </Stack>
