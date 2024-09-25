@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import NextLink from "next/link";
 import { Typography, Divider, Stack, Paper, Link } from "@mui/material";
 import ClientRegisterForm, {
@@ -103,4 +103,4 @@ const RegisterView = () => {
   );
 };
 
-export default RegisterView;
+export default memo(RegisterView);

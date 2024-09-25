@@ -2,12 +2,20 @@ import { TokenDto } from "@/dtos/TokenDto";
 import { createSlice } from "@reduxjs/toolkit";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
-type TAuthUser = {
+export type TAuthUser = {
   userId: string;
   name: string;
   firstName: string;
   lastName: string;
   email: string;
+};
+
+export const emptyAuthUser = {
+  userId: "",
+  name: "",
+  firstName: "",
+  lastName: "",
+  email: "",
 };
 
 type AuthSliceState = {
@@ -22,11 +30,7 @@ const initialState: AuthSliceState = {
   initialised: false,
   loggedIn: false,
   user: {
-    userId: "",
-    name: "",
-    firstName: "",
-    lastName: "",
-    email: "",
+    ...emptyAuthUser,
   },
   accessToken: null,
   refreshToken: null,
@@ -91,6 +95,12 @@ const slice = createSlice({
       state.refreshToken = {
         token: refreshToken.token,
         expiresAt: new Date(refreshToken.expiresAt).toISOString(),
+      };
+    },
+    clearAuthState: (state, action) => {
+      return {
+        ...initialState,
+        initialised: state.initialised,
       };
     },
     clearState: (state, action) => {

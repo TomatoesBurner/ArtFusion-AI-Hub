@@ -4,7 +4,11 @@ import { AuthApi } from "@/api/authApi";
 import { appApi } from "@/api/baseApi";
 import { TokenDto } from "@/dtos/TokenDto";
 import { UserTokensDto } from "@/dtos/UserTokensDto";
-import { authSliceActions } from "@/store/slices/authSlice";
+import {
+  authSliceActions,
+  emptyAuthUser,
+  TAuthUser,
+} from "@/store/slices/authSlice";
 import { imageSliceActions } from "@/store/slices/imagesSlice";
 import { videoSliceActions } from "@/store/slices/videosSlice";
 import { RootState } from "@/store/store";
@@ -17,6 +21,7 @@ import { createContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export type TAuthContext = {
+  user: TAuthUser | null;
   initialised: boolean;
   loggedIn: boolean;
   logout: () => void;
@@ -26,6 +31,7 @@ export type TAuthContext = {
 };
 
 const AuthContextInitialValue: TAuthContext = {
+  user: null,
   initialised: false,
   loggedIn: false,
   logout: () => {},
@@ -41,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const authData = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
-  const { loggedIn, initialised: initialised, refreshToken } = authData;
+  const { user, loggedIn, initialised: initialised, refreshToken } = authData;
 
   // On app load
   useEffect(() => {
@@ -89,9 +95,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       userId: "",
     };
 
-    dispatch(authSliceActions.setUserTokens(tokens));
-    updateTokens(tokens);
-    checkRefreshTokenAndNotify(tokens.refreshToken);
+    if (checkRefreshTokenAndNotify(tokens.refreshToken)) {
+      dispatch(authSliceActions.setUserTokens(tokens));
+    }
     dispatch(authSliceActions.setInitialised({ initialised: true }));
   }, []);
 
@@ -104,18 +110,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     dispatch(imageSliceActions.clearState({}));
     dispatch(videoSliceActions.clearState({}));
-    dispatch(authSliceActions.clearState({}));
+    dispatch(authSliceActions.clearAuthState({}));
     localStorageHelper.setAccessToken(null);
     localStorageHelper.setRefreshToken(null);
     router.replace(APP_PATH.LOGIN);
   };
 
-  const checkRefreshTokenAndNotify = (refreshToken: TokenDto | null) => {
-    if (authHelper.isTokenValid(refreshToken)) {
+  const checkRefreshTokenAndNotify = (
+    refreshToken: TokenDto | null
+  ): boolean => {
+    const isvalid = authHelper.isTokenValid(refreshToken);
+    if (isvalid) {
       dispatch(authSliceActions.setLoggedIn({ loggedIn: true }));
     } else {
       dispatch(authSliceActions.setLoggedIn({ loggedIn: false }));
     }
+    return isvalid;
   };
 
   const updateTokens = (userTokensDto: UserTokensDto) => {
@@ -147,6 +157,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
+        user,
         initialised,
         loggedIn,
         logout,

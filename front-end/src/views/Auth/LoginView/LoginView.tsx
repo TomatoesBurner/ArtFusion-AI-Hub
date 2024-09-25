@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import NextLink from "next/link";
 import { Typography, Stack, Link, Paper, Divider } from "@mui/material";
 import GoogleAuthButton from "@/components/Auth/GoogleAuthButton/GoogleAuthButton";
@@ -115,4 +115,4 @@ const LoginView = () => {
   );
 };
 
-export default LoginView;
+export default memo(LoginView);
