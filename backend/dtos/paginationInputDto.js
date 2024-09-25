@@ -1,3 +1,14 @@
+const Joi = require("joi");
+
+const paginationInputJoiSchemaObj = {
+    cursor: Joi.string().required(),
+    limit: Joi.number().min(1).max(100).required(),
+};
+
+const paginationInputJoiSchema = Joi.object({
+    ...paginationInputJoiSchemaObj,
+});
+
 class PaginationInputDto extends BaseNoIdDto {
     constructor(data) {
         this.cursor = data.cursor;
@@ -8,3 +19,9 @@ class PaginationInputDto extends BaseNoIdDto {
         return new PaginationInputDto(data);
     }
 }
+
+module.exports = {
+    paginationInputJoiSchemaObj,
+    paginationInputJoiSchema,
+    PaginationInputDto,
+};

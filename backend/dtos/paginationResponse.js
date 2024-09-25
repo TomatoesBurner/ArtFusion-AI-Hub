@@ -5,3 +5,7 @@ class PaginationResponse extends BaseNoIdDto {
         this.hasNext = data.hasNext;
     }
 }
+
+module.exports = {
+    PaginationResponse,
+};
