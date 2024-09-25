@@ -15,7 +15,7 @@ const DashBoardAppBar = () => {
   return (
     <AppBar>
       <Toolbar>
-        <Link href="/">
+        <Link href={APP_PATH.DASHBOARD}>
           <Image
             src="/images/Logo.png"
             alt="Logo"

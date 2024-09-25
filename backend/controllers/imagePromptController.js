@@ -1,16 +1,15 @@
-import ImagePrompt from "../models/imagePromptModel.js/index.js";
+const { catchAsync } = require("../utils/catchAsync.js");
 
-const getAllImagePrompts = async (req, res) => {
+const getAllImagePrompts = catchAsync(async (req, res, next) => {
     const { promptSpaceId } = req.params;
     const { cursor = null, limit = 10 } = req.query;
+});
 
-    console.log("promptSpaceId", promptSpaceId);
-    console.log("cursor", cursor);
-    console.log("limit", limit);
-};
+const createImagePrompt = catchAsync(async (req, res, next) => {});
 
 const controller = {
     getAllImagePrompts,
+    createImagePrompt,
 };
 
-module.export = controller;
+module.exports = controller;

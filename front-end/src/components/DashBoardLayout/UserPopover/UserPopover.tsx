@@ -1,5 +1,5 @@
 import useAuth from "@/hooks/useAuth";
-import { Logout } from "@mui/icons-material";
+import { AccountCircle, Logout, Settings } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -27,7 +27,15 @@ const UserPopover = () => {
     logout();
   };
 
-  const initials = `${user?.firstName[0]}${user?.lastName[0]}`.toUpperCase();
+  const handleProfileClick = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSettingsClick = () => {
+    setAnchorEl(null);
+  };
+
+  const initials = `${user?.lastName[0]}${user?.firstName[0]}`.toUpperCase();
 
   return (
     <>
@@ -45,6 +53,20 @@ const UserPopover = () => {
           horizontal: "right",
         }}
       >
+        <MenuItem onClick={handleProfileClick}>
+          <ListItemIcon>
+            <AccountCircle />
+          </ListItemIcon>
+          <ListItemText>Profile</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={handleSettingsClick}>
+          <ListItemIcon>
+            <Settings />
+          </ListItemIcon>
+          <ListItemText>Settings</ListItemText>
+        </MenuItem>
+
         <MenuItem onClick={handleLogoutClick}>
           <ListItemIcon>
             <Logout />
