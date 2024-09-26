@@ -2,20 +2,19 @@
 
 import { AuthApi } from "@/api/authApi";
 import { appApi } from "@/api/baseApi";
+import { UserApi } from "@/api/userApi";
 import { TokenDto } from "@/dtos/TokenDto";
 import { UserTokensDto } from "@/dtos/UserTokensDto";
-import {
-  authSliceActions,
-  emptyAuthUser,
-  TAuthUser,
-} from "@/store/slices/authSlice";
+import { authSliceActions, TAuthUser } from "@/store/slices/authSlice";
 import { imageSliceActions } from "@/store/slices/imagesSlice";
 import { videoSliceActions } from "@/store/slices/videosSlice";
+import { userSliceActions } from "@/store/slices/userSlice";
 import { RootState } from "@/store/store";
 import authHelper from "@/utils/authHelper";
 import { APP_PATH } from "@/utils/constant";
 import localStorageHelper from "@/utils/localStorageHelper";
 import AppLoader from "@/views/Common/Loader/AppLoader";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +47,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
 
   const { user, loggedIn, initialised: initialised, refreshToken } = authData;
+
+  const { isLoading: getMeLoading, refetch: getMeRefetch } = useQuery({
+    queryKey: ["getMe"],
+    queryFn: UserApi.getMe,
+    enabled: false,
+  });
+
+  const userId = user?.userId ?? "";
 
   // On app load
   useEffect(() => {
@@ -107,10 +114,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [initialised, refreshToken]);
 
+  useEffect(() => {
+    if (initialised && userId && loggedIn) {
+      getMe();
+    }
+  }, [userId, loggedIn, initialised]);
+
   const logout = () => {
     dispatch(imageSliceActions.clearState({}));
     dispatch(videoSliceActions.clearState({}));
     dispatch(authSliceActions.clearAuthState({}));
+    dispatch(userSliceActions.clearState({}));
     localStorageHelper.setAccessToken(null);
     localStorageHelper.setRefreshToken(null);
     router.replace(APP_PATH.LOGIN);
@@ -126,6 +140,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       dispatch(authSliceActions.setLoggedIn({ loggedIn: false }));
     }
     return isvalid;
+  };
+
+  const getMe = () => {
+    getMeRefetch().then(
+      (response) => {
+        const user = response.data?.data;
+        if (user == undefined) {
+          return;
+        }
+
+        dispatch(userSliceActions.setUser({ user: user }));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   const updateTokens = (userTokensDto: UserTokensDto) => {
@@ -150,7 +180,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     updateTokens(userTokensDto);
   };
 
-  if (!initialised) {
+  const anyLoading = getMeLoading;
+
+  if (!initialised || anyLoading) {
     return <AppLoader />;
   }
 

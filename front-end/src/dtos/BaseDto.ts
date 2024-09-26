@@ -1,3 +1,3 @@
 export type BaseDto = {
-  Id?: string;
+  id?: string;
 };
