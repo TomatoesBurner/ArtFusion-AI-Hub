@@ -1,24 +1,26 @@
-import { Schema } from "mongoose";
-import { VIDEO_QUALITY_VALUES } from "../types/videoQualityTypes";
-import { IMAGE_EXTENSION_VALUES } from "../types/imageExtensionTypes";
-import { SOUND_TRACK_EXTENSION_VALUES } from "../types/soundTrackExtensionTyps";
-import { VIDEO_EXTENSION_VALUES } from "../types/videoExtensionTypes";
+const mongoose = require("mongoose");
+const { VIDEO_QUALITY_VALUES } = require("../types/videoQualityTypes");
+const { IMAGE_EXTENSION_VALUES } = require("../types/imageExtensionTypes");
+const {
+    SOUND_TRACK_EXTENSION_VALUES,
+} = require("../types/soundTrackExtensionTyps");
+const { VIDEO_EXTENSION_VALUES } = require("../types/videoExtensionTypes");
 
-const VideoPromptInputImageSchema = new Schema({
+const VideoPromptInputImageSchema = new mongoose.Schema({
     extension: {
         type: String,
         enum: IMAGE_EXTENSION_VALUES,
     },
 });
 
-const VideoPromptInputSoundTrackSchema = new Schema({
+const VideoPromptInputSoundTrackSchema = new mongoose.Schema({
     extension: {
         type: String,
         enum: SOUND_TRACK_EXTENSION_VALUES,
     },
 });
 
-const VideoPromptInputSchema = new Schema(
+const VideoPromptInputSchema = new mongoose.Schema(
     {
         filters: {
             width: Number,
@@ -39,7 +41,7 @@ const VideoPromptInputSchema = new Schema(
     { _id: false }
 );
 
-const VideoPromptResponseSchema = new Schema(
+const VideoPromptResponseSchema = new mongoose.Schema(
     {
         originalVideoUrl: String,
         extension: {
@@ -50,7 +52,7 @@ const VideoPromptResponseSchema = new Schema(
     { timestamps: true }
 );
 
-const VideoPromptSchema = new Schema(
+const VideoPromptSchema = new mongoose.Schema(
     {
         input: VideoPromptInputSchema,
         response: VideoPromptResponseSchema,
@@ -64,4 +66,4 @@ VideoPromptSchema.index({ promptSpaceId: 1, createdAt: -1 });
 
 const VideoPrompt = mongoose.model("VideoPrompt", VideoPromptSchema);
 
-export default VideoPrompt;
+module.exports = VideoPrompt;

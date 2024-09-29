@@ -3,27 +3,20 @@
 // src/layouts/HomeLayout/HomeLayout.tsx
 
 import React from "react";
-import { Container, Box } from "@mui/material";
+import { Container, Box, useTheme, CssBaseline } from "@mui/material";
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
+  const theme = useTheme();
+
+  console.log(theme);
+
   return (
-    <Container
-      maxWidth="false" // Set to false to disable the default maxWidth behavior
-      sx={{
-        backgroundColor: "#000",
-        color: "#fff",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        padding: 0, // Remove padding
-        margin: 0, // Remove margin
-        width: "100%", // Ensure full width
-      }}
-    >
-      <Box sx={{ flexGrow: 1 }}>{children}</Box>{" "}
-      {/* Use flexGrow to ensure space for footer */}
-    </Container>
+    <Box display={"flex"} minHeight={"100vh"}>
+      <Box component={"main"} flexGrow={1} width={"100%"}>
+        <CssBaseline />
+        {children}
+      </Box>
+    </Box>
   );
 };
 

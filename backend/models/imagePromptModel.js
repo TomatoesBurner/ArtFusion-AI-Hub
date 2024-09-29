@@ -1,8 +1,7 @@
-import { Schema } from "mongoose";
-import { IMAGE_EXTENSION_VALUES } from "../types/imageExtensionTypes";
-import { IMAGE_PROMPT_MODEL_VALUES } from "../types/imageModelPromptTypes";
+const mongoose = require("mongoose");
+const { IMAGE_EXTENSION_VALUES } = require("../types/imageExtensionTypes");
 
-const ImagePromptInputSchema = new Schema(
+const ImagePromptInputSchema = new mongoose.Schema(
     {
         filters: {
             width: Number,
@@ -17,7 +16,7 @@ const ImagePromptInputSchema = new Schema(
     { _id: false }
 );
 
-const ImagePromptResponseSchema = new Schema(
+const ImagePromptResponseSchema = new mongoose.Schema(
     {
         originalImageUrl: String,
         extension: {
@@ -28,20 +27,20 @@ const ImagePromptResponseSchema = new Schema(
     { timestamps: true }
 );
 
-const ArgumentImagePromptResponseSchema = new Schema(
+const ArgumentImagePromptResponseSchema = new mongoose.Schema(
     {
         extension: {
             type: String,
             enum: IMAGE_EXTENSION_VALUES,
         },
         // TODO: If need change later
-        filters: Schema.Types.Mixed,
+        filters: mongoose.Schema.Types.Mixed,
         createdBy: { type: mongoose.Types.ObjectId, ref: "User" },
     },
     { timestamps: true }
 );
 
-const ImagePromptSchema = new Schema(
+const ImagePromptSchema = new mongoose.Schema(
     {
         input: ImagePromptInputSchema,
         response: ImagePromptResponseSchema,
@@ -56,4 +55,4 @@ ImagePromptSchema.index({ promptSpaceId: 1, createdAt: -1 });
 
 const ImagePrompt = mongoose.model("ImagePrompt", ImagePromptSchema);
 
-export default ImagePrompt;
+module.exports = ImagePrompt;

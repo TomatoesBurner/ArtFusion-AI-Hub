@@ -62,6 +62,12 @@ const slice = createSlice({
         ...filter,
       };
     },
+
+    clearState(state, action) {
+      return {
+        ...initialState,
+      };
+    },
   },
 });
 

@@ -20,6 +20,7 @@ import UploadIcon from "@mui/icons-material/CloudUpload"; // Upload icon
 import DownloadIcon from "@mui/icons-material/CloudDownload"; // Download icon
 
 const UserDashboard = () => {
+  return <div>dashboard</div>;
   // download
   const downloadFile = (filePath) => {
     const link = document.createElement("a");
