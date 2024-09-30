@@ -29,19 +29,17 @@ const image_creation = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      // send a POST request to the backend
       const response = await axios.post(
-        "http://localhost:3000/api/text_to_image",
+        "http://localhost:3000/api/v1/image-prompt",
         {
           text_prompt: prompt,
-          imageUrl: imageUrl,
-          aspectRatio: aspectRatio,
-          width: width,
-          height: height,
         }
       );
-      setImageUrl(response.data.image_url);
+
+      setImageUrl(response.data.data.image_url);
     } catch (error) {
-      console.error("Fail to generate image:", error);
+      console.error("fail to generate image", error);
     } finally {
       setLoading(false);
     }
@@ -64,7 +62,7 @@ const image_creation = () => {
             sx={{ border: "1px solid #fff", padding: "16px", height: "180%" }}
           >
             <Link href="/images/models">
-              <Box sx={{ textAlign: "model center", marginBottom: "16px" }}>
+              <Box sx={{ textAlign: "center", marginBottom: "16px" }}>
                 <img src="/" alt="Model image" width="100%" />
                 <Typography variant="h6" sx={{ color: "#fff" }}>
                   Switch
@@ -163,15 +161,15 @@ const image_creation = () => {
             sx={{ border: "1px solid #fff", padding: "16px", height: "100%" }}
           >
             <Typography variant="h6" sx={{ color: "#fff" }}>
-              Generation:{" "}
+              Generation:
             </Typography>
+            {/* if the image_url exist */}
             {imageUrl && (
               <Box sx={{ marginTop: "16px" }}>
                 <img
                   src={imageUrl}
                   alt="Generated"
-                  width="100%"
-                  height="100%"
+                  style={{ maxWidth: "100%", height: "auto" }}
                 />
               </Box>
             )}
