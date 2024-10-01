@@ -1,7 +1,5 @@
 //HOW TO CALL THIS API
-//Make a POST request with body for example: {"text_prompt": "A young boy eating a chocolate"}
-//Send the request to this API URL: http://localhost:3000/api/v1/video-prompt
-//You can test the API with Postman
+//API docs can be access in: https://documenter.getpostman.com/view/34479210/2sAXqs83D2
 
 const express = require("express");
 const router = express.Router();
@@ -17,7 +15,6 @@ router.post("/", async (req, res) => {
     }
 
     const requestBody = {
-        // key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l", //API key
         key: "XTBQisoBZAhY5En42W74MjvTrN8dAazWV8udk5KpoF29dhG3xijjculBExZf", // API key
         model_id: "zeroscope",
         prompt: text_prompt, // Use the prompt from the request body
