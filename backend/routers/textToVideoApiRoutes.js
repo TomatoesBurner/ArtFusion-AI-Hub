@@ -57,4 +57,46 @@ router.post("/", async (req, res) => {
     }
 });
 
+// Route for text-to-video generation
+router.post("/backup", async (req, res) => {
+    const { text_prompt } = req.body; // Expecting text input from the request
+
+    // Check if text_prompt is provided
+    if (!text_prompt) {
+        return res.status(500).json({ error: "Video generation failed" });
+    }
+
+    try {
+      const { Client } = await import("@gradio/client");
+        const app = await Client.connect("https://videocrafter-videocrafter.hf.space/");
+
+        const result = await app.predict(1, [
+            text_prompt,
+            15,          // Sampling steps (numeric value between 1 and 60)
+            15,          // CFG scale (numeric value between 1.0 and 30.0)
+            1,          // ETA (numeric value between 0.0 and 1.0)
+            5           // FPS (frames per second, between 4 and 32)
+        ]);
+
+
+    
+        var video_id = result.data[0][0].name;
+        var video_url = "https://videocrafter-videocrafter.hf.space/file=" + video_id;
+        // Output the generated video data
+        console.log(result.data);
+
+        // Send the generated video URL or data back to the frontend
+        res.status(200).json({
+            status: "Success.",
+            data: {
+                video_url: video_url,
+            },
+            message: "Video generation success.",
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Video generation failed" });
+    }
+});
+
 module.exports = router;
