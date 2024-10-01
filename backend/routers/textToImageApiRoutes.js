@@ -61,7 +61,7 @@ router.post("/backup", async (req, res) => {
             "Content-Type": "application/json",
         },
         data: {
-            key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l", // Replace with actual API key
+            key: "XTBQisoBZAhY5En42W74MjvTrN8dAazWV8udk5KpoF29dhG3xijjculBExZf", // Replace with actual API key
             prompt: text_prompt, // Using the user-provided prompt
             negative_prompt: "bad quality",
             width: "512",
