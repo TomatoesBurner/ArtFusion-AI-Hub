@@ -72,7 +72,7 @@ router.post("/backup", async (req, res) => {
 
         const result = await app.predict(1, [
             text_prompt,
-            15,          // Sampling steps (numeric value between 1 and 60)
+            16,          // Sampling steps (numeric value between 1 and 60)
             15,          // CFG scale (numeric value between 1.0 and 30.0)
             1,          // ETA (numeric value between 0.0 and 1.0)
             5           // FPS (frames per second, between 4 and 32)
