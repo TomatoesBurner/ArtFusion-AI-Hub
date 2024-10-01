@@ -1,7 +1,5 @@
-//HOW TO CALL THIS API
-//Make a POST request with body for example: {"text_prompt": "A young boy eating a chocolate"}
-//Send the request to this API URL: http://localhost:3000/api/vi/image-prompt
-//You can test the API with Postman
+//API docs can be access in: https://documenter.getpostman.com/view/34479210/2sAXqs83D2
+
 
 const express = require("express");
 const router = express.Router();

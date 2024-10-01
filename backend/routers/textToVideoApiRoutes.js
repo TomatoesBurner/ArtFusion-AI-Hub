@@ -1,4 +1,3 @@
-//HOW TO CALL THIS API
 //API docs can be access in: https://documenter.getpostman.com/view/34479210/2sAXqs83D2
 
 const express = require("express");
