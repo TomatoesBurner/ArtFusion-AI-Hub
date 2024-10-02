@@ -85,7 +85,8 @@ router.post("/backup", async (req, res) => {
             data: {
                 image_url: response.data.output,
             },
-            message: "Image generation success.",
+            message: response.data.message ? response.data.message: 
+            "Image generation success",
         });
     } catch (error) {
         console.error("API call failed:", error);
