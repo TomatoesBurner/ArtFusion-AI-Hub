@@ -16,7 +16,7 @@ import localStorageHelper from "@/utils/localStorageHelper";
 import AppLoader from "@/views/Common/Loader/AppLoader";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ApiResponseDto } from "@/dtos/ApiResponseDto";
 
@@ -43,6 +43,8 @@ const AuthContextInitialValue: TAuthContext = {
 export const AuthContext = createContext<TAuthContext>(AuthContextInitialValue);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [initMe, setInitMe] = useState(false);
+
   const router = useRouter();
   const authData = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
@@ -159,6 +161,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         }
 
+        setInitMe(true);
+
         dispatch(userSliceActions.setUser({ user: user }));
       },
       (error) => {
@@ -191,7 +195,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const anyLoading = getMeLoading;
 
-  if (!initialised || anyLoading) {
+  if (!initialised || !initMe || anyLoading) {
     return <AppLoader />;
   }
 
