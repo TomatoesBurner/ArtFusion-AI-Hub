@@ -11,13 +11,14 @@ import { videoSliceActions } from "@/store/slices/videosSlice";
 import { userSliceActions } from "@/store/slices/userSlice";
 import { RootState } from "@/store/store";
 import authHelper from "@/utils/authHelper";
-import { APP_PATH } from "@/utils/constant";
+import { API_RESPONSE_CODE, APP_PATH } from "@/utils/constant";
 import localStorageHelper from "@/utils/localStorageHelper";
 import AppLoader from "@/views/Common/Loader/AppLoader";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { createContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ApiResponseDto } from "@/dtos/ApiResponseDto";
 
 export type TAuthContext = {
   user: TAuthUser | null;
@@ -52,6 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     queryKey: ["getMe"],
     queryFn: UserApi.getMe,
     enabled: false,
+    retry: false,
   });
 
   const userId = user?.userId ?? "";
@@ -63,24 +65,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return response;
       },
       async (error) => {
-        if (error.response.status === 401) {
+        const response = error.response.data as ApiResponseDto;
+
+        if (response.code == API_RESPONSE_CODE.invalidRefreshToken) {
+          logout();
+        } else if (
+          response.code === API_RESPONSE_CODE.accessTokenExpired ||
+          response.code === API_RESPONSE_CODE.invalidAccessToken
+        ) {
           const accessToken = localStorageHelper.getAccessToken();
-          if (!authHelper.isTokenValid(accessToken)) {
-            const refreshToken = localStorageHelper.getRefreshToken();
-            if (!refreshToken || !accessToken) {
-              logout();
-            }
-            if (!authHelper.isTokenValid(refreshToken)) {
-              logout();
-              return Promise.reject(error);
-            } else {
-              const response = await AuthApi.tokenRefresh({
-                accessToken: accessToken.token,
-                refreshToken: refreshToken.token,
-              });
-              tokenRefresh(response.data);
-              return appApi.request(error.config);
-            }
+          const refreshToken = localStorageHelper.getRefreshToken();
+          if (!refreshToken || !accessToken) {
+            logout();
+          }
+          if (!authHelper.isTokenValid(refreshToken)) {
+            logout();
+            return Promise.reject(error);
+          } else {
+            const response = await AuthApi.tokenRefresh({
+              accessToken: accessToken.token,
+              refreshToken: refreshToken.token,
+            });
+            tokenRefresh(response.data);
+
+            return appApi.request(error.config);
           }
         }
         return Promise.reject(error);
@@ -105,6 +113,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (checkRefreshTokenAndNotify(tokens.refreshToken)) {
       dispatch(authSliceActions.setUserTokens(tokens));
     }
+
     dispatch(authSliceActions.setInitialised({ initialised: true }));
   }, []);
 

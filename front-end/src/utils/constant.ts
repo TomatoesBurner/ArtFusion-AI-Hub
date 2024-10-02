@@ -22,4 +22,10 @@ export const localStorageKey = {
   refreshTokenExpiresAt: "refreshTokenExpiresAt",
 };
 
+export const API_RESPONSE_CODE = {
+  accessTokenExpired: "ACCESS_TOKEN_EXPIRED",
+  invalidAccessToken: "INVALID_ACCESS_TOKEN",
+  invalidRefreshToken: "INVALID_REFRESH_TOKEN",
+};
+
 export const APP_NAME = "GTL Studio";

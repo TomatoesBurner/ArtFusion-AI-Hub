@@ -3,7 +3,11 @@ const AppError = require("../utils/appError");
 const User = require("../models/userModels");
 const { PROMPT_SPACE_TYPE } = require("../types/promptSpaceTypes");
 const { UserMeDto } = require("../dtos/userMeDto");
-const { REFRESH_TOKEN_EXPIRES_IN, APP_NAME } = require("../utils/constant");
+const {
+    REFRESH_TOKEN_EXPIRES_IN,
+    APP_NAME,
+    API_RESPONSE_CODE,
+} = require("../utils/constant");
 const PromptSpace = require("../models/promptSpaceModel");
 const crypto = require("crypto");
 const { default: mongoose } = require("mongoose");
@@ -330,7 +334,7 @@ const refreshUserToken = async ({ data, ipAddress, userAgent }) => {
 
     const userSession = await UserSession.findOne({
         userId,
-        refreshToken,
+        refreshToken: refreshToken,
         expiresAt: { $gt: now },
     });
 

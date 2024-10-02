@@ -9,6 +9,7 @@ const { UserLoginDto } = require("../dtos/userLoginDto");
 const { UserRegisterDto } = require("../dtos/userRegisterDto");
 const { TokenRefreshInputDto } = require("../dtos/tokenRefreshInputDto");
 const { OAuthLoginDto } = require("../dtos/oAuthLoginDto");
+const { API_RESPONSE_CODE } = require("../utils/constant");
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -76,25 +77,25 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 // token refresh
-exports.tokenRefresh = catchAsync(
-    catchAsync(async (req, res, next) => {
-        const ipAddress = req.ip;
-        const userAgent = req.get("User-Agent");
-        const { data, error } = await authService.refreshUserToken({
-            data: new TokenRefreshInputDto(req.body),
-            ipAddress,
-            userAgent,
-        });
+exports.tokenRefresh = catchAsync(async (req, res, next) => {
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error } = await authService.refreshUserToken({
+        data: new TokenRefreshInputDto(req.body),
+        ipAddress,
+        userAgent,
+    });
 
-        if (error) {
-            return next(error);
-        }
+    if (error) {
+        return next(
+            new AppError(error, 401, API_RESPONSE_CODE.invalidRefreshToken)
+        );
+    }
 
-        res.status(200).json({
-            data: data,
-        });
-    })
-);
+    res.status(200).json({
+        data: data,
+    });
+});
 
 //logout
 exports.logout = catchAsync(async (req, res, next) => {
@@ -144,7 +145,6 @@ exports.oAuthLogin = catchAsync(async (req, res, next) => {
  * If all checks pass, the user is allowed access to the protected route.
  */
 exports.protect = catchAsync(async (req, res, next) => {
-    // 1) Getting token and check of it's there
     let token;
     if (
         req.headers.authorization &&
@@ -162,9 +162,9 @@ exports.protect = catchAsync(async (req, res, next) => {
             )
         );
     }
-    // 2) Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    // 3) Check if user still exists
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
         return next(
@@ -174,7 +174,6 @@ exports.protect = catchAsync(async (req, res, next) => {
             )
         );
     }
-    // 4) Check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat)) {
         return next(
             new AppError(
