@@ -2,15 +2,17 @@ const { default: mongoose } = require("mongoose");
 
 const TwoFactorLogSchema = new mongoose.Schema(
     {
-        token: String,
         userId: { type: mongoose.Types.ObjectId, ref: "User" },
-        expiresAt: Date,
+        expiresAt: {
+            type: Date,
+            default: Date.now(),
+        },
         consumedAt: Date,
     },
     { timestamps: true }
 );
 
-TwoFactorLogSchema.index({ userId: 1, token: 1 });
+TwoFactorLogSchema.index({ userId: 1 });
 
 const TwoFactorLog = mongoose.model("TwoFactorLog", TwoFactorLogSchema);
 
