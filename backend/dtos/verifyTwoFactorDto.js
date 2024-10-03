@@ -3,7 +3,10 @@ const { BaseNoIdDto } = require("./baseNoIdDto");
 
 const verifyTwoFactorJoiSchema = Joi.object({
     verifyId: Joi.string().required(),
-    token: Joi.string().length(6).required(),
+    token: Joi.string()
+        .length(6)
+        .pattern(/^[0-9]*$/)
+        .required(),
 });
 
 class VerifyTwoFactorDto extends BaseNoIdDto {

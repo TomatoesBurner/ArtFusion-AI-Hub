@@ -580,7 +580,7 @@ const verifyTwoFactor = async ({ input, ipAddress, userAgent }) => {
 
     if (foundTwoFactorLog.expiresAt < now) {
         return {
-            error: new AppError("Token expired"),
+            error: new AppError("Token expired", 400),
         };
     }
 
