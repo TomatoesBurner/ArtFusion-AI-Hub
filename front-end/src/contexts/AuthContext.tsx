@@ -195,7 +195,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const anyLoading = getMeLoading;
 
-  if (!initialised || !initMe || anyLoading) {
+  if (!initialised || anyLoading || (loggedIn && !initMe)) {
     return <AppLoader />;
   }
 
