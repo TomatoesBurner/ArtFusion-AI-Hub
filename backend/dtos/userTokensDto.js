@@ -9,10 +9,12 @@ class UserTokensDto extends BaseDto {
             data;
         const accessTokenPayload = jwt.decode(accessToken);
         this.userId = userId;
-        this.accessToken = new TokenDto({
-            token: accessToken,
-            expiresAt: new Date(accessTokenPayload.exp * 1000),
-        });
+        this.accessToken = accessTokenPayload
+            ? new TokenDto({
+                  token: accessToken,
+                  expiresAt: new Date(accessTokenPayload.exp * 1000),
+              })
+            : null;
         this.refreshToken = new TokenDto({
             token: refreshToken,
             expiresAt: refreshTokenExpirsAt,

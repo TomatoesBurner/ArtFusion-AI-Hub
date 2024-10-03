@@ -311,7 +311,7 @@ const login = async ({ input, ipAddress, userAgent }) => {
             expiresAt: new Date(Date.now() + twoFactorAuthExpiresIn),
         });
         return {
-            data: new UserTokensDto({
+            data: new LoginResponseDto({
                 verifyId: twoFactorLog._id,
             }),
             code: API_RESPONSE_CODE.requireTwoFactor,
@@ -322,13 +322,15 @@ const login = async ({ input, ipAddress, userAgent }) => {
 
     await foundUser.save();
 
-    const tokenPair = await _generateTokenPair({
+    const { data: tokenPair } = await _generateTokenPair({
         user: foundUser,
         ipAddress,
         userAgent,
     });
 
-    return new LoginResponseDto(tokenPair);
+    return {
+        data: new LoginResponseDto(tokenPair),
+    };
 };
 
 /**
@@ -541,7 +543,7 @@ const enableTwoFactor = async ({ userId }) => {
     }
 
     // Speakeasy to generate the base32 secret
-    const secret = speakeasy.totp().base32;
+    const secret = speakeasy.generateSecret().base32;
 
     foundUser.totpSecret = secret;
 
@@ -550,13 +552,14 @@ const enableTwoFactor = async ({ userId }) => {
     // Create token for user to verify
     const twoFactorLog = await TwoFactorLog.create({
         userId: foundUser._id,
-        expiresAt: new Date(Date.now() + twoFactorAuthExpiresIn),
+        expiresAt: new Date(Date.now() + twoFactorAuthExpiresIn * 3),
     });
 
     const totpAuthUrl = speakeasy.otpauthURL({
         secret: secret,
         label: foundUser.email,
         issuer: appName,
+        encoding: "base32",
     });
 
     return {
@@ -568,7 +571,7 @@ const enableTwoFactor = async ({ userId }) => {
     };
 };
 
-const verifyTwoFactor = async ({ input, userId, ipAddress, userAgent }) => {
+const verifyTwoFactor = async ({ input, ipAddress, userAgent }) => {
     const { verifyId, token } = new VerifyTwoFactorDto(input);
 
     const foundTwoFactorLog = await TwoFactorLog.findById(verifyId);
@@ -583,20 +586,21 @@ const verifyTwoFactor = async ({ input, userId, ipAddress, userAgent }) => {
 
     if (foundTwoFactorLog.consumedAt) {
         return {
-            error: new AppError("Token already consumed"),
+            error: new AppError("Token already consumed", 400),
         };
     }
 
-    const foundUser = await User.findById(userId);
+    const foundUser = await User.findById(foundTwoFactorLog.userId);
 
     const isTokenValid = speakeasy.totp.verify({
         secret: foundUser.totpSecret,
         token: token,
+        encoding: "base32",
     });
 
     if (!isTokenValid) {
         return {
-            error: new AppError("Invalid token"),
+            error: new AppError("Invalid token", 400),
         };
     }
 
@@ -609,7 +613,7 @@ const verifyTwoFactor = async ({ input, userId, ipAddress, userAgent }) => {
         foundTwoFactorLog.consumedAt = now;
         await foundUser.save();
         await foundTwoFactorLog.save();
-        return null;
+        return {};
     } else {
         // Already enabled consume the token
         foundTwoFactorLog.consumedAt = now;

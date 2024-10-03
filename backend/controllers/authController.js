@@ -62,7 +62,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
     const ipAddress = req.ip;
     const userAgent = req.get("User-Agent");
-    const { data, error } = await authService.login({
+    const { data, error, code } = await authService.login({
         input: UserLoginDto.fromRequest(req.body),
         ipAddress,
         userAgent,
@@ -70,6 +70,18 @@ exports.login = catchAsync(async (req, res, next) => {
 
     if (error) {
         return next(error);
+    }
+
+    if (code) {
+        if (code === API_RESPONSE_CODE.requireTwoFactor) {
+            return res.status(200).json(
+                new ApiResponseDto({
+                    message: "Requires two factor authentication",
+                    code: code,
+                    data: data,
+                })
+            );
+        }
     }
 
     res.status(200).json({
@@ -140,7 +152,7 @@ exports.oAuthLogin = catchAsync(async (req, res, next) => {
 });
 
 exports.enableTwoFactor = catchAsync(async (req, res, next) => {
-    const { error } = await authService.enableTwoFactor({
+    const { error, data } = await authService.enableTwoFactor({
         userId: req.user._id,
     });
 
@@ -149,14 +161,17 @@ exports.enableTwoFactor = catchAsync(async (req, res, next) => {
     }
 
     res.status(200).json(
-        new ApiResponseDto({ status: "success", message: "Two factor enabled" })
+        new ApiResponseDto({
+            status: "success",
+            message: "Two factor enabled",
+            data: data,
+        })
     );
 });
 
 exports.verifyTwoFactor = catchAsync(async (req, res, next) => {
     const { error, data } = await authService.verifyTwoFactor({
         input: req.body,
-        userId: req.user._id,
         ipAddress: req.ip,
         userAgent: req.get("User-Agent"),
     });
