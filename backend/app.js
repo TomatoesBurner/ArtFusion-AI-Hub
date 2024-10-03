@@ -11,6 +11,7 @@ const helmet = require("helmet");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const userRouter = require("./routers/userRoutes"); //user
+const authRouter = require("./routers/authRoutes"); // auth
 const textToImageApiRoutes = require("./routers/textToImageApiRoutes"); //text to image api
 const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text to image api
 const imagePromptSpaceRoutes = require("./routers/imagePromptSpaceRoutes");
@@ -57,6 +58,8 @@ app.use(cors());
 //              ROUTES
 // ***************************************************
 app.use("/api/v1/users", userRouter);
+// Extra user auth routes
+app.use("/api/v1/auth", authRouter);
 // Text to image API
 app.use("/api/v1/image-prompt", textToImageApiRoutes);
 // Text to video API
