@@ -10,6 +10,7 @@ const { UserRegisterDto } = require("../dtos/userRegisterDto");
 const { TokenRefreshInputDto } = require("../dtos/tokenRefreshInputDto");
 const { OAuthLoginDto } = require("../dtos/oAuthLoginDto");
 const { API_RESPONSE_CODE } = require("../utils/constant");
+const { ApiResponseDto } = require("../dtos/apiResponseDto");
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -136,6 +137,41 @@ exports.oAuthLogin = catchAsync(async (req, res, next) => {
     res.status(200).json({
         data: data,
     });
+});
+
+exports.enableTwoFactor = catchAsync(async (req, res, next) => {
+    const { error } = await authService.enableTwoFactor({
+        userId: req.user._id,
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json(
+        new ApiResponseDto({ status: "success", message: "Two factor enabled" })
+    );
+});
+
+exports.verifyTwoFactor = catchAsync(async (req, res, next) => {
+    const { error, data } = await authService.verifyTwoFactor({
+        input: req.body,
+        userId: req.user._id,
+        ipAddress: req.ip,
+        userAgent: req.get("User-Agent"),
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json(
+        new ApiResponseDto({
+            status: "success",
+            data: data,
+            message: "Two factor verified",
+        })
+    );
 });
 
 /**

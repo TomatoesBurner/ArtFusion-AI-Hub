@@ -23,6 +23,7 @@ const TwoFactorLog = require("../models/twoFactorLogModel");
 const { ApiResponseDto } = require("../dtos/apiResponseDto");
 const { EnableTwoFactorDto } = require("../dtos/enableTwoFactorDto");
 const { VerifyTwoFactorDto } = require("../dtos/verifyTwoFactorDto");
+const { LoginResponseDto } = require("../dtos/loginResponseDto");
 
 const twoFactorAuthExpiresIn = process.env.TWO_FACTOR_AUTH_EXPIRES_IN
     ? process.env.TWO_FACTOR_AUTH_EXPIRES_IN * 1000
@@ -304,15 +305,30 @@ const login = async ({ input, ipAddress, userAgent }) => {
         };
     }
 
+    if (foundUser.totpVerifiedAt) {
+        const twoFactorLog = await TwoFactorLog.create({
+            userId: foundUser._id,
+            expiresAt: new Date(Date.now() + twoFactorAuthExpiresIn),
+        });
+        return {
+            data: new UserTokensDto({
+                verifyId: twoFactorLog._id,
+            }),
+            code: API_RESPONSE_CODE.requireTwoFactor,
+        };
+    }
+
     foundUser.lastLoginAt = Date.now();
 
     await foundUser.save();
 
-    return await _generateTokenPair({
+    const tokenPair = await _generateTokenPair({
         user: foundUser,
         ipAddress,
         userAgent,
     });
+
+    return new LoginResponseDto(tokenPair);
 };
 
 /**
@@ -593,7 +609,7 @@ const verifyTwoFactor = async ({ input, userId, ipAddress, userAgent }) => {
         foundTwoFactorLog.consumedAt = now;
         await foundUser.save();
         await foundTwoFactorLog.save();
-        return {};
+        return null;
     } else {
         // Already enabled consume the token
         foundTwoFactorLog.consumedAt = now;
