@@ -23,7 +23,7 @@ router.post(
 router.post("/logout/:token", authController.protect, authController.logout);
 
 router.post(
-    "/tokenRefresh",
+    "/token/refresh",
     reqDataValidate(tokenRefreshJoiSchema),
     authController.tokenRefresh
 );

@@ -16,7 +16,7 @@ const AuthGuardWrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }, [initialised, loggedIn, router]);
 
-  if (!loggedIn) {
+  if (!initialised || !loggedIn) {
     return <AppLoader />;
   }
 

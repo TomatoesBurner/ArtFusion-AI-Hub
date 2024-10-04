@@ -1,9 +1,14 @@
 const jwt = require("jsonwebtoken");
+const speakeasy = require("speakeasy");
 const AppError = require("../utils/appError");
 const User = require("../models/userModels");
 const { PROMPT_SPACE_TYPE } = require("../types/promptSpaceTypes");
 const { UserMeDto } = require("../dtos/userMeDto");
-const { REFRESH_TOKEN_EXPIRES_IN, APP_NAME } = require("../utils/constant");
+const {
+    REFRESH_TOKEN_EXPIRES_IN,
+    APP_NAME,
+    API_RESPONSE_CODE,
+} = require("../utils/constant");
 const PromptSpace = require("../models/promptSpaceModel");
 const crypto = require("crypto");
 const { default: mongoose } = require("mongoose");
@@ -14,6 +19,16 @@ const { AUTH_METHOD } = require("../types/authMethodTypes");
 const { UserRegisterDto } = require("../dtos/userRegisterDto");
 const { generateUsername } = require("unique-username-generator");
 const { default: axios } = require("axios");
+const TwoFactorLog = require("../models/twoFactorLogModel");
+const { ApiResponseDto } = require("../dtos/apiResponseDto");
+const { EnableTwoFactorDto } = require("../dtos/enableTwoFactorDto");
+const { VerifyTwoFactorDto } = require("../dtos/verifyTwoFactorDto");
+const { LoginResponseDto } = require("../dtos/loginResponseDto");
+
+const twoFactorAuthExpiresIn = process.env.TWO_FACTOR_AUTH_EXPIRES_IN
+    ? process.env.TWO_FACTOR_AUTH_EXPIRES_IN * 1000
+    : 2 * 60 * 1000;
+const appName = APP_NAME || "Art Fusion AI Hub API";
 
 const googleAuthClient = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
@@ -101,6 +116,13 @@ const _generateTokenPair = async ({ user, ipAddress, userAgent }) => {
     };
 };
 
+const _createHash64 = () => {
+    return crypto
+        .createHash("sha256")
+        .update(crypto.randomUUID())
+        .digest("hex");
+};
+
 /**
  * Generates a new random refresh token.
  *
@@ -109,10 +131,7 @@ const _generateTokenPair = async ({ user, ipAddress, userAgent }) => {
  * @returns {string} The generated token
  */
 const _createNewRefreshToken = () => {
-    return crypto
-        .createHash("sha256")
-        .update(crypto.randomUUID())
-        .digest("hex");
+    return _createHash64();
 };
 
 /**
@@ -286,15 +305,33 @@ const login = async ({ input, ipAddress, userAgent }) => {
         };
     }
 
+    if (foundUser.totpVerifiedAt) {
+        const twoFactorLog = await TwoFactorLog.create({
+            userId: foundUser._id,
+            expiresAt: new Date(Date.now() + twoFactorAuthExpiresIn),
+        });
+        return {
+            data: new LoginResponseDto({
+                verifyId: twoFactorLog._id,
+            }),
+            code: API_RESPONSE_CODE.requireTwoFactor,
+            expiresAt: twoFactorLog.expiresAt,
+        };
+    }
+
     foundUser.lastLoginAt = Date.now();
 
     await foundUser.save();
 
-    return await _generateTokenPair({
+    const { data: tokenPair } = await _generateTokenPair({
         user: foundUser,
         ipAddress,
         userAgent,
     });
+
+    return {
+        data: new LoginResponseDto(tokenPair),
+    };
 };
 
 /**
@@ -330,7 +367,7 @@ const refreshUserToken = async ({ data, ipAddress, userAgent }) => {
 
     const userSession = await UserSession.findOne({
         userId,
-        refreshToken,
+        refreshToken: refreshToken,
         expiresAt: { $gt: now },
     });
 
@@ -489,6 +526,108 @@ const userMe = async ({ userId }) => {
     };
 };
 
+const enableTwoFactor = async ({ userId }) => {
+    const foundUser = await User.findById(userId);
+
+    // User does exist
+    if (!foundUser) {
+        return {
+            error: new AppError("User not found", 400),
+        };
+    }
+
+    // Must not already have the two factor auth enabled
+    if (foundUser.totpVerifiedAt && foundUser.totpVerifiedAt < Date.now) {
+        return {
+            error: new AppError("Two factor auth is already enabled"),
+        };
+    }
+
+    // Speakeasy to generate the base32 secret
+    const secret = speakeasy.generateSecret().base32;
+
+    foundUser.totpSecret = secret;
+
+    await foundUser.save();
+
+    // Create token for user to verify
+    const twoFactorLog = await TwoFactorLog.create({
+        userId: foundUser._id,
+        expiresAt: new Date(Date.now() + twoFactorAuthExpiresIn * 3),
+    });
+
+    const totpAuthUrl = speakeasy.otpauthURL({
+        secret: secret,
+        label: foundUser.email,
+        issuer: appName,
+        encoding: "base32",
+    });
+
+    return {
+        data: new EnableTwoFactorDto({
+            verifyId: twoFactorLog._id,
+            secret: secret,
+            totpAuthUrl: totpAuthUrl,
+            expiresAt: twoFactorLog.expiresAt,
+        }),
+    };
+};
+
+const verifyTwoFactor = async ({ input, ipAddress, userAgent }) => {
+    const { verifyId, token } = new VerifyTwoFactorDto(input);
+
+    const foundTwoFactorLog = await TwoFactorLog.findById(verifyId);
+
+    const now = Date.now();
+
+    if (foundTwoFactorLog.expiresAt < now) {
+        return {
+            error: new AppError("Token expired", 400),
+        };
+    }
+
+    if (foundTwoFactorLog.consumedAt) {
+        return {
+            error: new AppError("Token already consumed", 400),
+        };
+    }
+
+    const foundUser = await User.findById(foundTwoFactorLog.userId);
+
+    const isTokenValid = speakeasy.totp.verify({
+        secret: foundUser.totpSecret,
+        token: token,
+        encoding: "base32",
+    });
+
+    if (!isTokenValid) {
+        return {
+            error: new AppError("Invalid token", 400),
+        };
+    }
+
+    const userEnabledTwoFactor =
+        foundUser.totpVerifiedAt && foundUser.totpVerifiedAt < now;
+
+    if (!userEnabledTwoFactor) {
+        // Note enabled, user verify enable action
+        foundUser.totpVerifiedAt = now;
+        foundTwoFactorLog.consumedAt = now;
+        await foundUser.save();
+        await foundTwoFactorLog.save();
+        return {};
+    } else {
+        // Already enabled consume the token
+        foundTwoFactorLog.consumedAt = now;
+        await foundTwoFactorLog.save();
+        return await _generateTokenPair({
+            user: foundUser,
+            ipAddress,
+            userAgent,
+        });
+    }
+};
+
 module.exports = {
     register,
     login,
@@ -496,4 +635,6 @@ module.exports = {
     logout,
     oAuthLogin,
     userMe,
+    enableTwoFactor,
+    verifyTwoFactor,
 };
