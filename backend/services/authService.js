@@ -315,6 +315,7 @@ const login = async ({ input, ipAddress, userAgent }) => {
                 verifyId: twoFactorLog._id,
             }),
             code: API_RESPONSE_CODE.requireTwoFactor,
+            expiresAt: twoFactorLog.expiresAt,
         };
     }
 
@@ -567,6 +568,7 @@ const enableTwoFactor = async ({ userId }) => {
             verifyId: twoFactorLog._id,
             secret: secret,
             totpAuthUrl: totpAuthUrl,
+            expiresAt: twoFactorLog.expiresAt,
         }),
     };
 };

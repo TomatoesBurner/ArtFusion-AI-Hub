@@ -6,6 +6,7 @@ class EnableTwoFactorDto extends BaseNoIdDto {
         this.verifyId = data.verifyId;
         this.secret = data.secret;
         this.totpAuthUrl = data.totpAuthUrl;
+        this.expiresAt = data.expiresAt;
     }
 }
 

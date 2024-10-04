@@ -7,6 +7,7 @@ class LoginResponseDto extends UserTokensDto {
         this.accessToken = data.accessToken;
         this.refreshToken = data.refreshToken;
         this.verifyId = data.verifyId;
+        this.expiresAt = data.expiresAt;
     }
 }
 
