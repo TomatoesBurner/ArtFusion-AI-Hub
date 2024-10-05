@@ -1,5 +1,9 @@
 import useAuth from "@/hooks/useAuth";
-import { AccountCircle, Logout, Settings } from "@mui/icons-material";
+import {
+  AccountCircle,
+  Logout,
+  Settings as SettingsIcon,
+} from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -12,6 +16,7 @@ import {
 } from "@mui/material";
 import React, { memo, useState } from "react";
 import Profile from "./Profile";
+import Settings from "./Settings";
 
 const UserPopover = () => {
   const { logout, user } = useAuth();
@@ -19,6 +24,8 @@ const UserPopover = () => {
     null
   );
   const [showProfile, setShowProfile] = useState(false);
+
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleUserMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,10 +38,13 @@ const UserPopover = () => {
 
   const handleProfileClick = () => {
     setShowProfile(true);
+    setShowSettings(false); // Ensure Settings is closed when opening Profile
     setAnchorEl(null);
   };
 
   const handleSettingsClick = () => {
+    setShowSettings(true);
+    setShowProfile(false); // Ensure Profile is closed when opening Settings
     setAnchorEl(null);
   };
 
@@ -42,6 +52,10 @@ const UserPopover = () => {
 
   const handleCloseProfile = () => {
     setShowProfile(false); // close Profile
+  };
+
+  const handleCloseSettings = () => {
+    setShowSettings(false); // Close Settings
   };
 
   return (
@@ -69,7 +83,7 @@ const UserPopover = () => {
 
         <MenuItem onClick={handleSettingsClick}>
           <ListItemIcon>
-            <Settings />
+            <SettingsIcon />
           </ListItemIcon>
           <ListItemText>Settings</ListItemText>
         </MenuItem>
@@ -83,6 +97,7 @@ const UserPopover = () => {
       </Menu>
 
       {showProfile && <Profile onClose={handleCloseProfile} />}
+      {showSettings && <Settings onClose={handleCloseSettings} />}
     </>
   );
 };

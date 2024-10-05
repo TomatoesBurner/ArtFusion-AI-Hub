@@ -84,11 +84,6 @@ const Profile = ({ onClose }) => {
               variant="outlined"
             />
           </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
-              Update Profile
-            </Button>
-          </Grid>
         </Grid>
       </form>
     </Container>
