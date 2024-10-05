@@ -10,13 +10,15 @@ import {
   MenuItem,
   Popover,
 } from "@mui/material";
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
+import Profile from "./Profile";
 
 const UserPopover = () => {
   const { logout, user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [showProfile, setShowProfile] = useState(false);
 
   const handleUserMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -28,6 +30,7 @@ const UserPopover = () => {
   };
 
   const handleProfileClick = () => {
+    setShowProfile(true);
     setAnchorEl(null);
   };
 
@@ -36,6 +39,10 @@ const UserPopover = () => {
   };
 
   const initials = `${user?.lastName[0]}${user?.firstName[0]}`.toUpperCase();
+
+  const handleCloseProfile = () => {
+    setShowProfile(false); // close Profile
+  };
 
   return (
     <>
@@ -74,6 +81,8 @@ const UserPopover = () => {
           <ListItemText>Logout</ListItemText>
         </MenuItem>
       </Menu>
+
+      {showProfile && <Profile onClose={handleCloseProfile} />}
     </>
   );
 };
