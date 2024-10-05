@@ -1,7 +1,5 @@
-//HOW TO CALL THIS API
-//Make a POST request with body for example: {"text_prompt": "A young boy eating a chocolate"}
-//Send the request to this API URL: http://localhost:3000/api/vi/image-prompt
-//You can test the API with Postman
+//API docs can be access in: https://documenter.getpostman.com/view/34479210/2sAXqs83D2
+
 
 const express = require("express");
 const router = express.Router();
@@ -61,7 +59,7 @@ router.post("/backup", async (req, res) => {
             "Content-Type": "application/json",
         },
         data: {
-            key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l", // Replace with actual API key
+            key: "XTBQisoBZAhY5En42W74MjvTrN8dAazWV8udk5KpoF29dhG3xijjculBExZf", // Replace with actual API key
             prompt: text_prompt, // Using the user-provided prompt
             negative_prompt: "bad quality",
             width: "512",
@@ -87,7 +85,8 @@ router.post("/backup", async (req, res) => {
             data: {
                 image_url: response.data.output,
             },
-            message: "Image generation success.",
+            message: response.data.message ? response.data.message: 
+            "Image generation success",
         });
     } catch (error) {
         console.error("API call failed:", error);
