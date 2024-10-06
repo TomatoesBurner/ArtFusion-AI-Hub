@@ -13,7 +13,14 @@ const {
     createObjectKeyFromImage,
     uploadImageToS3,
     getPresignedUrlForGet,
+    getPresignedUrlForPut,
 } = require("./awsS3Service");
+const {
+    CreateArgumentImagePromptResponseDto,
+} = require("../dtos/createArgumentImagePromptResponseDto");
+const {
+    ArgumentImagePromptResponseDto,
+} = require("../dtos/argumentImagePromptResponseDto");
 
 const modelsLabeTextToImageUrl =
     process.env.MODELS_LAB_TEXT_TO_IMAGE_URL ||
@@ -53,7 +60,7 @@ const generatePresignedUrlForImagePromptDto = async (imagePromptDto) => {
     const argumentResponses = imagePromptDto.argumentResponses;
     if (argumentResponses) {
         for (const argumentResponse of argumentResponses) {
-            argumentResponse.response.imageUrl = await getPresignedUrlForGet(
+            argumentResponse.imageUrl = await getPresignedUrlForGet(
                 createObjectKeyFromImage(
                     argumentResponse.id || argumentResponse._id,
                     argumentResponse.extension
@@ -238,10 +245,78 @@ const createImagePrompt = async ({ input, ipsId, userId }) => {
     };
 };
 
-const createNewFilteredImage = async ({}) => {};
+/**
+ * Creates a new filtered image based on the given input and saves it to the
+ * database. The user must have the permission on the image prompt space
+ * specified in the url. The image prompt is part of the prompt space.
+ *
+ * @param {{ input: CreateArgumentImagePromptResponseDto, ipsId: string, ipId: string, userId: string }} options - The input data
+ * @returns {Promise<{ data: ArgumentImagePromptResponseDto, error: AppError }>} The created filtered image with a presigned URL
+ * or an error if something went wrong
+ */
+const createNewFilteredImage = async ({ input, ipsId, ipId, userId }) => {
+    const { filters, extension } =
+        CreateArgumentImagePromptResponseDto.fromRequest(input);
+
+    // User has the permission on the image prompt space specified in the url
+    const imagePromptSpace = await PromptSpace.findOne({
+        _id: ipsId,
+        users: { $in: [userId] },
+        type: PROMPT_SPACE_TYPE.Image,
+    });
+
+    if (!imagePromptSpace) {
+        return {
+            error: new AppError("Image prompt space not found", 404),
+        };
+    }
+
+    // The image prompt is part of the promt space
+    const imagePrompt = await ImagePrompt.findOne({
+        _id: ipId,
+        promptSpaceId: ipsId,
+    });
+
+    if (!imagePrompt) {
+        return {
+            error: new AppError("Image prompt not found", 404),
+        };
+    }
+
+    // Add the new, create and save to get the id
+    imagePrompt.argumentResponses.push({
+        extension: extension,
+        filters: filters,
+        createdBy: userId,
+    });
+
+    await imagePrompt.save();
+
+    const newArgumentImageResponse =
+        imagePrompt.argumentResponses[imagePrompt.argumentResponses.length - 1];
+
+    // Get the keys and then create presigned url for the image for both get and
+    //  put
+    const newArgumentImageResponseDto =
+        ArgumentImagePromptResponseDto.fromModel(newArgumentImageResponse);
+
+    const argumentImageObjKey = createObjectKeyFromImage(
+        newArgumentImageResponseDto.id,
+        newArgumentImageResponseDto.extension
+    );
+
+    newArgumentImageResponseDto.imageUrl =
+        await getPresignedUrlForGet(argumentImageObjKey);
+    newArgumentImageResponseDto.uploadUrl =
+        await getPresignedUrlForPut(argumentImageObjKey);
+
+    return {
+        data: newArgumentImageResponseDto,
+    };
+};
 
 module.exports = {
-    createNewFilteredImage,
     getAllImagePrompts,
     createImagePrompt,
+    createNewFilteredImage,
 };

@@ -41,6 +41,7 @@ const createNewFilteredImage = catchAsync(async (req, res, next) => {
     const { data, error } = await imagePromptService.createNewFilteredImage({
         input: req.body,
         ipsId: req.params.ipsId,
+        ipId: req.params.ipId,
         userId: req.user._id,
     });
 
@@ -54,6 +55,7 @@ const createNewFilteredImage = catchAsync(async (req, res, next) => {
 const controller = {
     getAllImagePrompts,
     createImagePrompt,
+    createNewFilteredImage,
 };
 
 module.exports = controller;
