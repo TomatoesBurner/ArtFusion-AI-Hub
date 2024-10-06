@@ -31,7 +31,7 @@ const image_creation = () => {
     try {
       // send a POST request to the backend
       const response = await axios.post(
-        "http://localhost:3000/api/v1/image-prompt",
+        "http://localhost:3001/api/v1/image-prompt",
         {
           text_prompt: prompt,
         }
