@@ -19,11 +19,30 @@ const modelsLabeTextToImageUrl =
     process.env.MODELS_LAB_TEXT_TO_IMAGE_URL ||
     "https://modelslab.com/api/v6/realtime/text2img";
 
+/**
+ * Generates the full message for the image prompt from the given input.
+ * The full message is a concat of the input (or the settings) and the actual
+ * message.
+ *
+ * This is used to generate full message that will be send to the actual
+ * external API to generate image.
+ *
+ * @param {ImagePromptCreateDto} input - The input data
+ * @returns {string} The full message
+ */
+
 const generateImagePromptFullMessage = (input) => {
     const { width, height, dpi, aspectRatio, message, model } = input;
     return `${message}. Settings: dpi=${dpi}, aspectRatio=${aspectRatio}, model=${model}`;
 };
 
+/**
+ * Generates presigned URLs for an image prompt response and all its argument
+ * responses. To be used when returning response as dto to user.
+ *
+ * @param {ImagePromptDto} imagePromptDto - The image prompt response
+ * @returns {Promise<void>}
+ */
 const generatePresignedUrlForImagePromptDto = async (imagePromptDto) => {
     imagePromptDto.response.imageUrl = await getPresignedUrlForGet(
         createObjectKeyFromImage(
@@ -44,6 +63,14 @@ const generatePresignedUrlForImagePromptDto = async (imagePromptDto) => {
     }
 };
 
+/**
+ * Gets all image prompts for the given user in the given image prompt space.
+ *
+ * Supports pagination.
+ *
+ * @param {{ input: GetAllImagePromptsInputDto, userId: string, ipsId: string }} options - The input data
+ * @returns {Promise<{ data: ImagePromptDto[], error: AppError, pagination: PaginationResponseDto }>} The found image prompts
+ */
 const getAllImagePrompts = async ({ input, userId, ipsId }) => {
     const { cursor, limit } = GetAllImagePromptsInputDto.fromRequest(input);
 
@@ -98,6 +125,14 @@ const getAllImagePrompts = async ({ input, userId, ipsId }) => {
     };
 };
 
+/**
+ * Creates a new image prompt based on the given input and saves it to the
+ * database.
+ *
+ * @param {{ input: ImagePromptCreateDto, ipsId: string, userId: string }} options - The input data
+ * @returns {Promise<{ data: ImagePromptDto, error: AppError }>} The created image prompt with a presigned URL
+ * or an error if something went wrong
+ */
 const createImagePrompt = async ({ input, ipsId, userId }) => {
     const cipInput = ImagePromptCreateDto.fromRequest(input);
     const { width, height, dpi, aspectRatio, message, model } = cipInput;
@@ -203,7 +238,10 @@ const createImagePrompt = async ({ input, ipsId, userId }) => {
     };
 };
 
+const createNewFilteredImage = async ({}) => {};
+
 module.exports = {
+    createNewFilteredImage,
     getAllImagePrompts,
     createImagePrompt,
 };
