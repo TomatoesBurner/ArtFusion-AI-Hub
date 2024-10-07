@@ -8,7 +8,7 @@ const getAllVideoPrompts = catchAsync(async (req, res, next) => {
                 ...req.query,
             },
             userId: req.user._id,
-            ipsId: req.params.ipsId,
+            vpsId: req.params.vpsId,
         });
 
     if (error) {

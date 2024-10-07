@@ -9,14 +9,14 @@ const router = express.Router();
 
 // /:ipsId/video-prompts?cursor="123"&limit=10
 router.get(
-    "/:ipsId/videoPrompts",
+    "/:vpsId/videoPrompts",
     authController.protect,
     reqDataValidate(paginationInputJoiSchema, "query"),
     videoPromptController.getAllVideoPrompts
 );
 
 router.post(
-    "/:ipsId/videoPrompts",
+    "/:vpsId/videoPrompts",
     authController.protect,
     reqDataValidate(videoPromptCreateJoiSchema),
     videoPromptController.createVideoPrompt
