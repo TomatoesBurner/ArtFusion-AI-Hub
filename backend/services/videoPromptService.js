@@ -6,7 +6,7 @@ const VideoPrompt = require("../models/videoPromptModel");
 const {
     getPresignedUrlForGet,
     createObjectKeyFromVideo,
-    ploadVideoToS3,
+    uploadFileToS3,
 } = require("./awsS3Service");
 
 const generateVideoPromptFullMessage = (input) => {
@@ -94,7 +94,7 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
             newVideoPrompt.response.extension
         );
 
-        await uploadVideoToS3(responseVideoBuffer, responseObjectKey);
+        await uploadFileToS3(responseVideoBuffer, responseObjectKey);
         await newVideoPrompt.save();
 
         const videoPromptDto = VideoPromptDto.fromModel(newVideoPrompt);
