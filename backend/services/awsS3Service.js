@@ -23,6 +23,10 @@ const createObjectKeyFromImage = (imageName, extension) => {
     return "images/" + imageName + "." + extension;
 };
 
+const createObjectKeyFromVideo = (videoName, extension) => {
+    return "video/" + videoName + "." + extension;
+};
+
 const getPresignedUrlForGet = async (key) => {
     const command = new GetObjectCommand({
         Bucket: bucketName,
