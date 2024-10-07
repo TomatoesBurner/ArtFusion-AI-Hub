@@ -51,6 +51,12 @@ const FeaturesSection = () => {
         </Box>
       </Box>
 
+      {/* TODO: Haz can you check below the manage page are we going to have?
+        Don't think we will have a video edit. The image edit, which will only 
+        be applying filter effects, like gray scale and blur. This is currently 
+        planned to be done inside the images create page as a modal when clicked
+         on one of the generated image.
+      */}
       <Box
         sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}
       >
