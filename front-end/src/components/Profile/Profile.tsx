@@ -10,24 +10,34 @@ import {
   Paper,
   Grid,
   Box,
+  MenuItem,
 } from "@mui/material";
 
 const Profile = ({ onClose }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
+  // Initialize form data with user details from the Redux store
   const [formData, setFormData] = useState({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
     name: user.name || "",
     email: user.email || "",
+    themeMode: user.themeMode || "dark",
   });
 
   useEffect(() => {
+    // Update form data when user info changes
     setFormData({
+      firstName: user.firstName,
+      lastName: user.lastName,
       name: user.name,
       email: user.email,
+      themeMode: user.themeMode,
     });
   }, [user]);
 
+  // Handle form field changes
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -36,10 +46,12 @@ const Profile = ({ onClose }) => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       await UserApi.updateUser(formData);
+      // Update the Redux store with the updated user info
       dispatch(userSliceActions.setUser({ user: formData }));
       alert("Profile updated successfully!");
       onClose();
@@ -63,10 +75,30 @@ const Profile = ({ onClose }) => {
       </Box>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="First Name"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Last Name"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              variant="outlined"
+            />
+          </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Name"
+              label="Display Name"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -84,7 +116,26 @@ const Profile = ({ onClose }) => {
               variant="outlined"
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              select
+              fullWidth
+              label="Theme Mode"
+              name="themeMode"
+              value={formData.themeMode}
+              onChange={handleChange}
+              variant="outlined"
+            >
+              <MenuItem value="light">Light</MenuItem>
+              <MenuItem value="dark">Dark</MenuItem>
+            </TextField>
+          </Grid>
         </Grid>
+        <Box mt={3}>
+          <Button type="submit" variant="contained" color="primary">
+            Save Changes
+          </Button>
+        </Box>
       </form>
     </Container>
   );

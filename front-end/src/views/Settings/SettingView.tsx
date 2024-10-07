@@ -12,14 +12,12 @@ import {
   Box,
   Switch,
   FormControlLabel,
-  FormGroup,
+  MenuItem,
 } from "@mui/material";
 
 interface User {
   name: string;
-  email: string;
-  notificationsEnabled: boolean;
-  language: string;
+  theme: string; // Add a theme property
   twoFactorEnabled: boolean;
 }
 
@@ -29,23 +27,24 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const [formData, setFormData] = useState<User>({
     name: user.name || "",
-    email: user.email || "",
-    notificationsEnabled: user.notificationsEnabled || false,
-    language: user.language || "English",
-    twoFactorEnabled: user.twoFactorEnabled || false, // Two-Factor Authentication state
+    theme: user.theme || "Light", // Default theme
+    twoFactorEnabled: user.twoFactorEnabled || false,
   });
 
   useEffect(() => {
-    setFormData({
-      name: user.name,
-      email: user.email,
-      notificationsEnabled: user.notificationsEnabled,
-      language: user.language,
-      twoFactorEnabled: user.twoFactorEnabled,
-    });
+    // Ensure that the user is defined before accessing properties
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        theme: user.theme || "Light", // Default theme
+        twoFactorEnabled: user.twoFactorEnabled || false,
+      });
+    }
   }, [user]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type, checked } = event.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -59,7 +58,7 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       await UserApi.updateUser(formData);
       dispatch(userSliceActions.setUser({ user: formData }));
       alert("Settings updated successfully!");
-      onClose(); // Close the Settings component after update
+      onClose(); // Close settings view
     } catch (error) {
       console.error("Failed to update settings:", error);
     }
@@ -89,41 +88,16 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              variant="outlined"
-              sx={{ marginBottom: 2 }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formData.notificationsEnabled}
-                  onChange={handleChange}
-                  name="notificationsEnabled"
-                />
-              }
-              label="Enable Notifications"
-              sx={{ marginBottom: 2 }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Preferred Language"
-              name="language"
-              value={formData.language}
+              label="Preferred Theme"
+              name="theme"
+              value={formData.theme}
               onChange={handleChange}
               variant="outlined"
               select
               sx={{ marginBottom: 2 }}
             >
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
+              <MenuItem value="Light">Light</MenuItem>
+              <MenuItem value="Dark">Dark</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={12}>
@@ -151,7 +125,10 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => alert("Reset link sent!")}
+              onClick={() => {
+                // Implement actual password reset logic here
+                alert("Reset link sent!");
+              }}
             >
               Forgot Password?
             </Button>
@@ -160,7 +137,14 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       </form>
       {/* Close Button */}
       <Box sx={{ position: "absolute", top: 16, right: 16 }}>
-        <Button variant="outlined" onClick={onClose}>
+        <Button
+          variant="outlined"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent event bubbling
+            console.log("Close button clicked"); // Log for debugging
+            onClose();
+          }}
+        >
           Close
         </Button>
       </Box>

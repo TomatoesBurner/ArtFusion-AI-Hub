@@ -1,3 +1,4 @@
+import React, { memo, useState, useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import {
   AccountCircle,
@@ -12,20 +13,18 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Popover,
 } from "@mui/material";
-import React, { memo, useState } from "react";
-import Profile from "./Profile";
-import Settings from "./Settings";
+import Profile from "../../Profile/Profile";
+import Settings from "@/app/(dashboard)/settings/page";
 
 const UserPopover = () => {
   const { logout, user } = useAuth();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
-  );
-  const [showProfile, setShowProfile] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [activeComponent, setActiveComponent] = useState<
+    "profile" | "settings" | null
+  >(null);
 
-  const [showSettings, setShowSettings] = useState(false);
+  const initials = `${user?.lastName[0]}${user?.firstName[0]}`.toUpperCase();
 
   const handleUserMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,26 +36,26 @@ const UserPopover = () => {
   };
 
   const handleProfileClick = () => {
-    setShowProfile(true);
-    setShowSettings(false); // Ensure Settings is closed when opening Profile
+    setActiveComponent("profile");
     setAnchorEl(null);
   };
 
   const handleSettingsClick = () => {
-    setShowSettings(true);
-    setShowProfile(false); // Ensure Profile is closed when opening Settings
+    setActiveComponent("settings");
     setAnchorEl(null);
   };
 
-  const initials = `${user?.lastName[0]}${user?.firstName[0]}`.toUpperCase();
-
   const handleCloseProfile = () => {
-    setShowProfile(false); // close Profile
+    setActiveComponent(null); // Close Profile
   };
 
   const handleCloseSettings = () => {
-    setShowSettings(false); // Close Settings
+    setActiveComponent(null); // Close Settings
   };
+
+  useEffect(() => {
+    console.log("Active component:", activeComponent);
+  }, [activeComponent]);
 
   return (
     <>
@@ -96,9 +95,14 @@ const UserPopover = () => {
         </MenuItem>
       </Menu>
 
-      {showProfile && <Profile onClose={handleCloseProfile} />}
-      {showSettings && <Settings onClose={handleCloseSettings} />}
+      {activeComponent === "profile" && (
+        <Profile onClose={handleCloseProfile} />
+      )}
+      {activeComponent === "settings" && (
+        <Settings onClose={handleCloseSettings} />
+      )}
     </>
   );
 };
+
 export default memo(UserPopover);
