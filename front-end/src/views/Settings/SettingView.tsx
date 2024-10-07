@@ -10,15 +10,12 @@ import {
   Paper,
   Grid,
   Box,
-  Switch,
-  FormControlLabel,
   MenuItem,
 } from "@mui/material";
 
 interface User {
   name: string;
   theme: string; // Add a theme property
-  twoFactorEnabled: boolean;
 }
 
 const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -27,17 +24,14 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const [formData, setFormData] = useState<User>({
     name: user.name || "",
-    theme: user.theme || "Light", // Default theme
-    twoFactorEnabled: user.twoFactorEnabled || false,
+    theme: user.theme || "Dark", // Default theme set to Dark
   });
 
   useEffect(() => {
-    // Ensure that the user is defined before accessing properties
     if (user) {
       setFormData({
         name: user.name || "",
-        theme: user.theme || "Light", // Default theme
-        twoFactorEnabled: user.twoFactorEnabled || false,
+        theme: user.theme || "Dark", // Default theme
       });
     }
   }, [user]);
@@ -45,22 +39,23 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, checked } = event.target;
+    const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await UserApi.updateUser(formData);
-      dispatch(userSliceActions.setUser({ user: formData }));
+      const response = await UserApi.updateUser(formData);
+      dispatch(userSliceActions.setUser({ user: response.data }));
       alert("Settings updated successfully!");
       onClose(); // Close settings view
     } catch (error) {
       console.error("Failed to update settings:", error);
+      alert("Failed to update settings. Please try again.");
     }
   };
 
@@ -101,19 +96,6 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </TextField>
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formData.twoFactorEnabled}
-                  onChange={handleChange}
-                  name="twoFactorEnabled"
-                />
-              }
-              label="Enable Two-Factor Authentication"
-              sx={{ marginBottom: 2 }}
-            />
-          </Grid>
-          <Grid item xs={12}>
             <Button
               type="submit"
               variant="contained"
@@ -126,8 +108,7 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               variant="outlined"
               color="secondary"
               onClick={() => {
-                // Implement actual password reset logic here
-                alert("Reset link sent!");
+                alert("Reset link sent!"); // Implement actual password reset logic here
               }}
             >
               Forgot Password?
@@ -141,7 +122,6 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           variant="outlined"
           onClick={(e) => {
             e.stopPropagation(); // Prevent event bubbling
-            console.log("Close button clicked"); // Log for debugging
             onClose();
           }}
         >
