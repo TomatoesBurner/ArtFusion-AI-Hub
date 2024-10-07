@@ -65,7 +65,7 @@ const Profile = ({ onClose }) => {
       component={Paper}
       sx={{ padding: 4, position: "relative", boxShadow: 3 }}
     >
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
         Profile
       </Typography>
       <Box sx={{ position: "absolute", top: 16, right: 16 }}>

@@ -116,18 +116,6 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </Grid>
         </Grid>
       </form>
-      {/* Close Button */}
-      <Box sx={{ position: "absolute", top: 16, right: 16 }}>
-        <Button
-          variant="outlined"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent event bubbling
-            onClose();
-          }}
-        >
-          Close
-        </Button>
-      </Box>
     </Container>
   );
 };

@@ -1,13 +1,8 @@
 import React from "react";
-import Profile from "@/components/Profile";
+import Profile from "@/components/Profile/Profile";
 
 const DashboardProfilePage = () => {
-  const handleClose = () => {
-    // Logic to handle closing profile, e.g., navigating away
-    console.log("Profile closed");
-  };
-
-  return <Profile onClose={handleClose} />;
+  return <Profile />;
 };
 
 export default DashboardProfilePage;
