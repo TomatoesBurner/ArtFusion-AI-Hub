@@ -47,7 +47,7 @@ const getPresignedUrlForPut = async (key) => {
     return url;
 };
 
-const uploadImageToS3 = async (buffer, fileName) => {
+const uploadFileToS3 = async (buffer, fileName) => {
     const params = {
         Bucket: bucketName,
         Key: fileName,
@@ -58,7 +58,7 @@ const uploadImageToS3 = async (buffer, fileName) => {
     try {
         const command = new PutObjectCommand(params);
         const data = await client.send(command);
-        console.log("Image uploaded successfully:", data);
+        console.log("files uploaded successfully:", data);
         return data;
     } catch (err) {
         console.error("Error uploading to S3:", err);
@@ -70,5 +70,5 @@ module.exports = {
     getPresignedUrlForGet,
     getPresignedUrlForPut,
     createObjectKeyFromImage,
-    uploadImageToS3,
+    uploadFileToS3,
 };

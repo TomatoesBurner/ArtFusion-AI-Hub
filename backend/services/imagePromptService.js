@@ -11,7 +11,7 @@ const { PaginationResponseDto } = require("../dtos/paginationResponseDto");
 const { default: axios } = require("axios");
 const {
     createObjectKeyFromImage,
-    uploadImageToS3,
+    uploadFileToS3,
     getPresignedUrlForGet,
 } = require("./awsS3Service");
 
@@ -190,7 +190,7 @@ const createImagePrompt = async ({ input, ipsId, userId }) => {
         newImagePrompt.response.extension
     );
 
-    await uploadImageToS3(responseImageBuffer, responseObjectKey);
+    await uploadFileToS3(responseImageBuffer, responseObjectKey);
 
     await newImagePrompt.save();
 
