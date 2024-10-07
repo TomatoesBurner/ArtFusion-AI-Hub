@@ -4,6 +4,9 @@ const imagePromptController = require("./../controllers/imagePromptController");
 const { reqDataValidate } = require("../middlewares/validationMiddleware");
 const { imagePromptCreateJoiSchema } = require("../dtos/imagePromptCreateDto");
 const { paginationInputJoiSchema } = require("../dtos/paginationInputDto");
+const {
+    createArgumentImagePromptResponseJoiSchema,
+} = require("../dtos/createArgumentImagePromptResponseDto");
 
 const router = express.Router();
 
@@ -14,11 +17,19 @@ router.get(
     reqDataValidate(paginationInputJoiSchema, "query"),
     imagePromptController.getAllImagePrompts
 );
+
 router.post(
     "/:ipsId/imagePrompts",
     authController.protect,
     reqDataValidate(imagePromptCreateJoiSchema),
     imagePromptController.createImagePrompt
+);
+
+router.post(
+    "/:ipsId/imagePrompts/:ipId/argumentResponse",
+    authController.protect,
+    reqDataValidate(createArgumentImagePromptResponseJoiSchema),
+    imagePromptController.createNewFilteredImage
 );
 
 // TODO: The image filtering functionality, creating a new image

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import {
   Box,
@@ -18,9 +16,17 @@ import VideoLibraryIcon from "@mui/icons-material/VideoLibrary"; // Video icon
 import SettingsIcon from "@mui/icons-material/Settings"; // Settings icon
 import UploadIcon from "@mui/icons-material/CloudUpload"; // Upload icon
 import DownloadIcon from "@mui/icons-material/CloudDownload"; // Download icon
+import DashBoardView from "@/views/DashBoard/DashBoardView";
 
 const UserDashboard = () => {
-  return <div>dashboard</div>;
+  return <DashBoardView />;
+
+  // TODO:
+  // Haz can you can check this. What is the use of the below, it has a side bar
+  //  and some other content. We already have a top app bar for navigation in
+  // the dashboard. The right side contents, how would they relate to our
+  // application data?
+
   // download
   const downloadFile = (filePath) => {
     const link = document.createElement("a");
