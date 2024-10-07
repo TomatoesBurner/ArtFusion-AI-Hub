@@ -1,6 +1,26 @@
 const catchAsync = require("../utils/catchAsync");
 const videoPromptService = require("../services/videoPromptService");
 
+const getAllVideoPrompts = catchAsync(async (req, res, next) => {
+    const { data, error, pagination } =
+        await videoPromptService.getAllVideoPrompts({
+            input: {
+                ...req.query,
+            },
+            userId: req.user._id,
+            ipsId: req.params.ipsId,
+        });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({
+        data: data,
+        pagination: pagination,
+    });
+});
+
 const createVideoPrompt = catchAsync(async (req, res, next) => {
     const { data, error } = await videoPromptService.createVideoPrompt({
         input: req.body,
@@ -21,4 +41,5 @@ const createVideoPrompt = catchAsync(async (req, res, next) => {
 
 module.exports = {
     createVideoPrompt,
+    getAllVideoPrompts,
 };

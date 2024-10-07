@@ -8,6 +8,11 @@ const {
     createObjectKeyFromVideo,
     uploadFileToS3,
 } = require("./awsS3Service");
+const { PaginationResponseDto } = require("../dtos/paginationResponseDto");
+const {
+    GetAllVideoPromptsInputDto,
+    VideoPromptDto,
+} = require("../dtos/videoPromptDto");
 
 const generateVideoPromptFullMessage = (input) => {
     const { message, samplingSteps, cfgScale, eta, fps } = input;
@@ -21,6 +26,60 @@ const generatePresignedUrlForVideoPromptDto = async (videoPromptDto) => {
             videoPromptDto.response.extension
         )
     );
+};
+
+const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
+    const { cursor, limit } = GetAllVideoPromptsInputDto.fromRequest(input);
+
+    const ips = await PromptSpace.findOne({
+        _id: ipsId,
+        users: { $in: [userId] },
+        type: PROMPT_SPACE_TYPE.Video,
+    });
+
+    if (!ips) {
+        return {
+            error: new AppError("Video prompt space not found", 404),
+        };
+    }
+
+    const query = {};
+    if (cursor) {
+        query._id = { $lt: cursor };
+    }
+
+    const videoPrompts = await VideoPrompt.find({
+        promptSpaceId: ipsId,
+        ...query,
+    })
+        .limit(limit + 1)
+        .sort({ createdAt: -1 })
+        .exec();
+
+    const hasNext = videoPrompts.length > limit;
+
+    if (hasNext) {
+        videoPrompts.pop();
+    }
+
+    const newCursor = videoPrompts[videoPrompts.length - 1]?._id;
+
+    const videoPromptDtos = [];
+
+    for (const videoPrompt of videoPrompts) {
+        const videoPromptDto = VideoPromptDto.fromModel(videoPrompt);
+        await generatePresignedUrlForVideoPromptDto(videoPromptDto);
+        videoPromptDtos.push(videoPromptDto);
+    }
+
+    return {
+        data: videoPromptDtos,
+        pagination: new PaginationResponseDto({
+            cursor: newCursor,
+            limit,
+            hasNext,
+        }),
+    };
 };
 
 const createVideoPrompt = async ({ input, ipsId, userId }) => {
@@ -56,9 +115,7 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
         ]);
 
         if (!result || !result.data || !result.data[0] || !result.data[0][0]) {
-            return {
-                error: new AppError("Video generation failed", 500),
-            };
+            throw new AppError("Video generation failed", 500);
         }
 
         const video_id = result.data[0][0].name;
@@ -112,5 +169,6 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
 };
 
 module.exports = {
+    getAllVideoPrompts,
     createVideoPrompt,
 };
