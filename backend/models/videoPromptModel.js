@@ -28,7 +28,7 @@ const VideoPromptInputSchema = new mongoose.Schema(
             aspectRatio: String,
             duration: Number,
             quality: {
-                type: string,
+                type: String,
                 enum: VIDEO_QUALITY_VALUES,
             },
         },
