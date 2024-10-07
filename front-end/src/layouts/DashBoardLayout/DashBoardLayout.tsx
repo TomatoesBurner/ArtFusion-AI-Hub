@@ -3,7 +3,7 @@
 import React from "react";
 import { Box, CssBaseline } from "@mui/material";
 import DashBoardAppBar from "@/components/DashBoardLayout/DashBoardAppBar/DashBoardAppBar";
-import DashBoardMainContent from "@/components/DashBoardLayout/DashBoardMainContent/DashBoardMainContent";
+import DashBoardMainContent from "@/views/DashBoardMainContent/DashBoardMainContentView";
 
 const DashBoardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
