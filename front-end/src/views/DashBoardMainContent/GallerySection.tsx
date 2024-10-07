@@ -27,7 +27,7 @@ const GallerySection = () => {
             }}
           >
             <img
-              src="images/gallery-1.jpg"
+              src="/images/gallery-1.jpg"
               alt="Image 1"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
@@ -39,7 +39,7 @@ const GallerySection = () => {
                 left: 0,
                 width: "100%",
               }}
-              onClick={() => downloadFile("images/gallery-1.jpg")}
+              onClick={() => downloadFile("/images/gallery-1.jpg")}
             >
               <DownloadIcon sx={{ marginRight: 1 }} /> Download
             </Button>
@@ -57,7 +57,7 @@ const GallerySection = () => {
             }}
           >
             <img
-              src="images/gallery-2.jpg"
+              src="/images/gallery-2.jpg"
               alt="Image 2"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
@@ -69,7 +69,7 @@ const GallerySection = () => {
                 left: 0,
                 width: "100%",
               }}
-              onClick={() => downloadFile("images/gallery-2.jpg")}
+              onClick={() => downloadFile("/images/gallery-2.jpg")}
             >
               <DownloadIcon sx={{ marginRight: 1 }} /> Download
             </Button>
@@ -87,7 +87,7 @@ const GallerySection = () => {
             }}
           >
             <video controls style={{ width: "100%", height: "100%" }}>
-              <source src="videos/gallery-3.mp4" type="video/mp4" />
+              <source src="/videos/gallery-3.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             <Button
@@ -98,7 +98,7 @@ const GallerySection = () => {
                 left: 0,
                 width: "100%",
               }}
-              onClick={() => downloadFile("videos/gallery-3.mp4")}
+              onClick={() => downloadFile("/videos/gallery-3.mp4")}
             >
               <DownloadIcon sx={{ marginRight: 1 }} /> Download
             </Button>
