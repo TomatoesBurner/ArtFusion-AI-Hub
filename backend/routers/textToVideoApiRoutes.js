@@ -63,21 +63,22 @@ router.post("/backup", async (req, res) => {
     }
 
     try {
-      const { Client } = await import("@gradio/client");
-        const app = await Client.connect("https://videocrafter-videocrafter.hf.space/");
+        const { Client } = await import("@gradio/client");
+        const app = await Client.connect(
+            "https://videocrafter-videocrafter.hf.space/"
+        );
 
         const result = await app.predict(1, [
             text_prompt,
-            16,          // Sampling steps (numeric value between 1 and 60)
-            15,          // CFG scale (numeric value between 1.0 and 30.0)
-            1,          // ETA (numeric value between 0.0 and 1.0)
-            5           // FPS (frames per second, between 4 and 32)
+            16, // Sampling steps (numeric value between 1 and 60)
+            15, // CFG scale (numeric value between 1.0 and 30.0)
+            1, // ETA (numeric value between 0.0 and 1.0)
+            5, // FPS (frames per second, between 4 and 32)
         ]);
 
-
-    
         var video_id = result.data[0][0].name;
-        var video_url = "https://videocrafter-videocrafter.hf.space/file=" + video_id;
+        var video_url =
+            "https://videocrafter-videocrafter.hf.space/file=" + video_id;
         // Output the generated video data
         console.log(result.data);
 

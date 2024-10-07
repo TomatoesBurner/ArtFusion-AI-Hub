@@ -25,13 +25,16 @@ const video_creation = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/text_to_video",
+        "http://localhost:3001/api/v1/video-prompt/backup",
         {
           text_prompt: prompt,
-          videoUrl: videoUrl,
         }
       );
-      setVideoUrl(response.data.videoUrl);
+      if (response.data && response.data.data && response.data.data.video_url) {
+        setVideoUrl(response.data.data.video_url);
+      } else {
+        console.error("Invalid response data:", response.data);
+      }
     } catch (error) {
       console.error("Fail to generate video:", error);
     } finally {

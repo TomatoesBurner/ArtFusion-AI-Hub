@@ -7,6 +7,11 @@ const GallerySection = () => {
     window.location.href = filePath;
   };
 
+  // TODO: Haz
+  // Need to connect the content of this with real application data, don't think
+  //  it makes much sense to display hard coded image. TODO: is to figure out
+  // what image goes here, we use a list of all the images the user generated
+  // here for them to download?
   return (
     <>
       <Typography variant="h6" sx={{ marginTop: 4 }}>
