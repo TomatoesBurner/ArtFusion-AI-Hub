@@ -15,6 +15,7 @@ const authRouter = require("./routers/authRoutes"); // auth
 const textToImageApiRoutes = require("./routers/textToImageApiRoutes"); //text to image api
 const textToVideoApiRoutes = require("./routers/textToVideoApiRoutes"); //text to image api
 const imagePromptSpaceRoutes = require("./routers/imagePromptSpaceRoutes");
+const videoPromptSpaceRoutes = require("./routers/videoPromptSpaceRoutes");
 
 const app = express();
 
@@ -60,11 +61,14 @@ app.use(cors());
 app.use("/api/v1/users", userRouter);
 // Extra user auth routes
 app.use("/api/v1/auth", authRouter);
-// Text to image API
+// Text to image API(for text api)
 app.use("/api/v1/image-prompt", textToImageApiRoutes);
-// Text to video API
+// Text to video API(for text api))
 app.use("/api/v1/video-prompt", textToVideoApiRoutes);
+//Text to image API
 app.use("/api/v1/imagePromptSpaces", imagePromptSpaceRoutes);
+// Text to video API
+app.use("/api/v1/videoPromptSpaces", videoPromptSpaceRoutes);
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });

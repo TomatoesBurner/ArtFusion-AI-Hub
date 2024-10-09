@@ -23,6 +23,10 @@ const createObjectKeyFromImage = (imageName, extension) => {
     return "images/" + imageName + "." + extension;
 };
 
+const createObjectKeyFromVideo = (videoName, extension) => {
+    return "videos/" + videoName + "." + extension;
+};
+
 const getPresignedUrlForGet = async (key) => {
     const command = new GetObjectCommand({
         Bucket: bucketName,
@@ -46,7 +50,6 @@ const getPresignedUrlForPut = async (key) => {
     });
     return url;
 };
-
 const uploadImageToS3 = async (buffer, fileName) => {
     const params = {
         Bucket: bucketName,
@@ -58,7 +61,26 @@ const uploadImageToS3 = async (buffer, fileName) => {
     try {
         const command = new PutObjectCommand(params);
         const data = await client.send(command);
-        console.log("Image uploaded successfully:", data);
+        console.log("files uploaded successfully:", data);
+        return data;
+    } catch (err) {
+        console.error("Error uploading to S3:", err);
+        throw err;
+    }
+};
+
+const uploadFileToS3 = async (buffer, fileName) => {
+    const params = {
+        Bucket: bucketName,
+        Key: fileName,
+        Body: buffer,
+        ContentType: mime.lookup(fileName) || "application/octet-stream",
+    };
+
+    try {
+        const command = new PutObjectCommand(params);
+        const data = await client.send(command);
+        console.log("files uploaded successfully:", data);
         return data;
     } catch (err) {
         console.error("Error uploading to S3:", err);
@@ -70,5 +92,6 @@ module.exports = {
     getPresignedUrlForGet,
     getPresignedUrlForPut,
     createObjectKeyFromImage,
+    uploadFileToS3,
     uploadImageToS3,
 };
