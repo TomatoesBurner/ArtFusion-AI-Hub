@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserApi } from "@/api/userApi";
@@ -12,10 +14,11 @@ import {
   Box,
   MenuItem,
 } from "@mui/material";
+import { RootState } from "@/store/store";
 
-const Profile = ({ onClose }) => {
+const Profile = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: RootState) => state.user);
 
   // Initialize form data with user details from the Redux store
   const [formData, setFormData] = useState({
@@ -38,7 +41,7 @@ const Profile = ({ onClose }) => {
   }, [user]);
 
   // Handle form field changes
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     const { name, value } = event.target;
     setFormData({
       ...formData,
@@ -47,14 +50,13 @@ const Profile = ({ onClose }) => {
   };
 
   // Handle form submission
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
     try {
       await UserApi.updateUser(formData);
       // Update the Redux store with the updated user info
-      dispatch(userSliceActions.setUser({ user: formData }));
+      // dispatch(userSliceActions.setUser({ user: formData }));
       alert("Profile updated successfully!");
-      onClose();
     } catch (error) {
       console.error("Failed to update profile:", error);
     }
@@ -65,18 +67,19 @@ const Profile = ({ onClose }) => {
       component={Paper}
       sx={{ padding: 4, position: "relative", boxShadow: 3 }}
     >
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ fontWeight: "bold", marginBottom: 3 }}
+      >
         Profile
       </Typography>
-      <Box sx={{ position: "absolute", top: 16, right: 16 }}>
-        <Button variant="outlined" onClick={onClose}>
-          Close
-        </Button>
-      </Box>
+      <Box sx={{ position: "absolute", top: 16, right: 16 }}></Box>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
+              disabled
               fullWidth
               label="First Name"
               name="firstName"
@@ -87,6 +90,7 @@ const Profile = ({ onClose }) => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              disabled
               fullWidth
               label="Last Name"
               name="lastName"
@@ -97,6 +101,7 @@ const Profile = ({ onClose }) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              disabled
               fullWidth
               label="Display Name"
               name="name"
@@ -107,6 +112,7 @@ const Profile = ({ onClose }) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              disabled
               fullWidth
               label="Email"
               name="email"
@@ -118,6 +124,7 @@ const Profile = ({ onClose }) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              disabled
               select
               fullWidth
               label="Theme Mode"
@@ -125,6 +132,7 @@ const Profile = ({ onClose }) => {
               value={formData.themeMode}
               onChange={handleChange}
               variant="outlined"
+              sx={{ marginBottom: 1 }}
             >
               <MenuItem value="light">Light</MenuItem>
               <MenuItem value="dark">Dark</MenuItem>

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UserApi } from "@/api/userApi";
@@ -12,13 +14,14 @@ import {
   Box,
   MenuItem,
 } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 
 interface User {
   name: string;
   theme: string; // Add a theme property
 }
 
-const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: { user: User }) => state.user);
 
@@ -46,16 +49,21 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     }));
   };
 
+  const handleThemeChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    console.log(event.target.value);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const response = await UserApi.updateUser(formData);
-      dispatch(userSliceActions.setUser({ user: response.data }));
-      alert("Settings updated successfully!");
-      onClose(); // Close settings view
+      // dispatch(userSliceActions.setUser({ user: response.data }));
+      enqueueSnackbar("Invalid credentials", { variant: "error" });
     } catch (error) {
       console.error("Failed to update settings:", error);
-      alert("Failed to update settings. Please try again.");
+      enqueueSnackbar("Invalid credentials", { variant: "error" });
     }
   };
 
@@ -64,7 +72,11 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       component={Paper}
       sx={{ padding: 4, borderRadius: 2, boxShadow: 3 }}
     >
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ fontWeight: "bold", marginBottom: 3 }}
+      >
         Settings
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -86,10 +98,10 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               label="Preferred Theme"
               name="theme"
               value={formData.theme}
-              onChange={handleChange}
+              onChange={handleThemeChange}
               variant="outlined"
               select
-              sx={{ marginBottom: 2 }}
+              sx={{ marginBottom: 3 }}
             >
               <MenuItem value="Light">Light</MenuItem>
               <MenuItem value="Dark">Dark</MenuItem>
@@ -108,7 +120,8 @@ const Settings: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               variant="outlined"
               color="secondary"
               onClick={() => {
-                alert("Reset link sent!"); // Implement actual password reset logic here
+                // alert("Reset link sent!"); // Implement actual password reset logic here
+                enqueueSnackbar("Invalid credentials", { variant: "error" });
               }}
             >
               Forgot Password?

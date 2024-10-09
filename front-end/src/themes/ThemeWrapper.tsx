@@ -9,7 +9,7 @@ const ThemeWrapper = ({ children }: { children: React.ReactNode }) => {
   //   const mode: MuiThemeMode = "dark";
   const mode: MuiThemeMode = useSelector(
     (state: RootState) => state.user.themeMode
-  );
+  ) as MuiThemeMode;
 
   const theme = useMemo(() => {
     return getMuiTheme(mode);

@@ -7,6 +7,8 @@ export const APP_PATH = {
   IMAGES: "/images",
   CREATE_VIDEOS: "/videos/create",
   CREATE_IMAGES: "/images/create",
+  SETTINGS: "/settings",
+  PROFILE: "/settings/profile",
 };
 
 export const AUTH_METHOD = {
