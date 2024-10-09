@@ -1,4 +1,5 @@
 import useAuth from "@/hooks/useAuth";
+import { APP_PATH } from "@/utils/constant";
 import { AccountCircle, Logout, Settings } from "@mui/icons-material";
 import {
   Avatar,
@@ -10,9 +11,12 @@ import {
   MenuItem,
   Popover,
 } from "@mui/material";
+import { usePathname, useRouter } from "next/navigation";
 import React, { memo } from "react";
 
 const UserPopover = () => {
+  const pathName = usePathname();
+  const router = useRouter();
   const { logout, user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -29,10 +33,12 @@ const UserPopover = () => {
 
   const handleProfileClick = () => {
     setAnchorEl(null);
+    router.push(APP_PATH.PROFILE);
   };
 
   const handleSettingsClick = () => {
     setAnchorEl(null);
+    router.push(APP_PATH.SETTINGS);
   };
 
   const initials = `${user?.lastName[0]}${user?.firstName[0]}`.toUpperCase();
@@ -53,14 +59,20 @@ const UserPopover = () => {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={handleProfileClick}>
+        <MenuItem
+          selected={pathName == APP_PATH.PROFILE}
+          onClick={handleProfileClick}
+        >
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={handleSettingsClick}>
+        <MenuItem
+          selected={pathName == APP_PATH.SETTINGS}
+          onClick={handleSettingsClick}
+        >
           <ListItemIcon>
             <Settings />
           </ListItemIcon>
