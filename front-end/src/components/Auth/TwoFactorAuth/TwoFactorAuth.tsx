@@ -71,6 +71,19 @@ const TwoFactorAuth = ({
     }
   };
 
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Check if the input is a valid number (6 digits)
+    if (/^\d{0,6}$/.test(value)) {
+      setCode(value);
+    } else {
+      enqueueSnackbar("Invalid input: Please enter numbers only", {
+        variant: "error",
+      });
+    }
+  };
+
   return (
     <>
       <Typography variant="h5" mb={3}>
@@ -84,7 +97,7 @@ const TwoFactorAuth = ({
         label="2FA Code"
         value={code}
         inputProps={{ maxlength: 6 }}
-        onChange={(e) => setCode(e.target.value)}
+        onChange={handleCodeChange}
         required
         fullWidth
         sx={{ mb: 2 }}
