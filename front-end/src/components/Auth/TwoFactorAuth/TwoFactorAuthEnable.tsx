@@ -39,17 +39,31 @@ const TwoFactorAuthEnable = ({
   };
 
   return (
-    <Paper sx={{ padding: 3 }}>
+    <Paper sx={{ padding: 3, textAlign: "center" }}>
       <Typography variant="h5" mb={3}>
-        Scan the below QR Code :
-      </Typography>
-      {/* TODO: below display qr code  */}
-      <QRCode value={totpAuthUrl || ""} />
-      <Typography variant="h5" mb={3}>
-        Or save below secret
+        Scan the QR Code to set up Two-Factor Authentication:
       </Typography>
 
+      {/* Instructions */}
+      <Typography variant="body2" mb={2}>
+        Use your authenticator app to scan the QR code above. If you cannot scan
+        the QR code, you can enter the secret manually.
+      </Typography>
+
+      {/* QR Code container with styling */}
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+        <QRCode
+          value={totpAuthUrl || ""}
+          size={256}
+          style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+        />
+      </Box>
+
       <Typography variant="h5" mb={3}>
+        Or save the following secret:
+      </Typography>
+
+      <Typography variant="h6" mb={3}>
         {secret}
       </Typography>
 
@@ -58,7 +72,7 @@ const TwoFactorAuthEnable = ({
         expiresAt={expiresAt}
         onVerify={handleEnableVerify}
         mode="enable"
-      ></TwoFactorAuth>
+      />
     </Paper>
   );
 };
