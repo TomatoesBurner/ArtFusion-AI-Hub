@@ -14,11 +14,6 @@ const {
     VideoPromptDto,
 } = require("../dtos/videoPromptDto");
 
-const generateVideoPromptFullMessage = (input) => {
-    const { message, samplingSteps, cfgScale, eta, fps } = input;
-    return `${message}. Settings: samplingSteps=${samplingSteps}, cfgScale=${cfgScale}, eta=${eta}, fps=${fps}`;
-};
-
 const generatePresignedUrlForVideoPromptDto = async (videoPromptDto) => {
     videoPromptDto.response.videoUrl = await getPresignedUrlForGet(
         createObjectKeyFromVideo(
@@ -84,8 +79,8 @@ const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
 
 const createVideoPrompt = async ({ input, ipsId, userId }) => {
     const cipInput = VideoPromptCreateDto.fromRequest(input);
-    const { message, samplingSteps, cfgScale, eta, fps } = cipInput;
-    const fullMessage = generateVideoPromptFullMessage(cipInput);
+    const { width, height, message, samplingSteps, cfgScale, eta, fps } =
+        cipInput;
 
     const ips = await PromptSpace.findOne({
         _id: ipsId,
@@ -133,11 +128,12 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
             promptSpaceId: ips._id,
             input: {
                 message,
-                fullMessage,
                 samplingSteps,
                 cfgScale,
                 eta,
                 fps,
+                width,
+                height,
             },
             response: {
                 originalVideoUrl: video_url,
