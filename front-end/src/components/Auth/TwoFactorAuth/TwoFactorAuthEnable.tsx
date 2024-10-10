@@ -1,3 +1,4 @@
+"use client";
 import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
 import TwoFactorAuth from "./TwoFactorAuth";
@@ -39,31 +40,49 @@ const TwoFactorAuthEnable = ({
   };
 
   return (
-    <Paper sx={{ padding: 3, textAlign: "center" }}>
-      <Typography variant="h5" mb={3}>
-        Scan the QR Code to set up Two-Factor Authentication:
+    <Paper
+      sx={{ padding: 4, textAlign: "center", borderRadius: 2, boxShadow: 3 }}
+    >
+      <Typography variant="h5" mb={2} sx={{ fontWeight: "bold" }}>
+        Set Up Two-Factor Authentication
       </Typography>
 
       {/* Instructions */}
-      <Typography variant="body2" mb={2}>
-        Use your authenticator app to scan the QR code above. If you cannot scan
-        the QR code, you can enter the secret manually.
+      <Typography variant="body1" mb={2} sx={{ color: "text.secondary" }}>
+        Use your authenticator app to scan the QR code above.
       </Typography>
 
       {/* QR Code container with styling */}
-      <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+      {/* QR Code container with styling */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 3,
+          border: "1px solid #aaa",
+          borderRadius: "8px",
+          padding: 1,
+          width: "fit-content",
+          margin: "0 auto",
+        }}
+      >
         <QRCode
           value={totpAuthUrl || ""}
-          size={256}
-          style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+          size={200}
+          style={{ borderRadius: "8px" }}
         />
       </Box>
 
-      <Typography variant="h5" mb={3}>
+      <Typography variant="body1" mb={2} mt={2}>
         Or save the following secret:
       </Typography>
 
-      <Typography variant="h6" mb={3}>
+      <Typography
+        variant="body1"
+        mb={3}
+        sx={{ fontWeight: "bold", wordWrap: "break-word" }}
+      >
         {secret}
       </Typography>
 

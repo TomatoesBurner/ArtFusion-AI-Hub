@@ -38,7 +38,18 @@ export class AuthApi {
   }
 
   public static async enableTwoFactor() {
-    return (await appApi.post("/auth/verifyTwoFactor"))
-      .data as ApiResponseDto<EnableTwoFactorDto>;
+    const token = localStorage.getItem("token"); // Adjust this line as necessary
+
+    return (
+      await appApi.post(
+        "/auth/enableTwoFactor",
+        {}, // Sending an empty object as body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the Authorization header
+          },
+        }
+      )
+    ).data as ApiResponseDto<EnableTwoFactorDto>;
   }
 }
