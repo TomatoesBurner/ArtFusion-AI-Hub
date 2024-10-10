@@ -112,6 +112,18 @@ const Settings: React.FC = () => {
     }
   };
 
+  // Function to handle successful 2FA enabling
+  const handleTwoFactorSuccess = () => {
+    enqueueSnackbar("Two-Factor Authentication enabled successfully!", {
+      variant: "success",
+    });
+    setTwoFactorData(null); // Hide the TwoFactorAuthEnable component
+    setFormData((prevData) => ({
+      ...prevData,
+      twoFactorEnabled: true, // Update state to indicate 2FA is enabled
+    }));
+  };
+
   return (
     <Container
       component={Paper}
@@ -232,6 +244,7 @@ const Settings: React.FC = () => {
           secret={twoFactorData.secret}
           totpAuthUrl={twoFactorData.totpAuthUrl}
           expiresAt={twoFactorData.expiresAt}
+          onSuccess={handleTwoFactorSuccess} // Pass the success handler
         />
       )}
     </Container>

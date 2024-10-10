@@ -5,12 +5,16 @@ import TwoFactorAuth from "./TwoFactorAuth";
 import { useMutation } from "@tanstack/react-query";
 import { AuthApi } from "@/api/authApi";
 import QRCode from "react-qr-code";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { enqueueSnackbar } from "notistack";
 
 export type TwoFactorAuthEnableProps = {
   verifyId: string;
   secret: string;
   totpAuthUrl: string;
   expiresAt: Date;
+  onSuccess: () => void;
 };
 
 const TwoFactorAuthEnable = ({
@@ -18,7 +22,10 @@ const TwoFactorAuthEnable = ({
   secret,
   totpAuthUrl,
   expiresAt,
+  onSuccess, // Receive onSuccess prop
 }: TwoFactorAuthEnableProps) => {
+  const router = useRouter(); // Initialize useRouter
+  const { logout } = useAuth(); // Access logout function
   const { isPending: verifyTwoFactorPending, mutate: verifyTwoFactorMutate } =
     useMutation({
       mutationFn: AuthApi.verifyTwoFactor,
@@ -31,10 +38,27 @@ const TwoFactorAuthEnable = ({
       },
       {
         onSuccess: (data) => {
-          // After enabled
-          // router to login
+          // Show success message with redirection notice
+          enqueueSnackbar(
+            "Two-Factor Authentication enabled successfully! You will be redirected to the login page in 10 seconds.",
+            {
+              variant: "success",
+            }
+          );
+
+          // Set a timeout to log out the user and redirect
+          setTimeout(() => {
+            logout(); // Call the logout function to log out the user
+            router.push("/login"); // Redirect to the login page
+          }, 10000); // Delay of 10 seconds
+
+          onSuccess(); // Call the onSuccess function
         },
-        onError: (err) => {},
+        onError: (err) => {
+          enqueueSnackbar("Failed to verify code. Please try again.", {
+            variant: "error",
+          });
+        },
       }
     );
   };
