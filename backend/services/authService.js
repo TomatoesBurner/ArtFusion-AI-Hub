@@ -313,9 +313,9 @@ const login = async ({ input, ipAddress, userAgent }) => {
         return {
             data: new LoginResponseDto({
                 verifyId: twoFactorLog._id,
+                expiresAt: twoFactorLog.expiresAt,
             }),
             code: API_RESPONSE_CODE.requireTwoFactor,
-            expiresAt: twoFactorLog.expiresAt,
         };
     }
 
