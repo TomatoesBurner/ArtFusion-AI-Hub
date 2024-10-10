@@ -23,11 +23,11 @@ const generatePresignedUrlForVideoPromptDto = async (videoPromptDto) => {
     );
 };
 
-const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
+const getAllVideoPrompts = async ({ input, userId, vpsId }) => {
     const { cursor, limit } = GetAllVideoPromptsInputDto.fromRequest(input);
 
     const ips = await PromptSpace.findOne({
-        _id: ipsId,
+        _id: vpsId,
         users: { $in: [userId] },
         type: PROMPT_SPACE_TYPE.Video,
     });
@@ -44,7 +44,7 @@ const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
     }
 
     const videoPrompts = await VideoPrompt.find({
-        promptSpaceId: ipsId,
+        promptSpaceId: vpId,
         ...query,
     })
         .limit(limit + 1)
