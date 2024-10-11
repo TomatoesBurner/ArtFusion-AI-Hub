@@ -43,12 +43,12 @@ const TwoFactorAuthEnable = ({
             "Two-Factor Authentication enabled successfully! You will be redirected to the login page in 10 seconds.",
             {
               variant: "success",
+              autoHideDuration: 10000,
             }
           );
-
           // Set a timeout to log out the user and redirect
           setTimeout(() => {
-            logout(); // Call the logout function to log out the user
+            logout();
             router.push("/login"); // Redirect to the login page
           }, 10000); // Delay of 10 seconds
 
