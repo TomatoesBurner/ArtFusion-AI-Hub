@@ -17,6 +17,7 @@ export enum ImageModel {
  */
 type ImagePromptFilter = {
   width: number;
+  height?: number;
   // TODO: more
 };
 
@@ -24,6 +25,9 @@ type ImagePromptFilter = {
  * Represents one single prompt
  */
 type ImagePrompt = {
+  id: string;
+  text: string;
+  imageUrl: string;
   // TODO: the definition against the API
 };
 
@@ -31,10 +35,6 @@ type ImageSliceState = {
   model: ImageModel;
   filter: ImagePromptFilter;
   // TODO: more
-  /**
-   * Image prompts to be retrieved and then stored as the SPA loads in the
-   * memory
-   */
   prompts: ImagePrompt[];
 };
 
@@ -42,6 +42,7 @@ const initialState: ImageSliceState = {
   model: ImageModel.Animate,
   filter: {
     width: 0,
+    height: 0,
   },
   prompts: [],
 };
@@ -60,13 +61,16 @@ const slice = createSlice({
       state.filter = {
         ...state.filter,
         ...filter,
+        ...action.payload.filter,
       };
     },
 
-    clearState(state, action) {
-      return {
-        ...initialState,
-      };
+    addPrompts(state, action: { payload: { prompts: ImagePrompt[] } }) {
+      state.prompts = action.payload.prompts;
+    },
+
+    clearState() {
+      return initialState;
     },
   },
 });
