@@ -1,38 +1,32 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  IconButton,
-  Slider,
-  TextField,
-  Button,
-  MenuItem,
-  Select,
-} from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import Link from "next/link";
-import axios from "axios";
+import { Box, Grid, Typography, TextField, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 import { imageSliceActions } from "../../../../store/slices/imagesSlice";
 import ImageFilter from "../../../../components/creation/image_filter";
-import ImagePromptListWithScroll from "../../../../components/creation/imagechatlist";
+import axios from "axios";
 
 const ImageCreationPage = () => {
   const { filter, prompts } = useSelector((state: RootState) => state.images);
+  const imagePromptSpaceId = useSelector(
+    (state: RootState) => state.user.imagePromptSpaceId
+  );
+  console.log(imagePromptSpaceId);
   const dispatch = useDispatch();
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 获取初始的图片提示（prompts）
   useEffect(() => {
     const fetchPrompts = async () => {
       try {
-        const response = await axios.get("/api/v1/image-prompts", {
-          params: { limit: 10, cursor: "0" },
-        });
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/${imagePromptSpaceId}/imagePrompts`,
+          {
+            params: { limit: 10, cursor: "0" },
+          }
+        );
 
         dispatch(imageSliceActions.addPrompts(response.data.prompts));
       } catch (error) {
@@ -40,16 +34,16 @@ const ImageCreationPage = () => {
       }
     };
     fetchPrompts();
-  }, [dispatch]);
+  }, [dispatch, imagePromptSpaceId]);
 
-  //function to handle the submit button
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const { width, height } = filter;
-      // send a POST request to the backend
+
+      //fisrt, call the image generation API
       const response = await axios.post(
-        "http://localhost:3001/api/v1/image-prompt",
+        "http://localhost:3001/api/v1/image-prompt/",
         {
           text_prompt: prompt,
           width: width,
@@ -57,16 +51,26 @@ const ImageCreationPage = () => {
         }
       );
 
+      const imageUrl = response.data.data.image_url;
+
+      const saveResponse = await axios.post(
+        `http://localhost:3001/api/v1/${imagePromptSpaceId}/imagePrompts`, // 存储到slice的API
+        {
+          text_prompt: prompt,
+          imageUrl: imageUrl,
+          width: width,
+          height: height,
+        }
+      );
+
       const newPrompt = {
-        id: response.data.id,
+        id: saveResponse.data.id,
         text: prompt,
-        imageUrl: response.data.data.image_url,
+        imageUrl: imageUrl,
       };
 
-      // add the new prompt to the redux store
       dispatch(imageSliceActions.addPrompts({ prompts: [newPrompt] }));
 
-      // clear the input field
       setPrompt("");
     } catch (error) {
       console.error("Failed to create image prompt:", error);
@@ -91,7 +95,7 @@ const ImageCreationPage = () => {
           <ImageFilter />
         </Grid>
 
-        {/* image generation*/}
+        {/* generation */}
         <Grid item xs={12} sm={8} md={9}>
           <Box
             sx={{ border: "1px solid #fff", padding: "16px", height: "100%" }}
@@ -99,25 +103,22 @@ const ImageCreationPage = () => {
             <Typography variant="h6" sx={{ color: "#fff" }}>
               Generation:
             </Typography>
-            {/* innput prompt */}
+            {/* display prompts */}
             {prompts.map((prompt) => (
               <Box
                 key={prompt.id}
                 sx={{
                   display: "flex",
-                  justifyContent: "space-between", // 确保内容两端对齐
-                  alignItems: "center", // 垂直居中对齐
+                  justifyContent: "space-between",
+                  alignItems: "center",
                   marginTop: "16px",
                 }}
               >
-                {/* 图片靠左显示 */}
                 <img
                   src={prompt.imageUrl}
                   alt={prompt.text}
                   style={{ maxWidth: "50%", height: "auto" }}
                 />
-
-                {/* 文本靠右显示 */}
                 <Typography
                   variant="body1"
                   sx={{ color: "#fff", textAlign: "right" }}
@@ -143,7 +144,7 @@ const ImageCreationPage = () => {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Type your prompt here..."
               sx={{
-                backgroundColor: "778890",
+                backgroundColor: "#778890",
                 marginTop: "16px",
                 marginBottom: "16px",
               }}
