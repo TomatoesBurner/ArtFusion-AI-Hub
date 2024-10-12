@@ -1,5 +1,6 @@
 import { UserTokensDto } from "./UserTokensDto";
 
 export type LoginResponseDto = {
-  verifyId: number | null;
+  verifyId: string | null;
+  expiresAt: Date;
 } & UserTokensDto;

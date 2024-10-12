@@ -34,6 +34,8 @@ npm run start:prod
 ### JEST
 npm run test
 
+## Google OAuth2 Login
+To test the Google login functionality locally, please ensure that the frontend is running on port 3000. This is crucial because the OAuth2 callback URL is configured to use http://localhost:3000. If the frontend is running on a different port, the login process will fail, as the callback URL must exactly match the one registered in the Google API Console.
 ## Project Structure
 The following is the structure of the backend part of the project:
 
@@ -69,3 +71,5 @@ The following is the structure of the backend part of the project:
 - **`README.md`**: The documentation file that describes the project, how to set it up, how to contribute, etc.
 
 - **`server.js`**: This is the main entry point of the backend application. It starts the server, listens on a specified port, and serves the application.
+
+

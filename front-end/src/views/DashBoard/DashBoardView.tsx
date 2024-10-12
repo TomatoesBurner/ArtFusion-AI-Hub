@@ -1,9 +1,10 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
-import FeaturesSection from "./FeaturesSection"; // Import FeaturesSection
-import GallerySection from "./GallerySection.tsx"; // Import GallerySection
+"use client";
 
-const DashBoardMainContent = () => {
+import FeaturesSection from "@/components/DashBoardLayout/DashBoardMainContent/FeaturesSection";
+import GallerySection from "@/components/DashBoardLayout/DashBoardMainContent/GallerySection";
+import { Box, Typography } from "@mui/material";
+
+const DashBoardView = () => {
   return (
     <Box component="main" sx={{ flexGrow: 1, bgcolor: "#121212", padding: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -22,4 +23,4 @@ const DashBoardMainContent = () => {
   );
 };
 
-export default DashBoardMainContent;
+export default DashBoardView;
