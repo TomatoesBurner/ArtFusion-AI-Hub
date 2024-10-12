@@ -29,8 +29,13 @@ const slice = createSlice({
 
     setUser(state, action: { payload: { user: UserMeDto } }) {
       return {
+        ...state,
         ...action.payload.user,
       };
+    },
+
+    setImagePromptSpaceId(state, action: { payload: string }) {
+      state.imagePromptSpaceId = action.payload; // Action to set imagePromptSpaceId
     },
 
     clearState: (state, action) => {

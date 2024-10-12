@@ -1,31 +1,34 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { userSliceActions } from "@/store/slices/userSlice";
+import { AuthApi } from "@/api/authApi";
 import FeaturesSection from "@/components/DashBoardLayout/DashBoardMainContent/FeaturesSection";
 import GallerySection from "@/components/DashBoardLayout/DashBoardMainContent/GallerySection";
-import { Box, Typography } from "@mui/material";
-import { AuthApi } from "@/api/authApi";
-import { UserMeDto } from "@/dtos/UserMeDto";
 
 const DashBoardView = () => {
-  const [ipsId, setIpsId] = useState<string | null>(null); // State to store ipsId
-  const [loading, setLoading] = useState(true); // State to handle loading
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const [ipsId, setIpsId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await AuthApi.getMe(); // Get user info
-        const userData: UserMeDto = response.data; // Use UserMeDto for strong typing
+        const userData = response.data; // Use strong typing if needed
         setIpsId(userData.imagePromptSpaceId); // Set ipsId based on user data
+        dispatch(userSliceActions.setUser({ user: userData })); // Set user data
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
-        setLoading(false); // Set loading to false once the fetch is complete
+        setLoading(false);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [dispatch]);
 
   // Show a loading state if user data is being fetched
   if (loading) {
@@ -42,9 +45,12 @@ const DashBoardView = () => {
       </Typography>
       {/* Features Section */}
       <FeaturesSection />
-      {/* Gallery Section - Pass the ipsId as a prop */}
-      {ipsId && <GallerySection ipsId={ipsId} />}{" "}
-      {/* Render GallerySection only if ipsId is available */}
+      {/* Pass ipsId to GallerySection */}
+      {ipsId ? (
+        <GallerySection ipsId={ipsId} />
+      ) : (
+        <Typography variant="body1">No Image Prompt Space found.</Typography>
+      )}
     </Box>
   );
 };
