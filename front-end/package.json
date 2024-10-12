@@ -30,6 +30,7 @@
     "react-dom": "^18",
     "react-redux": "^9.1.2",
     "react-spinners": "^0.14.1",
+    "react-virtual": "^2.10.4",
     "redux": "^5.0.1",
     "styled-components": "^6.1.12",
     "use-local-storage": "^3.0.0",

@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 import { imageSliceActions } from "../../../../store/slices/imagesSlice";
 import ImageFilter from "../../../../components/creation/image_filter";
+import ImagePromptListWithScroll from "../../../../components/creation/imagechatlist";
 
 const ImageCreationPage = () => {
   const { filter, prompts } = useSelector((state: RootState) => state.images);
@@ -51,13 +52,21 @@ const ImageCreationPage = () => {
         "http://localhost:3001/api/v1/image-prompt",
         {
           text_prompt: prompt,
-          width,
-          height,
+          width: width,
+          height: height,
         }
       );
 
-      dispatch(imageSliceActions.addPrompts({ prompts: [response.data] }));
+      const newPrompt = {
+        id: response.data.id,
+        text: prompt,
+        imageUrl: response.data.data.image_url,
+      };
 
+      // add the new prompt to the redux store
+      dispatch(imageSliceActions.addPrompts({ prompts: [newPrompt] }));
+
+      // clear the input field
       setPrompt("");
     } catch (error) {
       console.error("Failed to create image prompt:", error);
@@ -77,12 +86,12 @@ const ImageCreationPage = () => {
       }}
     >
       <Grid container spacing={2}>
-        {/* 左侧面板：过滤器 */}
+        {/* filter */}
         <Grid item xs={12} sm={4} md={3}>
           <ImageFilter />
         </Grid>
 
-        {/* 右侧面板：图片生成和提示显示 */}
+        {/* image generation*/}
         <Grid item xs={12} sm={8} md={9}>
           <Box
             sx={{ border: "1px solid #fff", padding: "16px", height: "100%" }}
@@ -90,22 +99,35 @@ const ImageCreationPage = () => {
             <Typography variant="h6" sx={{ color: "#fff" }}>
               Generation:
             </Typography>
-            {/* 显示获取的图片提示 */}
+            {/* innput prompt */}
             {prompts.map((prompt) => (
-              <Box key={prompt.id} sx={{ marginTop: "16px" }}>
-                <Typography variant="body1" sx={{ color: "#fff" }}>
-                  {prompt.text}
-                </Typography>
+              <Box
+                key={prompt.id}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between", // 确保内容两端对齐
+                  alignItems: "center", // 垂直居中对齐
+                  marginTop: "16px",
+                }}
+              >
+                {/* 图片靠左显示 */}
                 <img
                   src={prompt.imageUrl}
                   alt={prompt.text}
-                  style={{ maxWidth: "100%", height: "auto" }}
+                  style={{ maxWidth: "50%", height: "auto" }}
                 />
+
+                {/* 文本靠右显示 */}
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#fff", textAlign: "right" }}
+                >
+                  {prompt.text}
+                </Typography>
               </Box>
             ))}
           </Box>
 
-          {/* 输入新的提示 */}
           <Box
             sx={{ border: "1px solid #fff", padding: "16px", height: "80%" }}
           >
