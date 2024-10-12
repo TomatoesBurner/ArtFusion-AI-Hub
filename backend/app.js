@@ -40,13 +40,13 @@ if (process.env.NODE_ENV === "development") {
 }
 
 //rate limiter
-const limiter = rateLimit({
-    max: 100, // Maximum of 100 requests per IP
-    windowMs: 60 * 60 * 1000, // // Within 1 hour
-    message: "Too many requests from this IP, please try again in an hour!",
-});
+// const limiter = rateLimit({
+//     max: 100, // Maximum of 100 requests per IP
+//     windowMs: 60 * 60 * 1000, // // Within 1 hour
+//     message: "Too many requests from this IP, please try again in an hour!",
+// });
 
-app.use("/api", limiter);
+// app.use("/api", limiter);
 // Body parser, reading data from body into req.body
 app.use(express.json());
 app.use((req, res, next) => {

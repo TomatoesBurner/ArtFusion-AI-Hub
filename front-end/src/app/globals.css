@@ -2,6 +2,25 @@
   --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+
+  --c-light-blue: #3d86e8;
+  --c-gold: #ceb559;
+  --c-blue-grey: #65778f;
+  --c-white-grey: #edf0f2;
+  --c-grey: #898989;
+  --c-grey-black: #212121;
+  --c-black: #161717;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--c-gold);
 }
 
 * {
