@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -15,31 +15,52 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import Link from "next/link";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../store/store";
+import { imageSliceActions } from "../../../../store/slices/imagesSlice";
+import ImageFilter from "../../../../components/creation/image_filter";
 
-const image_creation = () => {
-  //store the prompt and image url in state
-  const [prompt, setPrompt] = React.useState("");
-  const [imageUrl, setImageUrl] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [aspectRatio, setAspectRatio] = React.useState(16 / 9);
-  const [width, setWidth] = React.useState(1280);
-  const [height, setHeight] = React.useState(720);
+const ImageCreationPage = () => {
+  const { filter, prompts } = useSelector((state: RootState) => state.images);
+  const dispatch = useDispatch();
+  const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        const response = await axios.get("/api/v1/image-prompts", {
+          params: { limit: 10, cursor: "0" },
+        });
+
+        dispatch(imageSliceActions.addPrompts(response.data.prompts));
+      } catch (error) {
+        console.error("Failed to fetch image prompts:", error);
+      }
+    };
+    fetchPrompts();
+  }, [dispatch]);
 
   //function to handle the submit button
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      const { width, height } = filter;
       // send a POST request to the backend
       const response = await axios.post(
         "http://localhost:3001/api/v1/image-prompt",
         {
           text_prompt: prompt,
+          width,
+          height,
         }
       );
 
-      setImageUrl(response.data.data.image_url);
+      dispatch(imageSliceActions.addPrompts({ prompts: [response.data] }));
+
+      setPrompt("");
     } catch (error) {
-      console.error("fail to generate image", error);
+      console.error("Failed to create image prompt:", error);
     } finally {
       setLoading(false);
     }
@@ -56,106 +77,12 @@ const image_creation = () => {
       }}
     >
       <Grid container spacing={2}>
-        {/* Left side panel */}
+        {/* 左侧面板：过滤器 */}
         <Grid item xs={12} sm={4} md={3}>
-          <Box
-            sx={{ border: "1px solid #fff", padding: "16px", height: "180%" }}
-          >
-            <Link href="/images/models">
-              <Box sx={{ textAlign: "center", marginBottom: "16px" }}>
-                <img src="/" alt="Model image" width="100%" />
-                <Typography variant="h6" sx={{ color: "#fff" }}>
-                  Switch
-                </Typography>
-              </Box>
-            </Link>
-
-            {/* Guidance Section */}
-            <Typography
-              variant="h6"
-              sx={{ marginBottom: "16px", color: "#fff" }}
-            >
-              Guidance
-            </Typography>
-
-            {/* Image Upload */}
-            <Box sx={{ marginBottom: "16px" }}>
-              <IconButton
-                color="primary"
-                aria-label="Image to image"
-                component="label"
-              >
-                <input hidden accept="image/*" type="file" />
-                <PhotoCamera />
-              </IconButton>
-              <Typography variant="body2">Image to image</Typography>
-            </Box>
-
-            {/* size of image */}
-            <Typography variant="h6" sx={{ color: "#fff" }}>
-              Size of Image
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ color: "#fff", marginBottom: "8px" }}
-            >
-              Aspect Ratio
-            </Typography>
-            <Select
-              IconComponent={(props) => (
-                <ArrowDropDownIcon {...props} sx={{ color: "gray" }} />
-              )}
-              value={aspectRatio}
-              onChange={(e) => setAspectRatio(Number(e.target.value))}
-              sx={{
-                marginBottom: "16px",
-                backgroundColor: "#fff",
-                color: "#000",
-              }}
-            >
-              <MenuItem value={16 / 9}>16:9</MenuItem>
-              <MenuItem value={4 / 3}>4:3</MenuItem>
-              <MenuItem value={1}>1:1</MenuItem>
-            </Select>
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{ color: "#fff", marginTop: "8px", marginBottom: "8px" }}
-              >
-                Width
-              </Typography>
-              <Slider
-                value={width}
-                onChange={(e, newValue) => setWidth(newValue as number)}
-                step={10}
-                min={100}
-                max={1920}
-                valueLabelDisplay="auto"
-                sx={{ marginBottom: "16px", color: "#fff" }}
-              />
-            </Box>
-
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{ color: "#fff", marginTop: "8px", marginBottom: "8px" }}
-              >
-                Height
-              </Typography>
-              <Slider
-                value={height}
-                onChange={(e, newValue) => setHeight(newValue as number)}
-                step={10}
-                min={100}
-                max={1080}
-                valueLabelDisplay="auto"
-                sx={{ marginBottom: "16px", color: "#fff" }}
-              />
-            </Box>
-          </Box>
+          <ImageFilter />
         </Grid>
 
-        {/* Prompt Input */}
+        {/* 右侧面板：图片生成和提示显示 */}
         <Grid item xs={12} sm={8} md={9}>
           <Box
             sx={{ border: "1px solid #fff", padding: "16px", height: "100%" }}
@@ -163,17 +90,22 @@ const image_creation = () => {
             <Typography variant="h6" sx={{ color: "#fff" }}>
               Generation:
             </Typography>
-            {/* if the image_url exist */}
-            {imageUrl && (
-              <Box sx={{ marginTop: "16px" }}>
+            {/* 显示获取的图片提示 */}
+            {prompts.map((prompt) => (
+              <Box key={prompt.id} sx={{ marginTop: "16px" }}>
+                <Typography variant="body1" sx={{ color: "#fff" }}>
+                  {prompt.text}
+                </Typography>
                 <img
-                  src={imageUrl}
-                  alt="Generated"
+                  src={prompt.imageUrl}
+                  alt={prompt.text}
                   style={{ maxWidth: "100%", height: "auto" }}
                 />
               </Box>
-            )}
+            ))}
           </Box>
+
+          {/* 输入新的提示 */}
           <Box
             sx={{ border: "1px solid #fff", padding: "16px", height: "80%" }}
           >
@@ -209,4 +141,4 @@ const image_creation = () => {
   );
 };
 
-export default image_creation;
+export default ImageCreationPage;
