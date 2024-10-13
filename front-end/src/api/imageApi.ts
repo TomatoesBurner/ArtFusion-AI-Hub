@@ -1,7 +1,7 @@
-import { MediaItem } from "@/api/imageApi";
 import { appApi } from "./baseApi";
 import { ApiResponseDto } from "@/dtos/ApiResponseDto";
 
+// Define the MediaItem interface only once
 export interface MediaItem {
   id: string;
   type: "image" | "video";
