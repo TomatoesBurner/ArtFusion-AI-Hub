@@ -8,6 +8,7 @@ import { ApiResponseDto } from "@/dtos/ApiResponseDto";
 import { LoginResponseDto } from "@/dtos/LoginResponseDto";
 import { VerifyTwoFactorDto } from "@/dtos/VerifyTwoFactorDto";
 import { EnableTwoFactorDto } from "@/dtos/EnableTwoFactorDto";
+import { UserMeDto } from "@/dtos/UserMeDto";
 
 export class AuthApi {
   public static async login(userLoginDto: UserLoginDto) {
@@ -40,5 +41,9 @@ export class AuthApi {
   public static async enableTwoFactor() {
     return (await appApi.post("/auth/enableTwoFactor", {})) // Sending an empty object as body
       .data as ApiResponseDto<EnableTwoFactorDto>;
+  }
+
+  public static async getMe() {
+    return (await appApi.get("/users/me")).data as ApiResponseDto<UserMeDto>;
   }
 }
