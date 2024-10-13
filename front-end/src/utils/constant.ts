@@ -31,4 +31,19 @@ export const API_RESPONSE_CODE = {
   REQUIRE_TWO_FACTOR: "REQUIRE_TWO_FACTOR",
 };
 
+export const aspectRatios = [
+  "16:9",
+  "4:3",
+  "1:1",
+  "3:4",
+  "9:16",
+  "9:18",
+  "1:2",
+  "2:1",
+  "3:2",
+  "4:5",
+  "5:4",
+];
+
 export const APP_NAME = "GTL Studio";
+export const APP_BAR_HEIGHT = "64px";
