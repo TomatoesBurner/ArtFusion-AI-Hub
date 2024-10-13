@@ -18,7 +18,7 @@ import { videoSliceActions } from "@/store/slices/videosSlice";
 
 const VideoChatList = () => {
   const dispatch = useDispatch();
-  const ipsId = useSelector(
+  const vpsId = useSelector(
     (state: RootState) => state.user.videoPromptSpaceId
   );
   const { cursor: stateCursor } = useSelector(
@@ -37,7 +37,7 @@ const VideoChatList = () => {
     refetch: getAllVideoPromptsRefetch,
   } = useQuery({
     queryKey: ["getAllVideoPrompts"],
-    queryFn: () => VideoApi.getAllVideoPrompts(ipsId, stateCursor || null, 3),
+    queryFn: () => VideoApi.getAllVideoPrompts(vpsId, stateCursor || null, 3),
     enabled: false,
   });
 

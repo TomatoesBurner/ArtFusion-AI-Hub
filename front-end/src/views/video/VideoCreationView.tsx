@@ -32,7 +32,7 @@ const VideoCreationView = () => {
         direction={"column"}
         gap={2}
       >
-        {/* Image chat history */}
+        {/* Video chat history */}
         <Box width={"100%"} flexGrow={1} overflow={"hidden"}>
           <VideoChatList />
         </Box>

@@ -13,7 +13,7 @@ const getAllVideoPromptsJoiSchema = Joi.object({
 class GetAllVideoPromptsInputDto extends PaginationInputDto {
     constructor(data) {
         super(data);
-        this.ipsId = data.ipsId;
+        this.vpsId = data.vpsId;
     }
 
     static fromRequest(data) {
@@ -31,6 +31,8 @@ class VideoPromptDto extends BaseDto {
             cfgScale: data.input.cfgScale,
             eta: data.input.eta,
             fps: data.input.fps,
+            width: data.input.width,
+            height: data.input.height,
         };
         this.response = new VideoPromptResponseDto(data.response);
     }

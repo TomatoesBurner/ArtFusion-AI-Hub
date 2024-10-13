@@ -3,7 +3,6 @@ import {
   VideoPromptDto,
   VideoPromptInputFilterDto,
 } from "@/dtos/VideoPromptDto";
-import { aspectRatios } from "@/utils/constant";
 import { PaginationResponseDto } from "@/dtos/PaginationResponseDto";
 
 // TODO: decide where this really comes from
@@ -41,6 +40,8 @@ const initialState: VideoSliceState = {
     fps: 30,
     cfgScale: 1,
     samplingSteps: 1,
+    width: 256,
+    height: 256,
   },
   prompts: [],
   hasNextPage: false,

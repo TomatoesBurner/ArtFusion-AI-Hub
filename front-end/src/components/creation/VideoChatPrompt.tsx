@@ -1,4 +1,4 @@
-import { VideoPromptDto } from "../../dtos/VideoPromptDto";
+import { VideoPromptDto } from "@/dtos/VideoPromptDto";
 import { Box, Stack, Typography } from "@mui/material";
 import React, { memo } from "react";
 

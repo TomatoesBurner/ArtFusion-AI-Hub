@@ -13,7 +13,7 @@ const withVideoPromptCreate = <T extends PromptSubmitBoxProps>(
 ) => {
   return (props: T) => {
     const dispatch = useDispatch();
-    const ipsId = useSelector(
+    const vpsId = useSelector(
       (state: RootState) => state.user.videoPromptSpaceId
     );
     const { model, filter } = useSelector((state: RootState) => state.videos);
@@ -41,7 +41,7 @@ const withVideoPromptCreate = <T extends PromptSubmitBoxProps>(
 
       createVideoPromptMutate(
         {
-          ipsId: ipsId,
+          vpsId: vpsId,
           input: {
             model: model,
             eta: Math.floor(filter.eta! / 8) * 8,
@@ -49,6 +49,8 @@ const withVideoPromptCreate = <T extends PromptSubmitBoxProps>(
             samplingSteps: filter.samplingSteps!,
             cfgScale: filter.cfgScale!,
             message: value,
+            width: Math.floor(filter.width! / 8) * 8,
+            height: Math.floor(filter.height! / 8) * 8,
           },
         },
         {

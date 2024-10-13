@@ -5,6 +5,8 @@ export type VideoPromptInputFilterDto = {
   cfgScale: number;
   eta: number;
   fps: number;
+  width: number;
+  height: number;
 };
 
 export type VideoPromptInputDto = {

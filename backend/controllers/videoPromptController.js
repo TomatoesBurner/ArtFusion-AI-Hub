@@ -24,7 +24,7 @@ const getAllVideoPrompts = catchAsync(async (req, res, next) => {
 const createVideoPrompt = catchAsync(async (req, res, next) => {
     const { data, error } = await videoPromptService.createVideoPrompt({
         input: req.body,
-        ipsId: req.params.ipsId,
+        vpsId: req.params.vpsId,
         userId: req.user._id,
     });
 
@@ -42,8 +42,8 @@ const createVideoPrompt = catchAsync(async (req, res, next) => {
 const createNewFilteredVideo = catchAsync(async (req, res, next) => {
     const { data, error } = await videoPromptService.createNewFilteredVideo({
         input: req.body,
-        ipsId: req.params.ipsId,
-        ipId: req.params.ipId,
+        vpsId: req.params.vpsId,
+        vpId: req.params.vpId,
         userId: req.user._id,
     });
 

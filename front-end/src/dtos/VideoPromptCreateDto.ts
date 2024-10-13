@@ -5,4 +5,6 @@ export type VideoPromptCreateDto = {
   message: string;
   fps: number;
   model: string;
+  width: number;
+  height: number;
 };

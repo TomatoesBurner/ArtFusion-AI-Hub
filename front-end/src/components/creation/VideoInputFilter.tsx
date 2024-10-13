@@ -29,6 +29,18 @@ const VideoInputFilter = () => {
     );
   };
 
+  const handleWidthChange = (value: number) => {
+    dispatch(
+      videoSliceActions.setFilter({ filter: { ...filter, width: value } })
+    );
+  };
+
+  const handleHeightChange = (value: number) => {
+    dispatch(
+      videoSliceActions.setFilter({ filter: { ...filter, height: value } })
+    );
+  };
+
   const handleEtaChange = (value: number) => {
     dispatch(
       videoSliceActions.setFilter({ filter: { ...filter, eta: value } })
@@ -82,6 +94,22 @@ const VideoInputFilter = () => {
         min={1}
         max={10}
         onChange={handleFpsChange}
+      ></SlideAndTextField>
+
+      <SlideAndTextField
+        label={"width"}
+        value={filter.width || 0}
+        min={1}
+        max={10}
+        onChange={handleWidthChange}
+      ></SlideAndTextField>
+
+      <SlideAndTextField
+        label={"heigth"}
+        value={filter.height || 0}
+        min={1}
+        max={10}
+        onChange={handleHeightChange}
       ></SlideAndTextField>
     </Paper>
   );

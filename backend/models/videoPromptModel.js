@@ -41,6 +41,8 @@ const VideoPromptInputSchema = new mongoose.Schema(
         cfgScale: Number,
         eta: Number,
         fps: Number,
+        width: Number,
+        height: Number,
     },
     { _id: false }
 );

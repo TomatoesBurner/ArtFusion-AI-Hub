@@ -3,9 +3,9 @@ import { ApiResponseDto } from "@/dtos/ApiResponseDto";
 import {
   ArgumentVideoPromptResponseDto,
   VideoPromptDto,
-} from "../dtos/VideoPromptDto";
-import { VideoPromptCreateDto } from "../dtos/VideoPromptCreateDto";
-import { CreateArgumentVideoPromptResponseDto } from "../dtos/CreateArgumentVideoPromptResponseDto";
+} from "@/dtos/VideoPromptDto";
+import { VideoPromptCreateDto } from "@/dtos/VideoPromptCreateDto";
+import { CreateArgumentVideoPromptResponseDto } from "@/dtos/CreateArgumentVideoPromptResponseDto";
 
 export class VideoApi {
   public static async getAllVideoPrompts(
@@ -29,9 +29,14 @@ export class VideoApi {
     vpsId,
     input,
   }: {
-    ipsId: string;
+    vpsId: string;
     input: VideoPromptCreateDto;
   }) {
+    if (!vpsId) {
+      console.error("vpsId is undefined!");
+      return;
+    }
+
     return (
       await appApi.post(`/videoPromptSpaces/${vpsId}/videoPrompts`, input)
     ).data as ApiResponseDto<VideoPromptDto>;
@@ -39,12 +44,12 @@ export class VideoApi {
 
   public static async createNewFilteredVideo(
     vpsId: string,
-    ipId: string,
+    vpId: string,
     input: CreateArgumentVideoPromptResponseDto
   ) {
     return (
       await appApi.post(
-        `/videoPromptSpaces/${vpsId}/videoPrompts/${ipId}/argumentResponse`,
+        `/videoPromptSpaces/${vpsId}/videoPrompts/${vpId}/argumentResponse`,
         input
       )
     ).data as ApiResponseDto<ArgumentVideoPromptResponseDto>;
