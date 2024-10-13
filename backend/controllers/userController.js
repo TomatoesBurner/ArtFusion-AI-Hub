@@ -1,16 +1,5 @@
-const express = require("express");
-const User = require("../models/userModels");
 const catchAsync = require("../utils/catchAsync");
 const authService = require("../services/authService");
-
-// exports.getMe = (req, res) => {
-//     res.status(200).json({
-//         status: "success",
-//         data: {
-//             user: req.user,
-//         },
-//     });
-// };
 
 exports.getMe = catchAsync(async (req, res, next) => {
     const { data, error } = await authService.userMe({
@@ -26,34 +15,23 @@ exports.getMe = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getAllUsers = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
-    });
-};
+exports.updateProfile = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+    const { firstName, lastName, themeMode } = req.body;
 
-exports.getUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
+    const { data, error } = await authService.updateUserProfile({
+        userId,
+        firstName,
+        lastName,
+        themeMode,
     });
-};
-exports.createUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
+
+    if (error) {
+        return next(new AppError(error.message, 400));
+    }
+
+    res.status(200).json({
+        status: "success",
+        data,
     });
-};
-exports.updateUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
-    });
-};
-exports.deleteUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
-    });
-};
+});

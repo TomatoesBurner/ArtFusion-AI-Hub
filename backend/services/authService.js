@@ -628,6 +628,69 @@ const verifyTwoFactor = async ({ input, ipAddress, userAgent }) => {
     }
 };
 
+/**
+ * Updates the user profile with the given data.
+ *
+ * @param {{ userId: string, firstName: string, lastName: string, themeMode: string }} param
+ * @returns {Promise<{ data: UserMeDto } | { error: AppError }>} The updated user information or an error
+ */
+const updateUserProfile = async ({
+    userId,
+    firstName,
+    lastName,
+    themeMode,
+}) => {
+    const foundUser = await User.findById(userId);
+
+    if (!foundUser) {
+        return {
+            error: new AppError("User not found", 400),
+        };
+    }
+
+    // Check if firstName and lastName combination already exists for another user
+    const isNameDuplicate = await _isUserNameDuplicate(
+        userId,
+        firstName,
+        lastName
+    );
+    if (isNameDuplicate) {
+        return {
+            error: new AppError("Name already in use by another user", 400),
+        };
+    }
+
+    // Update user fields
+    foundUser.firstName = firstName;
+    foundUser.lastName = lastName;
+    foundUser.themeMode = themeMode;
+
+    await foundUser.save();
+
+    return {
+        data: new UserMeDto({
+            ...foundUser._doc,
+            userId: foundUser._id,
+        }),
+    };
+};
+/**
+ * Checks if the combination of firstName and lastName is already in use by another user.
+ *
+ * @param {string} userId - The ID of the user making the request
+ * @param {string} firstName - The first name to check
+ * @param {string} lastName - The last name to check
+ * @returns {Promise<boolean>} True if the name combination is already in use, false otherwise
+ */
+const _isUserNameDuplicate = async (userId, firstName, lastName) => {
+    const existingUser = await User.findOne({
+        firstName: firstName,
+        lastName: lastName,
+        _id: { $ne: userId }, // Exclude the current user
+    });
+    return !!existingUser;
+};
+
 module.exports = {
     register,
     login,
@@ -637,4 +700,5 @@ module.exports = {
     userMe,
     enableTwoFactor,
     verifyTwoFactor,
+    updateUserProfile,
 };
