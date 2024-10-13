@@ -105,10 +105,10 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
             message,
             samplingSteps || 16, //
             cfgScale || 15, //
-            eta || 1, // default ETA
+            eta || 0.5, // default ETA
             fps || 5, //  default fps
-            width || 256, // default width
-            height || 256, // default
+            width || 540, // default width
+            height || 540, // default
         ]);
 
         if (!result || !result.data || !result.data[0] || !result.data[0][0]) {

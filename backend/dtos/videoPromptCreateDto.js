@@ -7,8 +7,8 @@ const videoPromptCreateJoiSchema = Joi.object({
     cfgScale: Joi.number().min(1.0).max(30.0).required(),
     eta: Joi.number().min(0.0).max(1.0).required(),
     fps: Joi.number().min(4).max(32).required(),
-    width: Joi.number().min(1).max(4096).required(),
-    height: Joi.number().min(1).max(4096).required(),
+    width: Joi.number().min(100).max(1920).required(),
+    height: Joi.number().min(100).max(1080).required(),
     model: Joi.string().min(2).max(255).required(),
 });
 

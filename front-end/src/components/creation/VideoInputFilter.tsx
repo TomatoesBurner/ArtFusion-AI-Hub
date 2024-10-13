@@ -83,8 +83,9 @@ const VideoInputFilter = () => {
       <SlideAndTextField
         label={"Eta"}
         value={filter.eta || 0}
-        min={1}
-        max={10}
+        min={0}
+        max={1.0}
+        step={0.1}
         onChange={handleEtaChange}
       ></SlideAndTextField>
 
@@ -99,16 +100,16 @@ const VideoInputFilter = () => {
       <SlideAndTextField
         label={"width"}
         value={filter.width || 0}
-        min={1}
-        max={10}
+        min={100}
+        max={1920}
         onChange={handleWidthChange}
       ></SlideAndTextField>
 
       <SlideAndTextField
         label={"heigth"}
         value={filter.height || 0}
-        min={1}
-        max={10}
+        min={100}
+        max={1080}
         onChange={handleHeightChange}
       ></SlideAndTextField>
     </Paper>
