@@ -68,3 +68,4 @@ export class ImageApi {
     return response.data as ApiResponseDto<MediaItem[]>;
   }
 }
+
