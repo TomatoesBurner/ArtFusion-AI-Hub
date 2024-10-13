@@ -17,5 +17,6 @@ export class ImageApi {
       `/imagePromptSpaces/${ipsId}/imagePrompts`
     );
     return response.data as ApiResponseDto<MediaItem[]>;
+
   }
 }
