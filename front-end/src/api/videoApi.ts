@@ -9,14 +9,14 @@ import { CreateArgumentVideoPromptResponseDto } from "../dtos/CreateArgumentVide
 
 export class VideoApi {
   public static async getAllVideoPrompts(
-    ipsId: string,
+    vpsId: string,
     cursor: string | null = null,
     limit: number = 10
   ) {
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
     return (
-      await appApi.get(`/videoPromptSpaces/${ipsId}/videoPrompts`, {
+      await appApi.get(`/videoPromptSpaces/${vpsId}/videoPrompts`, {
         params: {
           cursor: cursor,
           limit: limit,
@@ -26,25 +26,25 @@ export class VideoApi {
   }
 
   public static async createVideoPrompt({
-    ipsId,
+    vpsId,
     input,
   }: {
     ipsId: string;
     input: VideoPromptCreateDto;
   }) {
     return (
-      await appApi.post(`/videoPromptSpaces/${ipsId}/videoPrompts`, input)
+      await appApi.post(`/videoPromptSpaces/${vpsId}/videoPrompts`, input)
     ).data as ApiResponseDto<VideoPromptDto>;
   }
 
   public static async createNewFilteredVideo(
-    ipsId: string,
+    vpsId: string,
     ipId: string,
     input: CreateArgumentVideoPromptResponseDto
   ) {
     return (
       await appApi.post(
-        `/videoPromptSpaces/${ipsId}/videoPrompts/${ipId}/argumentResponse`,
+        `/videoPromptSpaces/${vpsId}/videoPrompts/${ipId}/argumentResponse`,
         input
       )
     ).data as ApiResponseDto<ArgumentVideoPromptResponseDto>;
