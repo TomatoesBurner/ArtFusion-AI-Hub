@@ -1,12 +1,12 @@
 import { BaseDto } from "./BaseDto";
 
 export type VideoPromptInputFilterDto = {
-  samplingSteps: number;
-  cfgScale: number;
-  eta: number;
-  fps: number;
-  width: number;
-  height: number;
+  samplingSteps?: number;
+  cfgScale?: number;
+  eta?: number;
+  fps?: number;
+  width?: number;
+  height?: number;
 };
 
 export type VideoPromptInputDto = {
