@@ -6,7 +6,7 @@ const { videoPromptCreateJoiSchema } = require("../dtos/videoPromptCreateDto");
 const { paginationInputJoiSchema } = require("../dtos/paginationInputDto");
 const {
     createArgumentVideoPromptResponseJoiSchema,
-} = require("../dtos/createArgumentVideoPromptResponseDto");
+} = require("../dtos/CreateArgumentVideoPromptResponseDto");
 const router = express.Router();
 
 // /:vpsId/video-prompts?cursor="123"&limit=10
