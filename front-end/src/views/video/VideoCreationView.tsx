@@ -2,15 +2,15 @@
 
 import React from "react";
 import { Box, Grid } from "@mui/material";
-import ImageInputFilter from "@/components/creation/ImageInputFilter";
+import VideoInputFilter from "@/components/creation/VideoInputFilter";
 import { APP_BAR_HEIGHT } from "@/utils/constant";
 import PromptSubmitBox from "@/components/Common/PromptSubmitBox/PromptSubmitBox";
-import ImageChatList from "@/components/creation/imageChatlist";
-import withImagePromptCreate from "@/hoc/withImagePromptCreate";
+import VideoChatList from "@/components/creation/videoChatlist";
+import withVideoPromptCreate from "@/hoc/withVideoPromptCreate";
 
-const ImagePromptSubmitBox = withImagePromptCreate(PromptSubmitBox);
+const VideoPromptSubmitBox = withVideoPromptCreate(PromptSubmitBox);
 
-const ImageCreationView = () => {
+const VideoCreationView = () => {
   return (
     <Grid
       container
@@ -20,7 +20,7 @@ const ImageCreationView = () => {
     >
       {/* Left: filter */}
       <Grid item xs={3} height={"100%"} display={"flex"}>
-        <ImageInputFilter />
+        <VideoInputFilter />
       </Grid>
 
       {/* Right */}
@@ -32,18 +32,18 @@ const ImageCreationView = () => {
         direction={"column"}
         gap={2}
       >
-        {/* Image chat history */}
+        {/* Video chat history */}
         <Box width={"100%"} flexGrow={1} overflow={"hidden"}>
-          <ImageChatList />
+          <VideoChatList />
         </Box>
 
         {/* Prompt box */}
         <Box>
-          <ImagePromptSubmitBox />
+          <VideoPromptSubmitBox />
         </Box>
       </Grid>
     </Grid>
   );
 };
 
-export default ImageCreationView;
+export default VideoCreationView;

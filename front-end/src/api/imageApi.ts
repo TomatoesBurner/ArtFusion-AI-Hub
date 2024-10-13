@@ -15,13 +15,12 @@ export interface MediaItem {
 }
 
 export class ImageApi {
+  // Fetch all image prompts with pagination
   public static async getAllImagePrompts(
     ipsId: string,
     cursor: string | null = null,
     limit: number = 10
-  ) {
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
+  ): Promise<ApiResponseDto<ImagePromptDto[]>> {
     return (
       await appApi.get(`/imagePromptSpaces/${ipsId}/imagePrompts`, {
         params: {
@@ -32,23 +31,25 @@ export class ImageApi {
     ).data as ApiResponseDto<ImagePromptDto[]>;
   }
 
+  // Create a new image prompt
   public static async createImagePrompt({
     ipsId,
     input,
   }: {
     ipsId: string;
     input: ImagePromptCreateDto;
-  }) {
+  }): Promise<ApiResponseDto<ImagePromptDto>> {
     return (
       await appApi.post(`/imagePromptSpaces/${ipsId}/imagePrompts`, input)
     ).data as ApiResponseDto<ImagePromptDto>;
   }
 
+  // Create a new filtered image (argument response)
   public static async createNewFilteredImage(
     ipsId: string,
     ipId: string,
     input: CreateArgumentImagePromptResponseDto
-  ) {
+  ): Promise<ApiResponseDto<ArgumentImagePromptResponseDto>> {
     return (
       await appApi.post(
         `/imagePromptSpaces/${ipsId}/imagePrompts/${ipId}/argumentResponse`,
@@ -56,6 +57,7 @@ export class ImageApi {
       )
     ).data as ApiResponseDto<ArgumentImagePromptResponseDto>;
   }
+
   // Fetch media items for a specific image prompt space (ipsId)
   public static async fetchMediaItems(
     ipsId: string
@@ -66,3 +68,4 @@ export class ImageApi {
     return response.data as ApiResponseDto<MediaItem[]>;
   }
 }
+

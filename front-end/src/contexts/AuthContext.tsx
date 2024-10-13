@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     dispatch(imageSliceActions.clearState());
-    dispatch(videoSliceActions.clearState({}));
+    dispatch(videoSliceActions.clearState());
     dispatch(authSliceActions.clearAuthState({}));
     dispatch(userSliceActions.clearState({}));
     localStorageHelper.setAccessToken(null);

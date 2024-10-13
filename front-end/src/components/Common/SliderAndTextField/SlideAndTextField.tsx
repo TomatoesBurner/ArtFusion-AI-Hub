@@ -23,6 +23,7 @@ export type SlideAndTextFieldProps = {
   value: number;
   min: number;
   max: number;
+  step?: number;
   onChange: (value: number) => void;
 };
 
@@ -31,6 +32,7 @@ const SlideAndTextField = ({
   value,
   min,
   max,
+  step,
   onChange,
 }: SlideAndTextFieldProps) => {
   const [fieldValue, setFieldValue] = useState(min || 0);
@@ -80,6 +82,7 @@ const SlideAndTextField = ({
           onChangeCommitted={handleSliderBlurChange}
           min={min}
           max={max}
+          step={step}
           valueLabelDisplay="auto"
         />
         <TextField
