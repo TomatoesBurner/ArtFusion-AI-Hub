@@ -41,17 +41,4 @@ export class VideoApi {
       await appApi.post(`/videoPromptSpaces/${vpsId}/videoPrompts`, input)
     ).data as ApiResponseDto<VideoPromptDto>;
   }
-
-  public static async createNewFilteredVideo(
-    vpsId: string,
-    vpId: string,
-    input: CreateArgumentVideoPromptResponseDto
-  ) {
-    return (
-      await appApi.post(
-        `/videoPromptSpaces/${vpsId}/videoPrompts/${vpId}/argumentResponse`,
-        input
-      )
-    ).data as ApiResponseDto<ArgumentVideoPromptResponseDto>;
-  }
 }

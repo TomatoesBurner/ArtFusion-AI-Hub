@@ -33,6 +33,7 @@ class VideoPromptDto extends BaseDto {
             fps: data.input.fps,
             width: data.input.width,
             height: data.input.height,
+            model: data.input.model,
         };
         this.response = new VideoPromptResponseDto(data.response);
     }

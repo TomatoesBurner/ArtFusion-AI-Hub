@@ -9,6 +9,7 @@ const videoPromptCreateJoiSchema = Joi.object({
     fps: Joi.number().min(4).max(32).required(),
     width: Joi.number().min(1).max(4096).required(),
     height: Joi.number().min(1).max(4096).required(),
+    model: Joi.string().min(2).max(255).required(),
 });
 
 class VideoPromptCreateDto extends BaseNoIdDto {
@@ -22,6 +23,7 @@ class VideoPromptCreateDto extends BaseNoIdDto {
         this.width = data.width;
         this.height = data.height;
         this.videoUrl = data.videoUrl || ""; // Ensure the response processing correctly handles the 'video_url' field returned by the API
+        this.model = data.model;
     }
 
     static fromRequest(data) {

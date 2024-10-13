@@ -39,25 +39,9 @@ const createVideoPrompt = catchAsync(async (req, res, next) => {
     });
 });
 
-const createNewFilteredVideo = catchAsync(async (req, res, next) => {
-    const { data, error } = await videoPromptService.createNewFilteredVideo({
-        input: req.body,
-        vpsId: req.params.vpsId,
-        vpId: req.params.vpId,
-        userId: req.user._id,
-    });
-
-    return error
-        ? next(error)
-        : res.status(200).json({
-              data: data,
-          });
-});
-
 const controller = {
     createVideoPrompt,
     getAllVideoPrompts,
-    createNewFilteredVideo,
 };
 
 module.exports = controller;

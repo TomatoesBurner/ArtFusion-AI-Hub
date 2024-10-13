@@ -24,11 +24,4 @@ router.post(
     videoPromptController.createVideoPrompt
 );
 
-router.post(
-    "/:vpsId/videoPrompts/:vpId/argumentResponse",
-    authController.protect,
-    reqDataValidate(createArgumentVideoPromptResponseJoiSchema),
-    videoPromptController.createNewFilteredVideo
-);
-
 module.exports = router;

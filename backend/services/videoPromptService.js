@@ -44,7 +44,7 @@ const getAllVideoPrompts = async ({ input, userId, vpsId }) => {
     }
 
     const videoPrompts = await VideoPrompt.find({
-        promptSpaceId: vpId,
+        promptSpaceId: vpsId,
         ...query,
     })
         .limit(limit + 1)
@@ -136,6 +136,7 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
                 fps,
                 width,
                 height,
+                model: "default",
             },
             response: {
                 originalVideoUrl: video_url,
