@@ -1,4 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  VideoPromptDto,
+  VideoPromptInputFilterDto,
+} from "@/dtos/VideoPromptDto";
+import { aspectRatios } from "@/utils/constant";
+import { PaginationResponseDto } from "@/dtos/PaginationResponseDto";
 
 // TODO: decide where this really comes from
 export enum VideoModel {
@@ -12,38 +18,33 @@ export enum VideoModel {
   VintageStyle = "vintage_style",
 }
 
-/**
- * The filters that users can set in the vidoe prompt page
- */
-type VideoPromptFilter = {
-  width: number;
-  // TODO: more
-};
+type VideoPromptFilter = VideoPromptInputFilterDto;
 
 /**
  * Represents one single prompt
  */
-type VideoPrompt = {
-  // TODO: the definition against the API
-};
+type VideoPrompt = VideoPromptDto;
 
 type VideoSliceState = {
   model: VideoModel;
   filter: VideoPromptFilter;
   // TODO: more
-  /**
-   * Video prompts to be retrieved and then stored as the SPA loads in the
-   * memory
-   */
   prompts: VideoPrompt[];
+  hasNextPage: boolean;
+  cursor: string | null;
 };
 
 const initialState: VideoSliceState = {
   model: VideoModel.NaturalScenery,
   filter: {
-    width: 0,
+    eta: 0.5,
+    fps: 30,
+    cfgScale: 1,
+    samplingSteps: 1,
   },
   prompts: [],
+  hasNextPage: false,
+  cursor: null,
 };
 
 const slice = createSlice({
@@ -63,10 +64,25 @@ const slice = createSlice({
       };
     },
 
-    clearState(state, action) {
-      return {
-        ...initialState,
-      };
+    addPrompts(state, action: { payload: { prompts: VideoPrompt[] } }) {
+      state.prompts = [...state.prompts, ...action.payload.prompts];
+    },
+
+    addPromptToFront(state, action: { payload: { prompt: VideoPrompt } }) {
+      state.prompts = [action.payload.prompt, ...state.prompts];
+    },
+
+    setPagination(
+      state,
+      action: { payload: { pagination: PaginationResponseDto } }
+    ) {
+      const { cursor, hasNext } = action.payload.pagination;
+      state.cursor = cursor || null;
+      state.hasNextPage = hasNext || false;
+    },
+
+    clearState() {
+      return initialState;
     },
   },
 });
