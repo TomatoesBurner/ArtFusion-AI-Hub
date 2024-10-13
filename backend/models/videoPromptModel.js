@@ -37,6 +37,8 @@ const VideoPromptInputSchema = new mongoose.Schema(
         message: String,
         fullMessage: String,
         model: String,
+        samplingSteps: Number,
+        cfgScale: Number,
         eta: Number,
         fps: Number,
     },

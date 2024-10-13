@@ -14,11 +14,6 @@ const {
     VideoPromptDto,
 } = require("../dtos/videoPromptDto");
 
-const generateVideoPromptFullMessage = (input) => {
-    const { message, samplingSteps, cfgScale, eta, fps } = input;
-    return `${message}. Settings: samplingSteps=${samplingSteps}, cfgScale=${cfgScale}, eta=${eta}, fps=${fps}`;
-};
-
 const generatePresignedUrlForVideoPromptDto = async (videoPromptDto) => {
     videoPromptDto.response.videoUrl = await getPresignedUrlForGet(
         createObjectKeyFromVideo(
@@ -28,11 +23,11 @@ const generatePresignedUrlForVideoPromptDto = async (videoPromptDto) => {
     );
 };
 
-const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
+const getAllVideoPrompts = async ({ input, userId, vpsId }) => {
     const { cursor, limit } = GetAllVideoPromptsInputDto.fromRequest(input);
 
     const ips = await PromptSpace.findOne({
-        _id: ipsId,
+        _id: vpsId,
         users: { $in: [userId] },
         type: PROMPT_SPACE_TYPE.Video,
     });
@@ -49,7 +44,7 @@ const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
     }
 
     const videoPrompts = await VideoPrompt.find({
-        promptSpaceId: ipsId,
+        promptSpaceId: vpId,
         ...query,
     })
         .limit(limit + 1)
@@ -82,13 +77,13 @@ const getAllVideoPrompts = async ({ input, userId, ipsId }) => {
     };
 };
 
-const createVideoPrompt = async ({ input, ipsId, userId }) => {
+const createVideoPrompt = async ({ input, vpsId, userId }) => {
     const cipInput = VideoPromptCreateDto.fromRequest(input);
-    const { message, samplingSteps, cfgScale, eta, fps } = cipInput;
-    const fullMessage = generateVideoPromptFullMessage(cipInput);
+    const { width, height, message, samplingSteps, cfgScale, eta, fps } =
+        cipInput;
 
     const ips = await PromptSpace.findOne({
-        _id: ipsId,
+        _id: vpsId,
         users: { $in: [userId] },
         type: PROMPT_SPACE_TYPE.Video,
     });
@@ -108,10 +103,10 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
 
         const result = await app.predict(1, [
             message,
-            samplingSteps || 16, // 默认采样步数
-            cfgScale || 15, // 默认 CFG scale
-            eta || 1, // 默认 ETA 值
-            fps || 5, // 默认帧速率
+            samplingSteps || 16, //
+            cfgScale || 15, //
+            eta || 1, // default ETA
+            fps || 5, //  default fps
         ]);
 
         if (!result || !result.data || !result.data[0] || !result.data[0][0]) {
@@ -121,9 +116,9 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
         const video_id = result.data[0][0].name;
         const video_url = `${process.env.VIDEO_GENERATION_API_BASE_URL || "https://videocrafter-videocrafter.hf.space"}/file=${video_id}`;
 
-        const extension = "mp4"; // 假设生成的视频格式为 mp4
+        const extension = "mp4"; //
 
-        // 下载视频并上传到 S3
+        // download video and upload to AWS S3 bucket
         const videoResponse = await axios.get(video_url, {
             responseType: "arraybuffer",
         });
@@ -133,11 +128,12 @@ const createVideoPrompt = async ({ input, ipsId, userId }) => {
             promptSpaceId: ips._id,
             input: {
                 message,
-                fullMessage,
                 samplingSteps,
                 cfgScale,
                 eta,
                 fps,
+                width,
+                height,
             },
             response: {
                 originalVideoUrl: video_url,
