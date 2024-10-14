@@ -22,7 +22,7 @@ const FeaturesSection = () => {
             marginRight: 1,
           }}
         >
-          <Link href="/images/create" passHref>
+          <Link href="/images/models" passHref>
             <Typography variant="h6" sx={{ cursor: "pointer" }}>
               <ImageIcon sx={{ marginRight: 1 }} /> Create New Image
             </Typography>
@@ -40,7 +40,7 @@ const FeaturesSection = () => {
             marginLeft: 1,
           }}
         >
-          <Link href="/videos/create" passHref>
+          <Link href="/videos/models" passHref>
             <Typography variant="h6" sx={{ cursor: "pointer" }}>
               <VideoLibraryIcon sx={{ marginRight: 1 }} /> Create New Video
             </Typography>
