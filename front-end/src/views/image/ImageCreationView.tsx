@@ -5,8 +5,8 @@ import { Box, Grid } from "@mui/material";
 import ImageInputFilter from "@/components/creation/ImageInputFilter";
 import { APP_BAR_HEIGHT } from "@/utils/constant";
 import PromptSubmitBox from "@/components/Common/PromptSubmitBox/PromptSubmitBox";
-import ImageChatList from "@/components/creation/imageChatlist";
 import withImagePromptCreate from "@/hoc/withImagePromptCreate";
+import ImageChatList from "@/components/creation/ImageChatList";
 
 const ImagePromptSubmitBox = withImagePromptCreate(PromptSubmitBox);
 
