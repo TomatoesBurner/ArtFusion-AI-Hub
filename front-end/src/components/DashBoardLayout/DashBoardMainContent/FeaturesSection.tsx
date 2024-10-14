@@ -63,11 +63,10 @@ const FeaturesSection = () => {
             marginRight: 1,
           }}
         >
-          <Link href="/images" passHref>
-            <Typography variant="h6" sx={{ cursor: "pointer" }}>
-              <ImageIcon sx={{ marginRight: 1 }} /> Manage Images
-            </Typography>
-          </Link>
+          <Typography variant="h6" sx={{ cursor: "pointer" }}>
+            <ImageIcon sx={{ marginRight: 1 }} /> Manage Images
+          </Typography>
+
           <Typography variant="body2" sx={{ marginTop: 1 }}>
             View and edit your existing images.
           </Typography>
@@ -81,11 +80,10 @@ const FeaturesSection = () => {
             marginLeft: 1,
           }}
         >
-          <Link href="/videos" passHref>
-            <Typography variant="h6" sx={{ cursor: "pointer" }}>
-              <VideoLibraryIcon sx={{ marginRight: 1 }} /> Manage Videos
-            </Typography>
-          </Link>
+          <Typography variant="h6" sx={{ cursor: "pointer" }}>
+            <VideoLibraryIcon sx={{ marginRight: 1 }} /> Manage Videos
+          </Typography>
+
           <Typography variant="body2" sx={{ marginTop: 1 }}>
             Access and modify your video library.
           </Typography>
