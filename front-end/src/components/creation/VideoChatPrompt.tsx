@@ -16,6 +16,7 @@ const VideoChatPrompt = ({ prompt }: VideoChatPromptProps) => {
 
   return (
     <Stack mt={2}>
+      {/* Input message box */}
       <Box
         bgcolor={"background.default"}
         p={2}
@@ -34,15 +35,16 @@ const VideoChatPrompt = ({ prompt }: VideoChatPromptProps) => {
         </Typography>
       </Box>
 
+      {/* Video box */}
       <Box bgcolor={"background.default"} p={2} borderRadius={4} width={"60%"}>
         <Box maxHeight={`${videoChatPromptVideoMaxHeight}px`}>
           <video
-            src={response.videoUrl || ""}
-            height={0}
-            width={0}
+            src={response.videoUrl || ""} // Video URL
+            controls // Add video controls like play/pause
             style={{
-              height: `${videoChatPromptVideoMaxHeight}px`,
-              width: "auto",
+              height: `${videoChatPromptVideoMaxHeight}px`, // Keep this height
+              width: "100%", // Ensure the video uses full width available
+              objectFit: "contain", // Adjust aspect ratio without cropping
             }}
           />
         </Box>
