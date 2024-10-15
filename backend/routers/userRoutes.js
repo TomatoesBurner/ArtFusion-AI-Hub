@@ -50,6 +50,10 @@ router.patch(
     authController.protect,
     userController.updateProfile
 );
-router.post("/check-username", userController.isUserNameDuplicate);
+router.post(
+    "/check-username",
+    authController.protect,
+    userController.isUserNameDuplicate
+);
 
 module.exports = router;
