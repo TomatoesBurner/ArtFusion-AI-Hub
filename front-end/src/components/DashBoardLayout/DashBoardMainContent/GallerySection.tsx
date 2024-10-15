@@ -34,7 +34,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
       } catch (error) {
         console.error("Error fetching image items:", error);
       } finally {
-        setLoading(false); // 更新加载状态
+        setLoading(false);
       }
     };
 
@@ -77,7 +77,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
     setModalOpen(true);
   };
 
-  const handleDeleteImage = (id: string) => {
+  const handleDeleteMedia = (id: string) => {
     setMediaItems((prevItems) => {
       const updatedItems = prevItems.filter((item) => item.id !== id);
       return updatedItems;
@@ -117,7 +117,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                 sx={{
                   width: 200,
                   cursor: "pointer",
-                  position: "relative", // 确保删除按钮可以相对于卡片定位
+                  position: "relative",
                 }}
                 onClick={() => handleMediaClick(item)}
               >
@@ -130,20 +130,20 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                 <Typography variant="body2" color="text.secondary">
                   Image
                 </Typography>
-                {/* 删除按钮 */}
+                {/* delete btn */}
                 <IconButton
                   onClick={(e) => {
-                    e.stopPropagation(); // 阻止事件传播
-                    handleDeleteImage(item.id);
+                    e.stopPropagation();
+                    handleDeleteMedia(item.id);
                   }}
                   sx={{
                     position: "absolute",
                     top: 8,
                     right: 8,
-                    color: "red", // 设置删除按钮颜色为红色
-                    backgroundColor: "rgba(255, 255, 255, 0.7)", // 半透明背景
+                    color: "red",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
                     "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 1)", // 鼠标悬停时背景变为不透明
+                      backgroundColor: "rgba(255, 255, 255, 1)",
                     },
                   }}
                 >
@@ -167,10 +167,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
             videos.map((item) => (
               <Card
                 key={item.id}
-                sx={{
-                  width: 200,
-                  cursor: "pointer",
-                }}
+                sx={{ width: 200, cursor: "pointer", position: "relative" }}
                 onClick={() => handleMediaClick(item)}
               >
                 <CardMedia
@@ -183,6 +180,24 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                 <Typography variant="body2" color="text.secondary">
                   Video
                 </Typography>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteMedia(item.id);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    color: "red",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 1)",
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Card>
             ))
           ) : (
