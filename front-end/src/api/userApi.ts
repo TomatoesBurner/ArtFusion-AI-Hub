@@ -12,4 +12,11 @@ export class UserApi {
     return (await appApi.patch("/users/me/update", data)) // Updated to use PATCH and correct endpoint
       .data as ApiResponseDto<UserMeDto>;
   }
+
+  public static async checkUsername(data: { name: string }) {
+    return (await appApi.post("/users/check-username", data))
+      .data as ApiResponseDto<{
+      message: string;
+    }>;
+  }
 }

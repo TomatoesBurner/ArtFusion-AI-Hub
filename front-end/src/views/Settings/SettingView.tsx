@@ -90,17 +90,37 @@ const Settings: React.FC = () => {
     }
   };
 
+  const checkUsernameDuplicate = async (name: string) => {
+    try {
+      const response = await UserApi.checkUsername({ name });
+      return response.status === "success"; // Return true if username is available
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return false; // Assume taken if an error occurs
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // Check if the username is already in use
+    if (formData.name) {
+      const isDuplicate = await checkUsernameDuplicate(formData.name);
+      if (!isDuplicate) {
+        enqueueSnackbar("Name already exists, please choose another one!", {
+          variant: "error",
+        });
+        return; // Exit the function if the name is duplicated
+      }
+    }
+
     try {
       const response = await UserApi.updateUser(formData);
       dispatch(userSliceActions.setUser({ user: response.data }));
       // Update local state with the new user information
       setFormData(response.data);
-
       // Optionally refresh the page
       //window.location.reload();
-
       enqueueSnackbar("Settings updated successfully", { variant: "success" });
     } catch (error) {
       console.error("Failed to update settings:", error);
