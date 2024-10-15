@@ -3,6 +3,8 @@ const PromptSpace = require("../models/promptSpaceModel");
 const { PROMPT_SPACE_TYPE } = require("../types/promptSpaceTypes");
 const AppError = require("../utils/appError");
 const VideoPrompt = require("../models/videoPromptModel");
+const axios = require("axios");
+
 const {
     getPresignedUrlForGet,
     createObjectKeyFromVideo,
