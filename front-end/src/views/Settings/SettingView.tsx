@@ -22,8 +22,10 @@ import { AuthApi } from "@/api/authApi";
 import ConfirmDialog from "@/components/Dialogs/ConfirmDialog";
 
 interface User {
+  firstName: string;
+  lastName: string;
   name: string;
-  theme: string; // Add a theme property
+  theme: string;
   twoFactorEnabled: boolean; // Add a property to track 2FA status
 }
 
@@ -32,6 +34,8 @@ const Settings: React.FC = () => {
   const user = useSelector((state: { user: User }) => state.user);
 
   const [formData, setFormData] = useState<User>({
+    firstName: user.firstName || "", // Initialize first name
+    lastName: user.lastName || "", // Initialize last name
     name: user.name || "",
     theme: user.theme || "Dark", // Default theme set to Dark
     twoFactorEnabled: user.twoFactorEnabled || false, // Track 2FA status
@@ -44,6 +48,8 @@ const Settings: React.FC = () => {
   useEffect(() => {
     if (user) {
       setFormData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
         name: user.name || "",
         theme: user.theme || "Dark", // Default theme
         twoFactorEnabled: user.twoFactorEnabled || false, // Track 2FA status
@@ -148,16 +154,38 @@ const Settings: React.FC = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Name"
+              label="Display Name"
               name="name"
               value={formData.name}
+              onChange={handleChange}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="First Name"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Last Name"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               variant="outlined"
               sx={{ marginBottom: 2 }}
             />
           </Grid>
+
           <Grid item xs={12}>
             <TextField
+              disabled
               fullWidth
               label="Preferred Theme"
               name="theme"
