@@ -1,15 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { Box, Typography, Paper } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import { userSliceActions } from "@/store/slices/userSlice";
 import { AuthApi } from "@/api/authApi";
 import FeaturesSection from "@/components/DashBoardLayout/DashBoardMainContent/FeaturesSection";
 import GallerySection from "@/components/DashBoardLayout/DashBoardMainContent/GallerySection";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 
 const DashBoardView = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state: { user: { name: string } }) => state.user); // Get user data from slice
   const [loading, setLoading] = useState(true);
   const [ipsId, setIpsId] = useState<string | null>(null);
 
@@ -36,13 +38,31 @@ const DashBoardView = () => {
   }
 
   return (
-    <Box component="main" sx={{ flexGrow: 1, bgcolor: "#121212", padding: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Welcome to Your Dashboard
-      </Typography>
-      <Typography variant="body1" sx={{ marginBottom: 2 }}>
-        Manage your images and videos effortlessly.
-      </Typography>
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        bgcolor: "#121212",
+        padding: 3,
+        backgroundImage: "linear-gradient(to right, #1c1c1c, #121212)", // Background gradient
+        borderRadius: 2,
+      }}
+    >
+      <Paper elevation={3} sx={{ padding: 3, borderRadius: 4 }}>
+        {" "}
+        {/* Card-like appearance */}
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ display: "flex", alignItems: "center", color: "#fff" }}
+        >
+          Welcome, {user.name}{" "}
+          <EmojiEmotionsIcon sx={{ marginLeft: 2 }} fontSize="large" />
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#e0e0e0" }}>
+          What will you design today?
+        </Typography>
+      </Paper>
       {/* Features Section */}
       <FeaturesSection />
       {/* Pass ipsId to GallerySection */}
