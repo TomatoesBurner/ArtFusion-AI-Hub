@@ -23,7 +23,7 @@ const app = express();
 app.use(
     cors({
         origin: "*", // Allow your frontend to access the backend
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Specify allowed methods
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], // Specify allowed methods
         allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
     })
 );
