@@ -1,5 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const authService = require("../services/authService");
+const AppError = require("../utils/appError");
 
 exports.getMe = catchAsync(async (req, res, next) => {
     const { data, error } = await authService.userMe({
