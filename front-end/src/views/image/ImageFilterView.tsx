@@ -21,8 +21,7 @@ const ImageFilterView = ({ selectedImage, onClose }) => {
     setFilters((prevFilters) => ({ ...prevFilters, [filter]: value }));
   };
 
-  // TODO: Function to handle downloading the image
-  // const downloadImage = () => {
+  // const downloadImage = async () => {
   //   if (!selectedImage || !selectedImage.url) {
   //     enqueueSnackbar("No image URL available to download.", {
   //       variant: "error",
@@ -30,13 +29,24 @@ const ImageFilterView = ({ selectedImage, onClose }) => {
   //     return;
   //   }
 
-  //   const link = document.createElement("a");
-  //   link.href = selectedImage.url;
-  //   link.download = "downloaded-image.png"; // Filename for the downloaded image
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  //   enqueueSnackbar("Image downloaded successfully!", { variant: "success" });
+  //   try {
+  //     const response = await fetch(selectedImage.url);
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const blob = await response.blob();
+  //     const link = document.createElement("a");
+  //     link.href = URL.createObjectURL(blob);
+  //     link.download = "downloaded-image.png"; // Filename for the downloaded image
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     URL.revokeObjectURL(link.href);
+  //     enqueueSnackbar("Image downloaded successfully!", { variant: "success" });
+  //   } catch (error) {
+  //     console.error("Error downloading image:", error);
+  //     enqueueSnackbar("Failed to download image.", { variant: "error" });
+  //   }
   // };
 
   // Function to handle viewing the image

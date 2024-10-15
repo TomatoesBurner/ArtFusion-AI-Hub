@@ -14,13 +14,15 @@ const DashBoardView = () => {
   const user = useSelector((state: { user: { name: string } }) => state.user); // Get user data from slice
   const [loading, setLoading] = useState(true);
   const [ipsId, setIpsId] = useState<string | null>(null);
+  const [vpsId, setVpsId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await AuthApi.getMe(); // Get user info
-        const userData = response.data; // Use strong typing if needed
+        const userData = response.data;
         setIpsId(userData.imagePromptSpaceId); // Set ipsId based on user data
+        setVpsId(userData.videoPromptSpaceId);
         dispatch(userSliceActions.setUser({ user: userData })); // Set user data
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -62,9 +64,9 @@ const DashBoardView = () => {
       </Paper>
       {/* Features Section */}
       <FeaturesSection />
-      {/* Pass ipsId to GallerySection */}
+      {/* Pass ipsId and vpsId to GallerySection */}
       {ipsId ? (
-        <GallerySection ipsId={ipsId} />
+        <GallerySection ipsId={ipsId} vpsId={vpsId} />
       ) : (
         <Typography variant="body1">No Image Prompt Space found.</Typography>
       )}

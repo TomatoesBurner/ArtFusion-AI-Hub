@@ -38,6 +38,10 @@ const slice = createSlice({
       state.imagePromptSpaceId = action.payload; // Action to set imagePromptSpaceId
     },
 
+    setVideoPromptSpaceId(state, action: { payload: string }) {
+      state.videoPromptSpaceId = action.payload;
+    },
+
     clearState: (state, action) => {
       return {
         ...initialState,
