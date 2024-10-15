@@ -92,6 +92,7 @@ module.exports = {
     getPresignedUrlForGet,
     getPresignedUrlForPut,
     createObjectKeyFromImage,
+    createObjectKeyFromVideo,
     uploadFileToS3,
     uploadImageToS3,
 };
