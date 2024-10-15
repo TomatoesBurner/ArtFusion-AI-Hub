@@ -1,16 +1,5 @@
-const express = require("express");
-const User = require("../models/userModels");
 const catchAsync = require("../utils/catchAsync");
 const authService = require("../services/authService");
-
-// exports.getMe = (req, res) => {
-//     res.status(200).json({
-//         status: "success",
-//         data: {
-//             user: req.user,
-//         },
-//     });
-// };
 
 exports.getMe = catchAsync(async (req, res, next) => {
     const { data, error } = await authService.userMe({
@@ -26,34 +15,41 @@ exports.getMe = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getAllUsers = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
-    });
-};
+exports.updateProfile = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+    const { name, firstName, lastName, themeMode } = req.body;
 
-exports.getUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
+    const { data, error } = await authService.updateUserProfile({
+        userId,
+        name,
+        firstName,
+        lastName,
+        themeMode,
     });
-};
-exports.createUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
+
+    if (error) {
+        return next(new AppError(error.message, 400));
+    }
+
+    res.status(200).json({
+        status: "success",
+        data,
     });
-};
-exports.updateUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
+});
+
+exports.isUserNameDuplicate = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+    const { name } = req.body;
+
+    // 调用 service 检查用户名是否重复
+    const isDuplicate = await authService.isUserNameDuplicate(userId, name);
+
+    if (isDuplicate) {
+        return next(new AppError("Name already in use by another user", 400));
+    }
+
+    res.status(200).json({
+        status: "success",
+        message: "Name is available",
     });
-};
-exports.deleteUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "This route is not yet defined!",
-    });
-};
+});

@@ -43,18 +43,13 @@ router.patch(
     authController.updatePassword
 );
 router.get("/me", authController.protect, userController.getMe);
-
 router.use(authController.protect);
-
-router
-    .route("/")
-    .get(userController.getAllUsers)
-    .post(userController.createUser);
-
-router
-    .route("/:id")
-    .get(userController.getUser)
-    .patch(userController.updateUser)
-    .delete(userController.deleteUser);
+// update
+router.patch(
+    "/me/update",
+    authController.protect,
+    userController.updateProfile
+);
+router.post("/check-username", userController.isUserNameDuplicate);
 
 module.exports = router;
