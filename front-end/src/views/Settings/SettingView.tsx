@@ -22,8 +22,10 @@ import { AuthApi } from "@/api/authApi";
 import ConfirmDialog from "@/components/Dialogs/ConfirmDialog";
 
 interface User {
+  firstName: string;
+  lastName: string;
   name: string;
-  theme: string; // Add a theme property
+  theme: string;
   twoFactorEnabled: boolean; // Add a property to track 2FA status
 }
 
@@ -32,6 +34,8 @@ const Settings: React.FC = () => {
   const user = useSelector((state: { user: User }) => state.user);
 
   const [formData, setFormData] = useState<User>({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
     name: user.name || "",
     theme: user.theme || "Dark", // Default theme set to Dark
     twoFactorEnabled: user.twoFactorEnabled || false, // Track 2FA status
@@ -42,13 +46,13 @@ const Settings: React.FC = () => {
   const [pendingDisable, setPendingDisable] = useState(false); // Track if the user wants to disable 2FA
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        theme: user.theme || "Dark", // Default theme
-        twoFactorEnabled: user.twoFactorEnabled || false, // Track 2FA status
-      });
-    }
+    setFormData({
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      name: user.name || "",
+      theme: user.theme || "Dark",
+      twoFactorEnabled: user.twoFactorEnabled || false,
+    });
   }, [user]);
 
   const handleChange = (
@@ -64,7 +68,11 @@ const Settings: React.FC = () => {
   const handleThemeChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    // Handle theme changes if necessary
+    const { value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      theme: value,
+    }));
   };
 
   const handleTwoFactorChange = (
@@ -86,11 +94,61 @@ const Settings: React.FC = () => {
     }
   };
 
+  // Function to check if the data has changed
+  const hasDataChanged = () => {
+    console.log("Current Form Data:", formData);
+    console.log("Current User Data:", user);
+    return (
+      formData.firstName !== user.firstName ||
+      formData.lastName !== user.lastName ||
+      formData.name !== user.name
+    );
+  };
+
+  const checkUsernameDuplicate = async (name: string) => {
+    try {
+      const response = await UserApi.checkUsername({ name });
+      return response.status === "success"; // Return true if username is available
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return false;
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("Attempting to submit with data:", formData);
+
+    // Check if the data has changed
+    if (!hasDataChanged()) {
+      enqueueSnackbar(
+        "No changes detected. Please update at least one field.",
+        {
+          variant: "error",
+        }
+      );
+      return; // Exit if no changes
+    }
+
+    // Check if the username is already in use
+    if (formData.name) {
+      const isDuplicate = await checkUsernameDuplicate(formData.name);
+      if (!isDuplicate) {
+        enqueueSnackbar("Name already exists, please choose another one!", {
+          variant: "error",
+        });
+        return; // Exit the function if the name is duplicated
+      }
+    }
+
     try {
       const response = await UserApi.updateUser(formData);
-      // dispatch(userSliceActions.setUser({ user: response.data }));
+      console.log("Update response:", response); // 打印响应
+      dispatch(userSliceActions.setUser({ user: response.data }));
+      // Update local state with the new user information
+      setFormData(response.data);
+      // Optionally refresh the page
+      //window.location.reload();
       enqueueSnackbar("Settings updated successfully", { variant: "success" });
     } catch (error) {
       console.error("Failed to update settings:", error);
@@ -148,16 +206,38 @@ const Settings: React.FC = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Name"
+              label="Display Name"
               name="name"
               value={formData.name}
+              onChange={handleChange}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="First Name"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Last Name"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               variant="outlined"
               sx={{ marginBottom: 2 }}
             />
           </Grid>
+
           <Grid item xs={12}>
             <TextField
+              disabled
               fullWidth
               label="Preferred Theme"
               name="theme"

@@ -53,5 +53,6 @@ npm install formik yup
 ```
 npm install --save-dev prettier
 npx prettier --write path/to/your/file.js
+npm install react-gr-code
 
 ```
