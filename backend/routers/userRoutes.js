@@ -43,6 +43,7 @@ router.patch(
     authController.updatePassword
 );
 router.get("/me", authController.protect, userController.getMe);
+router.use(authController.protect);
 // update
 router.patch(
     "/me/update",
@@ -60,7 +61,5 @@ router
     .get(userController.getUser)
     .patch(userController.updateUser)
     .delete(userController.deleteUser);
-
-router;
 
 module.exports = router;
