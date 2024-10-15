@@ -11,7 +11,7 @@ export class VideoApi {
   public static async getAllVideoPrompts(
     vpsId: string,
     cursor: string | null = null,
-    limit: number = 10
+    limit: number = 500
   ) {
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
