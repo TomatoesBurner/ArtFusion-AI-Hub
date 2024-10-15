@@ -42,26 +42,23 @@ const DashBoardView = () => {
       component="main"
       sx={{
         flexGrow: 1,
-        bgcolor: "#121212",
+
         padding: 3,
-        backgroundImage: "linear-gradient(to right, #1c1c1c, #121212)", // Background gradient
+
         borderRadius: 2,
       }}
     >
       <Paper elevation={3} sx={{ padding: 3, borderRadius: 4 }}>
-        {" "}
-        {/* Card-like appearance */}
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ display: "flex", alignItems: "center", color: "#fff" }}
+          sx={{ display: "flex", alignItems: "center" }}
         >
           Welcome, {user.name}{" "}
           <EmojiEmotionsIcon sx={{ marginLeft: 2 }} fontSize="large" />
         </Typography>
-        <Typography variant="body1" sx={{ color: "#e0e0e0" }}>
-          What will you design today?
-        </Typography>
+
+        <Typography variant="body1">What will you design today?</Typography>
       </Paper>
       {/* Features Section */}
       <FeaturesSection />
