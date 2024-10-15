@@ -97,16 +97,12 @@ const Profile = () => {
         <Grid item xs={12}>
           <TextField
             disabled
-            select
             fullWidth
             label="Theme Mode"
             name="themeMode"
             value={formData.themeMode}
             variant="outlined"
-          >
-            <MenuItem value="light">Light</MenuItem>
-            <MenuItem value="dark">Dark</MenuItem>
-          </TextField>
+          ></TextField>
         </Grid>
       </Grid>
     </Container>
