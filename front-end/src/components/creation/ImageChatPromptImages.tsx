@@ -1,8 +1,12 @@
 import { ImagePromptDto } from "@/dtos/ImagePromptDto";
-import { ButtonGroup, Menu, MenuItem, styled } from "@mui/material";
+import { ImageDto, imageUtils } from "@/utils/imageUtils";
+import { Box, ButtonGroup, Menu, MenuItem, Modal, styled } from "@mui/material";
+import { saveAs } from "file-saver";
 import Image from "next/image";
 import React, { ComponentProps, SyntheticEvent } from "react";
 import Carousel from "react-multi-carousel";
+import { ReactPhotoEditor } from "react-photo-editor";
+import ImagePhotoEditorModal from "./ImagePhotoEditorModal";
 
 type TBaseImageMenuOption = "view" | "download";
 type TResponseImageMenuOption = TBaseImageMenuOption | "filter";
@@ -46,30 +50,59 @@ const carouselResponsive = {
 };
 
 const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
-  const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [showImageFilterModal, setShowImageFilterModal] = React.useState(false);
+  const [editingImageFile, setEditingImageFile] = React.useState<
+    File | undefined
+  >(undefined);
+  const [responseImageMenuAnchorEl, setResponseImageMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [
+    argumentResponseImageMenuAnchorEl,
+    setArgumentResponseImageMenuAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
   const { response, argumentResponses } = prompt;
 
-  const handleMenuClose = () => {
-    setMenuAnchorEl(null);
+  const handleResponseIMageMenuClose = () => {
+    setResponseImageMenuAnchorEl(null);
+  };
+
+  const handleArgumentResponseIMageMenuClose = () => {
+    setResponseImageMenuAnchorEl(null);
   };
 
   const handleResponseImageClick = (event: SyntheticEvent) => {
-    setMenuAnchorEl(event.target as HTMLElement);
+    setResponseImageMenuAnchorEl(event.target as HTMLElement);
   };
 
-  const handleResponseImageMenuItemClick = (
+  const handleResponseImageMenuItemClick = async (
     option: TResponseImageMenuOption
   ) => {
     if (option === "view") {
+      const blob = fetch(response.imageUrl!, {
+        headers: {
+          "Content-Type": "image/*",
+          Host: "art-fusion-ai-hub-dev.s3.ap-southeast-2.amazonaws.com",
+        },
+      }).then((res) => res.blob());
     } else if (option === "download") {
+      const blob = await imageUtils.getImageAsBlob(response.imageUrl!);
+      saveAs(blob, imageUtils.getImageNameFromImageDto(response as ImageDto));
     } else if (option === "filter") {
+      const blob = await imageUtils.getImageAsBlob(response.imageUrl!);
+      setEditingImageFile(
+        new File(
+          [blob],
+          imageUtils.getImageNameFromImageDto(response as ImageDto)
+        )
+      );
+      setShowImageFilterModal(true);
     }
+
+    handleResponseIMageMenuClose();
   };
 
   const handleArgumenResponseImageClick = (event: SyntheticEvent) => {
-    setMenuAnchorEl(event.target as HTMLElement);
+    setArgumentResponseImageMenuAnchorEl(event.target as HTMLElement);
   };
 
   const handleArgumentResponseImageMenuItemClick = (
@@ -78,6 +111,13 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
     if (option === "view") {
     } else if (option === "download") {
     }
+
+    handleArgumentResponseIMageMenuClose();
+  };
+
+  const handleImageFilterModalClose = () => {
+    setShowImageFilterModal(false);
+    setEditingImageFile(undefined);
   };
 
   return (
@@ -112,9 +152,9 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
 
       {/* Main Response image menu */}
       <Menu
-        anchorEl={menuAnchorEl}
-        open={Boolean(menuAnchorEl)}
-        onClose={handleMenuClose}
+        anchorEl={responseImageMenuAnchorEl}
+        open={Boolean(responseImageMenuAnchorEl)}
+        onClose={handleResponseIMageMenuClose}
       >
         <MenuItem onClick={() => handleResponseImageMenuItemClick("view")}>
           View
@@ -122,16 +162,19 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
         <MenuItem onClick={() => handleResponseImageMenuItemClick("filter")}>
           Filter
         </MenuItem>
-        <MenuItem onClick={() => handleResponseImageMenuItemClick("download")}>
+        <MenuItem
+          role="none"
+          onClick={() => handleResponseImageMenuItemClick("download")}
+        >
           Download
         </MenuItem>
       </Menu>
 
       {/* Argument Response image menu */}
       <Menu
-        anchorEl={menuAnchorEl}
-        open={Boolean(menuAnchorEl)}
-        onClose={handleMenuClose}
+        anchorEl={argumentResponseImageMenuAnchorEl}
+        open={Boolean(argumentResponseImageMenuAnchorEl)}
+        onClose={handleArgumentResponseIMageMenuClose}
       >
         <MenuItem
           onClick={() => handleArgumentResponseImageMenuItemClick("view")}
@@ -139,13 +182,20 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
           View
         </MenuItem>
         <MenuItem
-          onClick={() => () =>
-            handleArgumentResponseImageMenuItemClick("download")
-          }
+          role="none"
+          onClick={() => handleArgumentResponseImageMenuItemClick("download")}
         >
           Download
         </MenuItem>
       </Menu>
+
+      {showImageFilterModal && (
+        <ImagePhotoEditorModal
+          open={showImageFilterModal}
+          image={editingImageFile}
+          onClose={handleImageFilterModalClose}
+        />
+      )}
     </>
   );
 };
