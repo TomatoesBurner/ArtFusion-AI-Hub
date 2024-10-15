@@ -3,7 +3,7 @@ const { IMAGE_EXTENSION_VALUES } = require("../types/imageExtensionTypes");
 const { BaseNoIdDto } = require("./baseNoIdDto");
 
 const createArgumentImagePromptResponseJoiSchema = Joi.object({
-    filters: Joi.string().required(),
+    filters: Joi.any(),
     extension: Joi.string()
         .valid(...IMAGE_EXTENSION_VALUES)
         .required(),

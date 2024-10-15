@@ -1,3 +1,5 @@
+import { ImageApi } from "@/api/imageApi";
+import { CreateArgumentImagePromptResponseDto } from "@/dtos/CreateArgumentImagePromptResponseDto";
 import { Close, RestartAlt } from "@mui/icons-material";
 import {
   Box,
@@ -14,18 +16,33 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 import React from "react";
 import { usePhotoEditor } from "react-photo-editor";
 
 export type ImagePhotoEditorModalProps = {
   image: File | undefined;
+  ipsId: string;
+  ipId: string;
 } & Omit<ModalProps, "children">;
 
 const ImagePhotoEditorModal = ({
   image,
+  ipsId,
+  ipId,
   onClose,
   ...others
 }: ImagePhotoEditorModalProps) => {
+  const {
+    mutate: createArgumentImagePromptMutate,
+    isPending: createArgumentImagePromptIsPending,
+  } = useMutation({
+    mutationKey: ["createArgumentImagePrompt"],
+    mutationFn: ImageApi.createNewFilteredImage,
+  });
+
   const {
     canvasRef,
     imageSrc,
@@ -60,7 +77,52 @@ const ImagePhotoEditorModal = ({
   };
 
   const handleSave = () => {
-    canvasRef.current?.toBlob((blob) => {});
+    canvasRef.current?.toBlob((blob) => {
+      const createArgumentImageFilterDto: CreateArgumentImagePromptResponseDto =
+        {
+          filters: {
+            brightness: brightness,
+            contrast: contrast,
+            saturate: saturate,
+            grayscale: grayscale,
+            rotate: rotate,
+            zoom: zoom,
+            flipHorizontal: flipHorizontal,
+            flipVertical: flipVertical,
+          },
+          extension: "png",
+        };
+
+      createArgumentImagePromptMutate(
+        {
+          ipsId: ipsId,
+          ipId: ipId,
+          input: createArgumentImageFilterDto,
+        },
+        {
+          onSuccess: (data) => {
+            axios
+              .put(data.data.uploadUrl, blob, {
+                headers: {
+                  "Content-Type": "image/png",
+                },
+              })
+              .then((res) => {
+                enqueueSnackbar("Image saved successfully", {
+                  variant: "success",
+                });
+              })
+              .catch(() => {
+                enqueueSnackbar("Failed to save image", { variant: "error" });
+              });
+            handleClose();
+          },
+          onError: () => {
+            enqueueSnackbar("Failed to save image", { variant: "error" });
+          },
+        }
+      );
+    });
   };
 
   return (
@@ -105,7 +167,7 @@ const ImagePhotoEditorModal = ({
                 onChange={(e, value) => setBrightness(value as number)}
               />
 
-              <Typography gutterBottom>Constrast: {contrast}</Typography>
+              <Typography gutterBottom>Contrast: {contrast}</Typography>
               <Slider
                 valueLabelDisplay="auto"
                 min={0}
@@ -191,6 +253,7 @@ const ImagePhotoEditorModal = ({
           width={"100%"}
           direction={"row"}
           justifyContent={"space-between"}
+          mx={1}
           mb={1}
         >
           <Button variant="contained" color="warning" onClick={handleClose}>

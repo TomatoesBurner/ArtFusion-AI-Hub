@@ -7,6 +7,8 @@ import React, { ComponentProps, SyntheticEvent } from "react";
 import Carousel from "react-multi-carousel";
 import { ReactPhotoEditor } from "react-photo-editor";
 import ImagePhotoEditorModal from "./ImagePhotoEditorModal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 type TBaseImageMenuOption = "view" | "download";
 type TResponseImageMenuOption = TBaseImageMenuOption | "filter";
@@ -50,6 +52,9 @@ const carouselResponsive = {
 };
 
 const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
+  const ipsId = useSelector(
+    (state: RootState) => state.user.imagePromptSpaceId
+  );
   const [showImageFilterModal, setShowImageFilterModal] = React.useState(false);
   const [editingImageFile, setEditingImageFile] = React.useState<
     File | undefined
@@ -191,6 +196,8 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
 
       {showImageFilterModal && (
         <ImagePhotoEditorModal
+          ipsId={ipsId}
+          ipId={prompt.id!}
           open={showImageFilterModal}
           image={editingImageFile}
           onClose={handleImageFilterModalClose}

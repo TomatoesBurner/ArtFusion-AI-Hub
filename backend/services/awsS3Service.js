@@ -43,11 +43,13 @@ const getPresignedUrlForPut = async (key) => {
     const command = new PutObjectCommand({
         Bucket: bucketName,
         Key: key,
+        ContentType: "image/png",
     });
 
     const url = await getSignedUrl(client, command, {
         expiresIn: putExpiresIn,
     });
+
     return url;
 };
 const uploadImageToS3 = async (buffer, fileName) => {
