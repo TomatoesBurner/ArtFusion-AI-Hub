@@ -37,7 +37,7 @@ const initialState: VideoSliceState = {
   model: VideoModel.NaturalScenery,
   filter: {
     eta: 0.8,
-    fps: 5,
+    fps: 8,
     cfgScale: 15,
     samplingSteps: 16,
     width: 256,
