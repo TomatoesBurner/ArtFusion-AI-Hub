@@ -7,10 +7,12 @@ import {
   CircularProgress,
   Dialog,
   Paper,
+  IconButton,
 } from "@mui/material";
 import { ImageApi, MediaItem } from "@/api/imageApi";
 import { VideoApi } from "@/api/videoApi";
 import ImageFilterView from "@/views/image/ImageFilterView";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
@@ -31,6 +33,8 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
         setMediaItems(extractedItems);
       } catch (error) {
         console.error("Error fetching image items:", error);
+      } finally {
+        setLoading(false); // 更新加载状态
       }
     };
 
@@ -61,7 +65,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
       } catch (error) {
         console.error("Error fetching video items:", error);
       } finally {
-        setLoading(false); // 确保在请求完成时设置加载状态
+        setLoading(false);
       }
     };
 
@@ -71,6 +75,13 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
   const handleMediaClick = (item: MediaItem) => {
     setSelectedMedia(item);
     setModalOpen(true);
+  };
+
+  const handleDeleteImage = (id: string) => {
+    setMediaItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => item.id !== id);
+      return updatedItems;
+    });
   };
 
   if (loading) {
@@ -105,8 +116,8 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                 key={item.id}
                 sx={{
                   width: 200,
-                  backgroundColor: "#1f1f1f",
                   cursor: "pointer",
+                  position: "relative", // 确保删除按钮可以相对于卡片定位
                 }}
                 onClick={() => handleMediaClick(item)}
               >
@@ -119,6 +130,25 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                 <Typography variant="body2" color="text.secondary">
                   Image
                 </Typography>
+                {/* 删除按钮 */}
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation(); // 阻止事件传播
+                    handleDeleteImage(item.id);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    color: "red", // 设置删除按钮颜色为红色
+                    backgroundColor: "rgba(255, 255, 255, 0.7)", // 半透明背景
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 1)", // 鼠标悬停时背景变为不透明
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Card>
             ))
           ) : (
@@ -139,7 +169,6 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                 key={item.id}
                 sx={{
                   width: 200,
-                  backgroundColor: "#1f1f1f",
                   cursor: "pointer",
                 }}
                 onClick={() => handleMediaClick(item)}
