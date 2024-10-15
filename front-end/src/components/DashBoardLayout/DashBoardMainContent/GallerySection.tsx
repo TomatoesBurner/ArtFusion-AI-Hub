@@ -6,16 +6,21 @@ import {
   CardMedia,
   CircularProgress,
   Dialog,
+  Paper,
+  IconButton,
 } from "@mui/material";
 import { ImageApi, MediaItem } from "@/api/imageApi";
+import { VideoApi } from "@/api/videoApi";
 import ImageFilterView from "@/views/image/ImageFilterView";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const GallerySection = ({ ipsId }: { ipsId: string }) => {
+const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<MediaItem | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Fetch images
   useEffect(() => {
     const fetchMediaItems = async () => {
       try {
@@ -27,7 +32,7 @@ const GallerySection = ({ ipsId }: { ipsId: string }) => {
         }));
         setMediaItems(extractedItems);
       } catch (error) {
-        console.error("Error fetching media items:", error);
+        console.error("Error fetching image items:", error);
       } finally {
         setLoading(false);
       }
@@ -36,9 +41,47 @@ const GallerySection = ({ ipsId }: { ipsId: string }) => {
     fetchMediaItems();
   }, [ipsId]);
 
-  const handleImageClick = (item: MediaItem) => {
-    setSelectedImage(item); // Set the selected image
-    setModalOpen(true); // Open the modal
+  // Fetch videos
+  useEffect(() => {
+    const fetchVideoItems = async () => {
+      if (!vpsId) {
+        console.error("vpsId is undefined");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const videoResponse = await VideoApi.getAllVideoPrompts(vpsId);
+        if (!videoResponse.data) {
+          console.error("No data returned from video API");
+          return;
+        }
+        const extractedVideos = videoResponse.data.map((item: any) => ({
+          id: item.id,
+          type: "video",
+          url: item.response.videoUrl,
+        }));
+        setMediaItems((prevItems) => [...prevItems, ...extractedVideos]);
+      } catch (error) {
+        console.error("Error fetching video items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideoItems();
+  }, [vpsId]);
+
+  const handleMediaClick = (item: MediaItem) => {
+    setSelectedMedia(item);
+    setModalOpen(true);
+  };
+
+  const handleDeleteMedia = (id: string) => {
+    setMediaItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => item.id !== id);
+      return updatedItems;
+    });
   };
 
   if (loading) {
@@ -53,36 +96,121 @@ const GallerySection = ({ ipsId }: { ipsId: string }) => {
     return <Typography variant="body1">No images or videos found.</Typography>;
   }
 
+  const images = mediaItems.filter((item) => item.type === "image");
+  const videos = mediaItems.filter((item) => item.type === "video");
+
   return (
     <>
-      <Typography variant="h6" sx={{ marginTop: 4 }}>
-        Gallery
-      </Typography>
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, marginTop: 2 }}>
-        {mediaItems.map((item) => (
-          <Card
-            key={item.id}
-            sx={{ width: 200, backgroundColor: "#1f1f1f", cursor: "pointer" }}
-            onClick={() => handleImageClick(item)}
-          >
-            <CardMedia
-              component="img"
-              image={item.url}
-              alt={`Media item ${item.id}`}
-              sx={{ height: 140 }}
-            />
-            <Typography variant="body2" color="text.secondary">
-              {item.type === "image" ? "Image" : "Video"}
-            </Typography>
-          </Card>
-        ))}
-      </Box>
+      {/* Image Gallery Section */}
+      <Paper
+        elevation={3}
+        sx={{ padding: 2, borderRadius: 4, marginBottom: 3, marginTop: 3 }}
+      >
+        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+          Image Workbench
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          {images.length > 0 ? (
+            images.map((item) => (
+              <Card
+                key={item.id}
+                sx={{
+                  width: 200,
+                  cursor: "pointer",
+                  position: "relative",
+                }}
+                onClick={() => handleMediaClick(item)}
+              >
+                <CardMedia
+                  component="img"
+                  image={item.url}
+                  alt={`Image item ${item.id}`}
+                  sx={{ height: 140 }}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  Image
+                </Typography>
+                {/* delete btn */}
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteMedia(item.id);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    color: "red",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 1)",
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Card>
+            ))
+          ) : (
+            <Typography variant="body1">No images found.</Typography>
+          )}
+        </Box>
+      </Paper>
+
+      {/* Video Gallery Section */}
+      <Paper elevation={3} sx={{ padding: 3, borderRadius: 4 }}>
+        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+          Video Gallery
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          {videos.length > 0 ? (
+            videos.map((item) => (
+              <Card
+                key={item.id}
+                sx={{ width: 200, cursor: "pointer", position: "relative" }}
+                onClick={() => handleMediaClick(item)}
+              >
+                <CardMedia
+                  component="video"
+                  src={item.url}
+                  alt={`Video item ${item.id}`}
+                  sx={{ height: 140 }}
+                  controls
+                />
+                <Typography variant="body2" color="text.secondary">
+                  Video
+                </Typography>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteMedia(item.id);
+                  }}
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    color: "red",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 1)",
+                    },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Card>
+            ))
+          ) : (
+            <Typography variant="body1">No videos found.</Typography>
+          )}
+        </Box>
+      </Paper>
 
       {/* Modal for Image Filtering */}
       <Dialog open={modalOpen} onClose={() => setModalOpen(false)} fullWidth>
-        {selectedImage && (
+        {selectedMedia && (
           <ImageFilterView
-            selectedImage={selectedImage}
+            selectedImage={selectedMedia}
             onClose={() => setModalOpen(false)}
           />
         )}
