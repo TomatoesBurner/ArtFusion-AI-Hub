@@ -22,7 +22,7 @@ const FeaturesSection = () => {
             marginRight: 1,
           }}
         >
-          <Link href="/images/create" passHref>
+          <Link href="/images/models" passHref>
             <Typography variant="h6" sx={{ cursor: "pointer" }}>
               <ImageIcon sx={{ marginRight: 1 }} /> Create New Image
             </Typography>
@@ -40,7 +40,7 @@ const FeaturesSection = () => {
             marginLeft: 1,
           }}
         >
-          <Link href="/videos/create" passHref>
+          <Link href="/videos/models" passHref>
             <Typography variant="h6" sx={{ cursor: "pointer" }}>
               <VideoLibraryIcon sx={{ marginRight: 1 }} /> Create New Video
             </Typography>
@@ -51,12 +51,6 @@ const FeaturesSection = () => {
         </Box>
       </Box>
 
-      {/* TODO: Haz can you check below the manage page are we going to have?
-        Don't think we will have a video edit. The image edit, which will only 
-        be applying filter effects, like gray scale and blur. This is currently 
-        planned to be done inside the images create page as a modal when clicked
-         on one of the generated image.
-      */}
       <Box
         sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}
       >
@@ -69,11 +63,10 @@ const FeaturesSection = () => {
             marginRight: 1,
           }}
         >
-          <Link href="/(dashboard)/images/manage" passHref>
-            <Typography variant="h6" sx={{ cursor: "pointer" }}>
-              <ImageIcon sx={{ marginRight: 1 }} /> Manage Images
-            </Typography>
-          </Link>
+          <Typography variant="h6" sx={{ cursor: "pointer" }}>
+            <ImageIcon sx={{ marginRight: 1 }} /> Manage Images
+          </Typography>
+
           <Typography variant="body2" sx={{ marginTop: 1 }}>
             View and edit your existing images.
           </Typography>
@@ -87,11 +80,10 @@ const FeaturesSection = () => {
             marginLeft: 1,
           }}
         >
-          <Link href="/(dashboard)/videos/manage" passHref>
-            <Typography variant="h6" sx={{ cursor: "pointer" }}>
-              <VideoLibraryIcon sx={{ marginRight: 1 }} /> Manage Videos
-            </Typography>
-          </Link>
+          <Typography variant="h6" sx={{ cursor: "pointer" }}>
+            <VideoLibraryIcon sx={{ marginRight: 1 }} /> Manage Videos
+          </Typography>
+
           <Typography variant="body2" sx={{ marginTop: 1 }}>
             Access and modify your video library.
           </Typography>

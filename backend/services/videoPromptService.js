@@ -26,13 +26,13 @@ const generatePresignedUrlForVideoPromptDto = async (videoPromptDto) => {
 const getAllVideoPrompts = async ({ input, userId, vpsId }) => {
     const { cursor, limit } = GetAllVideoPromptsInputDto.fromRequest(input);
 
-    const ips = await PromptSpace.findOne({
+    const vps = await PromptSpace.findOne({
         _id: vpsId,
         users: { $in: [userId] },
         type: PROMPT_SPACE_TYPE.Video,
     });
 
-    if (!ips) {
+    if (!vps) {
         return {
             error: new AppError("Video prompt space not found", 404),
         };
@@ -44,7 +44,7 @@ const getAllVideoPrompts = async ({ input, userId, vpsId }) => {
     }
 
     const videoPrompts = await VideoPrompt.find({
-        promptSpaceId: vpId,
+        promptSpaceId: vpsId,
         ...query,
     })
         .limit(limit + 1)
@@ -82,13 +82,13 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
     const { width, height, message, samplingSteps, cfgScale, eta, fps } =
         cipInput;
 
-    const ips = await PromptSpace.findOne({
+    const vps = await PromptSpace.findOne({
         _id: vpsId,
         users: { $in: [userId] },
         type: PROMPT_SPACE_TYPE.Video,
     });
 
-    if (!ips) {
+    if (!vps) {
         return {
             error: new AppError("Video prompt space not found", 404),
         };
@@ -105,8 +105,10 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
             message,
             samplingSteps || 16, //
             cfgScale || 15, //
-            eta || 1, // default ETA
+            eta || 0.5, // default ETA
             fps || 5, //  default fps
+            width || 540, // default width
+            height || 540, // default
         ]);
 
         if (!result || !result.data || !result.data[0] || !result.data[0][0]) {
@@ -125,7 +127,7 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
         const responseVideoBuffer = Buffer.from(videoResponse.data, "base64");
 
         const newVideoPrompt = new VideoPrompt({
-            promptSpaceId: ips._id,
+            promptSpaceId: vps._id,
             input: {
                 message,
                 samplingSteps,
@@ -134,6 +136,7 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
                 fps,
                 width,
                 height,
+                model: "default",
             },
             response: {
                 originalVideoUrl: video_url,

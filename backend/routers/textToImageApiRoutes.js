@@ -1,6 +1,5 @@
 //API docs can be access in: https://documenter.getpostman.com/view/34479210/2sAXqs83D2
 
-
 const express = require("express");
 const router = express.Router();
 const axios = require("axios"); // For making API calls
@@ -30,6 +29,9 @@ router.post("/", async (req, res) => {
             }
         );
 
+        // Log the response from the API
+        console.log(response.data);
+
         // Send the generated image URL or data back to the frontend / client
         res.status(200).json({
             status: "success",
@@ -45,7 +47,7 @@ router.post("/", async (req, res) => {
 
 // Route for text-to-image generation (for backup)
 router.post("/backup", async (req, res) => {
-    const { text_prompt } = req.body; // Expecting text input from the request
+    const { text_prompt, width, height } = req.body; // Expecting text input from the request
 
     // Check if text_prompt is provided
     if (!text_prompt) {
@@ -61,9 +63,9 @@ router.post("/backup", async (req, res) => {
         data: {
             key: "XTBQisoBZAhY5En42W74MjvTrN8dAazWV8udk5KpoF29dhG3xijjculBExZf", // Replace with actual API key
             prompt: text_prompt, // Using the user-provided prompt
-            negative_prompt: "bad quality",
-            width: "512",
-            height: "512",
+            negative_prompt: "poor quality",
+            width: width,
+            height: height,
             safety_checker: false,
             seed: null,
             samples: 1,
@@ -82,11 +84,13 @@ router.post("/backup", async (req, res) => {
 
         res.status(200).json({
             status: response.data.status,
+            id: response.data.id,
             data: {
                 image_url: response.data.output,
             },
-            message: response.data.message ? response.data.message: 
-            "Image generation success",
+            message: response.data.message
+                ? response.data.message
+                : "Image generation success",
         });
     } catch (error) {
         console.error("API call failed:", error);

@@ -1,115 +1,92 @@
-import React from "react";
-import { Box, Typography, Button } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Card,
+  CardMedia,
+  CircularProgress,
+  Dialog,
+} from "@mui/material";
+import { ImageApi, MediaItem } from "@/api/imageApi";
+import ImageFilterView from "@/views/image/ImageFilterView";
 
-const GallerySection = () => {
-  const downloadFile = (filePath: string) => {
-    window.location.href = filePath;
+const GallerySection = ({ ipsId }: { ipsId: string }) => {
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<MediaItem | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchMediaItems = async () => {
+      try {
+        const items = await ImageApi.fetchMediaItems(ipsId);
+        const extractedItems = items.data.map((item: any) => ({
+          id: item.id,
+          type: "image",
+          url: item.response.imageUrl,
+        }));
+        setMediaItems(extractedItems);
+      } catch (error) {
+        console.error("Error fetching media items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMediaItems();
+  }, [ipsId]);
+
+  const handleImageClick = (item: MediaItem) => {
+    setSelectedImage(item); // Set the selected image
+    setModalOpen(true); // Open the modal
   };
 
-  // TODO: Haz
-  // Need to connect the content of this with real application data, don't think
-  //  it makes much sense to display hard coded image. TODO: is to figure out
-  // what image goes here, we use a list of all the images the user generated
-  // here for them to download?
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (mediaItems.length === 0) {
+    return <Typography variant="body1">No images or videos found.</Typography>;
+  }
+
   return (
     <>
       <Typography variant="h6" sx={{ marginTop: 4 }}>
         Gallery
       </Typography>
-      <Box sx={{ display: "flex", flexDirection: "column", marginTop: 2 }}>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          {/* Image 1 */}
-          <Box
-            sx={{
-              position: "relative",
-              width: "200px",
-              height: "200px",
-              bgcolor: "#1f1f1f",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, marginTop: 2 }}>
+        {mediaItems.map((item) => (
+          <Card
+            key={item.id}
+            sx={{ width: 200, backgroundColor: "#1f1f1f", cursor: "pointer" }}
+            onClick={() => handleImageClick(item)}
           >
-            <img
-              src="images/gallery-1.jpg"
-              alt="Image 1"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            <CardMedia
+              component="img"
+              image={item.url}
+              alt={`Media item ${item.id}`}
+              sx={{ height: 140 }}
             />
-            <Button
-              variant="contained"
-              sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-              }}
-              onClick={() => downloadFile("images/gallery-1.jpg")}
-            >
-              <DownloadIcon sx={{ marginRight: 1 }} /> Download
-            </Button>
-          </Box>
-          {/* Image 2 */}
-          <Box
-            sx={{
-              position: "relative",
-              width: "200px",
-              height: "200px",
-              bgcolor: "#1f1f1f",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              src="images/gallery-2.jpg"
-              alt="Image 2"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-            <Button
-              variant="contained"
-              sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-              }}
-              onClick={() => downloadFile("images/gallery-2.jpg")}
-            >
-              <DownloadIcon sx={{ marginRight: 1 }} /> Download
-            </Button>
-          </Box>
-          {/* Video 1 */}
-          <Box
-            sx={{
-              position: "relative",
-              width: "200px",
-              height: "200px",
-              bgcolor: "#1f1f1f",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <video controls style={{ width: "100%", height: "100%" }}>
-              <source src="videos/gallery-3.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <Button
-              variant="contained"
-              sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-              }}
-              onClick={() => downloadFile("videos/gallery-3.mp4")}
-            >
-              <DownloadIcon sx={{ marginRight: 1 }} /> Download
-            </Button>
-          </Box>
-        </Box>
+            <Typography variant="body2" color="text.secondary">
+              {item.type === "image" ? "Image" : "Video"}
+            </Typography>
+          </Card>
+        ))}
       </Box>
+
+      {/* Modal for Image Filtering */}
+      <Dialog open={modalOpen} onClose={() => setModalOpen(false)} fullWidth>
+        {selectedImage && (
+          <ImageFilterView
+            selectedImage={selectedImage}
+            onClose={() => setModalOpen(false)}
+          />
+        )}
+      </Dialog>
     </>
   );
 };

@@ -12,14 +12,21 @@ import { AuthApi } from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
 import { CodeResponse } from "@react-oauth/google";
-import { AUTH_METHOD } from "@/utils/constant";
+import { API_RESPONSE_CODE, AUTH_METHOD } from "@/utils/constant";
+import TwoFactorAuth from "@/components/Auth/TwoFactorAuth/TwoFactorAuth";
 
 const LoginView = () => {
+  const [verifyId, setVerifyId] = useState<string | null>(null);
+
   const { isPending: oAuthGooglePending, mutate: oAuthGoogleLoginMutate } =
     useMutation({
       mutationFn: AuthApi.oAuthLogin,
     });
-  const { isPending: loginPending, mutate: loginMutate } = useMutation({
+  const {
+    data: loginData,
+    isPending: loginPending,
+    mutate: loginMutate,
+  } = useMutation({
     mutationFn: AuthApi.login,
   });
 
@@ -28,7 +35,11 @@ const LoginView = () => {
   const handleLoginFormSubmit = (values: TLoginValues) => {
     loginMutate(values, {
       onSuccess: (data) => {
-        login(data.data);
+        if (data.code == API_RESPONSE_CODE.REQUIRE_TWO_FACTOR) {
+          setVerifyId(data.data.verifyId);
+        } else {
+          login(data.data);
+        }
       },
 
       onError: (err) => {
@@ -59,57 +70,71 @@ const LoginView = () => {
   return (
     <Stack height={"100%"} alignItems={"center"} alignContent={"center"}>
       <Stack flexGrow={1} alignItems={"center"} justifyContent={"center"}>
-        <Typography variant="h3" gutterBottom>
-          Welcome to {process.env.NEXT_PUBLIC_APP_NAME}
-        </Typography>
-        <Typography variant="body1" sx={{ mb: 4 }}>
-          {"Don't have an account? "}
-          <Link
-            href="/signup"
-            component={NextLink}
-            underline="none"
-            color={"cGold.main"}
-          >
-            Sign up for free
-          </Link>
-        </Typography>
-
-        {/* Login Card */}
-        <Paper
-          component={Stack}
-          width={"500px"}
-          p={4}
-          alignContent={"center"}
-          justifyContent={"center"}
-        >
-          <Typography align="center" variant="h5" mb={2}>
-            Log in
-          </Typography>
-
-          {/* Email and password login form */}
-          <LoginForm
-            isLoading={loginPending}
-            disableAll={anyLoading}
-            onSubmit={handleLoginFormSubmit}
-          />
-
-          <Divider sx={{ my: 2 }}>OR</Divider>
-
-          {/* External Auth */}
-          <GoogleAuthButton
-            disabled={anyLoading}
-            loading={oAuthGooglePending}
-            onAuthSuccess={handleGoogleAuthSuccess}
-          />
-          <FacebookAuthButton />
-
-          {/* TODO: forgot password page */}
-          <Link component={NextLink} href={""} underline="none">
-            <Typography component={"span"} variant="caption">
-              Forgot Password
+        {/* Login */}
+        {!verifyId && (
+          <>
+            <Typography variant="h3" gutterBottom>
+              Welcome to {process.env.NEXT_PUBLIC_APP_NAME}
             </Typography>
-          </Link>
-        </Paper>
+            <Typography variant="body1" sx={{ mb: 4 }}>
+              {"Don't have an account? "}
+              <Link
+                href="/signup"
+                component={NextLink}
+                underline="none"
+                color={"cGold.main"}
+              >
+                Sign up for free
+              </Link>
+            </Typography>
+            {/* Login Card */}
+            <Paper
+              component={Stack}
+              width={"500px"}
+              p={4}
+              alignContent={"center"}
+              justifyContent={"center"}
+            >
+              <Typography align="center" variant="h5" mb={2}>
+                Log in
+              </Typography>
+
+              {/* Email and password login form */}
+              <LoginForm
+                isLoading={loginPending}
+                disableAll={anyLoading}
+                onSubmit={handleLoginFormSubmit}
+              />
+
+              <Divider sx={{ my: 2 }}>OR</Divider>
+
+              {/* External Auth */}
+              <GoogleAuthButton
+                disabled={anyLoading}
+                loading={oAuthGooglePending}
+                onAuthSuccess={handleGoogleAuthSuccess}
+              />
+              <FacebookAuthButton />
+
+              {/* TODO: forgot password page */}
+              <Link component={NextLink} href={""} underline="none">
+                <Typography component={"span"} variant="caption">
+                  Forgot Password
+                </Typography>
+              </Link>
+            </Paper>{" "}
+          </>
+        )}
+
+        {/* Twofactor */}
+        {verifyId && (
+          <Paper sx={{ padding: 3 }}>
+            <TwoFactorAuth
+              verifyId={verifyId}
+              expiresAt={loginData?.data.expiresAt!}
+            ></TwoFactorAuth>
+          </Paper>
+        )}
       </Stack>
     </Stack>
   );

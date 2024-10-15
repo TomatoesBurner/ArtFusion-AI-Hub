@@ -132,8 +132,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [userId, loggedIn, initialised]);
 
   const logout = () => {
-    dispatch(imageSliceActions.clearState({}));
-    dispatch(videoSliceActions.clearState({}));
+    dispatch(imageSliceActions.clearState());
+    dispatch(videoSliceActions.clearState());
     dispatch(authSliceActions.clearAuthState({}));
     dispatch(userSliceActions.clearState({}));
     localStorageHelper.setAccessToken(null);

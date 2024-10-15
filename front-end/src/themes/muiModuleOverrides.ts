@@ -37,23 +37,23 @@ type MuiPaletteColor = {
 };
 
 declare module "@mui/material/styles/createPalette" {
-  interface Palette extends MuiPallete {
-    cLightBlue: MuiPaletteColor;
-    cGold: MuiPaletteColor;
-    cBlueGrey: MuiPaletteColor;
-    cWhiteGrey: MuiPaletteColor;
-    cGrey: MuiPaletteColor;
-    cGreyBlack: MuiPaletteColor;
-    cBlack: MuiPaletteColor;
+  interface palette extends MuiPallete {
+    cLightBlue?: MuiPaletteColor;
+    cGold?: MuiPaletteColor;
+    cBlueGrey?: MuiPaletteColor;
+    cWhiteGrey?: MuiPaletteColor;
+    cGrey?: MuiPaletteColor;
+    cGreyBlack?: MuiPaletteColor;
+    cBlack?: MuiPaletteColor;
   }
 
   interface PaletteOptions extends MuiPaletteOptions {
-    cLightBlue: MuiPaletteColor;
-    cGold: MuiPaletteColor;
-    cBlueGrey: MuiPaletteColor;
-    cWhiteGrey: MuiPaletteColor;
-    cGrey: MuiPaletteColor;
-    cGreyBlack: MuiPaletteColor;
-    cBlack: MuiPaletteColor;
+    cLightBlue?: MuiPaletteColor;
+    cGold?: MuiPaletteColor;
+    cBlueGrey?: MuiPaletteColor;
+    cWhiteGrey?: MuiPaletteColor;
+    cGrey?: MuiPaletteColor;
+    cGreyBlack?: MuiPaletteColor;
+    cBlack?: MuiPaletteColor;
   }
 }

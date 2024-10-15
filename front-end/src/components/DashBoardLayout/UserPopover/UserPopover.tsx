@@ -1,5 +1,11 @@
 import useAuth from "@/hooks/useAuth";
-import { AccountCircle, Logout, Settings } from "@mui/icons-material";
+import { APP_PATH } from "@/utils/constant";
+import {
+  AccountCircle,
+  Logout,
+  Settings,
+  Dashboard,
+} from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -10,9 +16,12 @@ import {
   MenuItem,
   Popover,
 } from "@mui/material";
+import { usePathname, useRouter } from "next/navigation";
 import React, { memo } from "react";
 
 const UserPopover = () => {
+  const pathName = usePathname();
+  const router = useRouter();
   const { logout, user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -29,10 +38,17 @@ const UserPopover = () => {
 
   const handleProfileClick = () => {
     setAnchorEl(null);
+    router.push(APP_PATH.PROFILE);
   };
 
   const handleSettingsClick = () => {
     setAnchorEl(null);
+    router.push(APP_PATH.SETTINGS);
+  };
+
+  const handleDashboardClick = () => {
+    setAnchorEl(null);
+    router.push(APP_PATH.DASHBOARD); // Navigate to the Dashboard
   };
 
   const initials = `${user?.lastName[0]}${user?.firstName[0]}`.toUpperCase();
@@ -53,18 +69,34 @@ const UserPopover = () => {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={handleProfileClick}>
+        <MenuItem
+          selected={pathName == APP_PATH.PROFILE}
+          onClick={handleProfileClick}
+        >
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
 
-        <MenuItem onClick={handleSettingsClick}>
+        <MenuItem
+          selected={pathName == APP_PATH.SETTINGS}
+          onClick={handleSettingsClick}
+        >
           <ListItemIcon>
             <Settings />
           </ListItemIcon>
           <ListItemText>Settings</ListItemText>
+        </MenuItem>
+
+        <MenuItem
+          selected={pathName == APP_PATH.DASHBOARD}
+          onClick={handleDashboardClick} // Handle click for Dashboard
+        >
+          <ListItemIcon>
+            <Dashboard /> {/* Dashboard icon */}
+          </ListItemIcon>
+          <ListItemText>Dashboard</ListItemText>
         </MenuItem>
 
         <MenuItem onClick={handleLogoutClick}>
