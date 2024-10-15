@@ -46,12 +46,12 @@ const FeaturesSection = () => {
             </Typography>
           </Link>
           <Typography variant="body2" sx={{ marginTop: 1 }}>
-            Explore video generation options for your projects.
+            Explore video generation with various options.
           </Typography>
         </Box>
       </Box>
 
-      <Box
+      {/* <Box
         sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}
       >
         <Box
@@ -88,7 +88,7 @@ const FeaturesSection = () => {
             Access and modify your video library.
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
     </>
   );
 };

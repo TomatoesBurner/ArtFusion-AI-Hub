@@ -235,7 +235,7 @@ const Settings: React.FC = () => {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TextField
               disabled
               fullWidth
@@ -250,7 +250,7 @@ const Settings: React.FC = () => {
               <MenuItem value="Light">Light</MenuItem>
               <MenuItem value="Dark">Dark</MenuItem>
             </TextField>
-          </Grid>
+          </Grid> */}
 
           <Grid
             item
