@@ -51,6 +51,8 @@ router.patch(
     userController.updateProfile
 );
 
+router.post("/check-username", userController.isUserNameDuplicate);
+
 router
     .route("/")
     .get(userController.getAllUsers)
