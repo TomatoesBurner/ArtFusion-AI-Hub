@@ -9,7 +9,7 @@ export class UserApi {
 
   // update user info
   public static async updateUser(data: Partial<UserMeDto>) {
-    return (await appApi.put("/users/me", data))
+    return (await appApi.patch("/users/me/update", data)) // Updated to use PATCH and correct endpoint
       .data as ApiResponseDto<UserMeDto>;
   }
 }

@@ -30,7 +30,6 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    // Update form data when user info changes
     setFormData({
       firstName: user.firstName,
       lastName: user.lastName,

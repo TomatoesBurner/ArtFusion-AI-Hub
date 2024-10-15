@@ -46,15 +46,13 @@ const Settings: React.FC = () => {
   const [pendingDisable, setPendingDisable] = useState(false); // Track if the user wants to disable 2FA
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        name: user.name || "",
-        theme: user.theme || "Dark", // Default theme
-        twoFactorEnabled: user.twoFactorEnabled || false, // Track 2FA status
-      });
-    }
+    setFormData({
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      name: user.name || "",
+      theme: user.theme || "Dark", // Default theme
+      twoFactorEnabled: user.twoFactorEnabled || false, // Track 2FA status
+    });
   }, [user]);
 
   const handleChange = (
@@ -96,7 +94,13 @@ const Settings: React.FC = () => {
     event.preventDefault();
     try {
       const response = await UserApi.updateUser(formData);
-      // dispatch(userSliceActions.setUser({ user: response.data }));
+      dispatch(userSliceActions.setUser({ user: response.data }));
+      // Update local state with the new user information
+      setFormData(response.data);
+
+      // Optionally refresh the page
+      //window.location.reload();
+
       enqueueSnackbar("Settings updated successfully", { variant: "success" });
     } catch (error) {
       console.error("Failed to update settings:", error);
