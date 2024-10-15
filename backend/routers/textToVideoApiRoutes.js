@@ -72,8 +72,8 @@ router.post("/backup", async (req, res) => {
             text_prompt,
             16, // Sampling steps (numeric value between 1 and 60)
             15, // CFG scale (numeric value between 1.0 and 30.0)
-            1, // ETA (numeric value between 0.0 and 1.0)
-            5, // FPS (frames per second, between 4 and 32)
+            0.8, // ETA (numeric value between 0.0 and 1.0)
+            8, // FPS (frames per second, between 4 and 32)
         ]);
 
         var video_id = result.data[0][0].name;

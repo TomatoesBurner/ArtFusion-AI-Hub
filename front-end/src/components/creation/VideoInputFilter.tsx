@@ -68,7 +68,7 @@ const VideoInputFilter = () => {
         label={" SamplingSteps"}
         value={filter.samplingSteps || 0}
         min={1}
-        max={10}
+        max={60}
         onChange={handlesamplingStepsChange}
       ></SlideAndTextField>
 
@@ -76,7 +76,8 @@ const VideoInputFilter = () => {
         label={"CfgScale"}
         value={filter.cfgScale || 0}
         min={1}
-        max={10}
+        max={30}
+        step={0.5}
         onChange={handleCfgScaleChange}
       ></SlideAndTextField>
 
@@ -92,8 +93,8 @@ const VideoInputFilter = () => {
       <SlideAndTextField
         label={"Fps"}
         value={filter.fps || 0}
-        min={1}
-        max={10}
+        min={8}
+        max={32}
         onChange={handleFpsChange}
       ></SlideAndTextField>
 
