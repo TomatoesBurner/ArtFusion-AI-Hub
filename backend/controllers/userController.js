@@ -54,3 +54,21 @@ exports.isUserNameDuplicate = catchAsync(async (req, res, next) => {
         message: "Name is available",
     });
 });
+
+exports.updateTheme = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+
+    const { data, error } = await authService.updateUserTheme({
+        userId,
+        themeMode: req.query.mode || "light",
+    });
+
+    if (error) {
+        return next(new AppError(error.message, 400));
+    }
+
+    res.status(200).json({
+        status: "success",
+        data,
+    });
+});

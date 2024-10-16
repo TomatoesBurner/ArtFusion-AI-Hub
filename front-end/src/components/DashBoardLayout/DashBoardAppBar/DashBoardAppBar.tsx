@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { MuiThemeMode } from "@/themes/theme";
 import { userSliceActions } from "@/store/slices/userSlice";
+import { useMutation } from "@tanstack/react-query";
+import { UserApi } from "@/api/userApi";
 
 const { isPathMatch } = pathUtils;
 
@@ -126,6 +128,12 @@ const DashBoardAppBar = () => {
 
   const pathName = usePathname();
 
+  const { isPending: updateThemePending, mutate: updateThemeMutate } =
+    useMutation({
+      mutationKey: ["updateTheme"],
+      mutationFn: UserApi.updateTheme,
+    });
+
   const navTo = (path: string) => {
     router.push(path);
   };
@@ -137,21 +145,27 @@ const DashBoardAppBar = () => {
   };
 
   const hadleThemeChange = () => {
-    console.log("called++", mode);
+    const oldMode = mode;
+    const newMode = mode === "dark" ? "light" : "dark";
 
-    if (mode === "dark") {
-      dispatch(
-        userSliceActions.setThemeMode({
-          themeMode: "light",
-        })
-      );
-    } else {
-      dispatch(
-        userSliceActions.setThemeMode({
-          themeMode: "dark",
-        })
-      );
-    }
+    dispatch(
+      userSliceActions.setThemeMode({
+        themeMode: newMode,
+      })
+    );
+
+    updateThemeMutate(
+      { theme: newMode },
+      {
+        onError: () => {
+          dispatch(
+            userSliceActions.setThemeMode({
+              themeMode: oldMode,
+            })
+          );
+        },
+      }
+    );
   };
 
   return (
@@ -239,6 +253,7 @@ const DashBoardAppBar = () => {
         <Box flexGrow={1}></Box>
 
         <MaterialUISwitch
+          disabled={updateThemePending}
           checked={mode === "dark"}
           onChange={hadleThemeChange}
         />

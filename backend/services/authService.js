@@ -688,6 +688,27 @@ const isUserNameDuplicate = async (userId, name) => {
     return !!existingUser;
 };
 
+const updateUserTheme = async ({ userId, themeMode }) => {
+    const foundUser = await User.findById(userId);
+
+    if (themeMode !== "light" && themeMode !== "dark") {
+        themeMode = "light";
+    }
+
+    if (!foundUser) {
+        return {
+            error: new AppError("User not found", 400),
+        };
+    }
+
+    foundUser.themeMode = themeMode;
+    await foundUser.save();
+
+    return {
+        data: null,
+    };
+};
+
 module.exports = {
     register,
     login,
@@ -699,4 +720,5 @@ module.exports = {
     verifyTwoFactor,
     updateUserProfile,
     isUserNameDuplicate,
+    updateUserTheme,
 };

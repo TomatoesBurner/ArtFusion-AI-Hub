@@ -56,4 +56,6 @@ router.post(
     userController.isUserNameDuplicate
 );
 
+router.post("/theme", authController.protect, userController.updateTheme);
+
 module.exports = router;
