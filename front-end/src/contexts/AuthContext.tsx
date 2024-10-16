@@ -100,20 +100,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const localRefreshToken = localStorageHelper.getRefreshToken();
     const localAccessToken = localStorageHelper.getAccessToken();
 
-    const tokens: UserTokensDto = {
-      accessToken: {
-        token: localAccessToken.token,
-        expiresAt: new Date(localAccessToken.expiresAt).toISOString(),
-      },
-      refreshToken: {
-        token: localRefreshToken.token,
-        expiresAt: new Date(localRefreshToken.expiresAt).toISOString(),
-      },
-      userId: "",
-    };
+    try {
+      const tokens: UserTokensDto = {
+        accessToken: {
+          token: localAccessToken.token,
+          expiresAt: new Date(localAccessToken.expiresAt).toISOString(),
+        },
+        refreshToken: {
+          token: localRefreshToken.token,
+          expiresAt: new Date(localRefreshToken.expiresAt).toISOString(),
+        },
+        userId: "",
+      };
 
-    if (checkRefreshTokenAndNotify(tokens.refreshToken)) {
-      dispatch(authSliceActions.setUserTokens(tokens));
+      if (checkRefreshTokenAndNotify(tokens.refreshToken)) {
+        dispatch(authSliceActions.setUserTokens(tokens));
+      }
+    } catch (error) {
+      logout();
     }
 
     dispatch(authSliceActions.setInitialised({ initialised: true }));
