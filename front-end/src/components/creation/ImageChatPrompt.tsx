@@ -72,6 +72,7 @@ const ImageChatPrompt = ({ prompt, ipsId }: ImageChatPromptProps) => {
         borderRadius={4}
         ml={"auto"}
         maxWidth={"20%"}
+        minWidth={"50px"}
         overflow={"hidden"}
         display={"flex"}
         minHeight={"40px"}

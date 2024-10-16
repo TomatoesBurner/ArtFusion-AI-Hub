@@ -64,10 +64,11 @@ const VideoChatPrompt = ({ prompt, vpsId }: VideoChatPromptProps) => {
         p={2}
         borderRadius={4}
         ml={"auto"}
-        width={"20%"}
+        maxWidth={"20%"}
         overflow={"hidden"}
         display={"flex"}
         minHeight={"40px"}
+        minWidth={"50px"}
         justifyContent={"center"}
         alignItems={"center"}
         maxHeight={`${videoChatPromptMessageMaxHeight}px`}
