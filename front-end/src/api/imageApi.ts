@@ -16,11 +16,15 @@ export interface MediaItem {
 
 export class ImageApi {
   // Fetch all image prompts with pagination
-  public static async getAllImagePrompts(
-    ipsId: string,
-    cursor: string | null = null,
-    limit: number = 10
-  ): Promise<ApiResponseDto<ImagePromptDto[]>> {
+  public static async getAllImagePrompts({
+    ipsId,
+    cursor = null,
+    limit = 10,
+  }: {
+    ipsId: string;
+    cursor: string | null;
+    limit: number;
+  }): Promise<ApiResponseDto<ImagePromptDto[]>> {
     return (
       await appApi.get(`/imagePromptSpaces/${ipsId}/imagePrompts`, {
         params: {
