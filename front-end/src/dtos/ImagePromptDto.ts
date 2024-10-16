@@ -1,4 +1,5 @@
 import { BaseDto } from "./BaseDto";
+import { ArgumentImageFiltersDto } from "./CreateArgumentImagePromptResponseDto";
 
 export type ImagePromptInputFilterDto = {
   width?: number;
@@ -21,7 +22,7 @@ export type ImagePromptResponseDto = {
 } & BaseDto;
 
 export type ArgumentImagePromptResponseDto = {
-  filters: string;
+  filters: ArgumentImageFiltersDto;
   createdBy: string;
   extension: string;
   imageUrl: string;

@@ -21,11 +21,10 @@ const VideoChatList = () => {
   const vpsId = useSelector(
     (state: RootState) => state.user.videoPromptSpaceId
   );
-  const { cursor: stateCursor } = useSelector(
-    (state: RootState) => state.videos
-  );
+
   const videoPrompts =
     useSelector((state: RootState) => state.videos.prompts) || [];
+  const stateCursor = videoPrompts[videoPrompts.length - 1]?.id || null;
 
   const [hasNextPage, setHasNextPage] = useState(true);
   const videoPromptsContainerRef: any = useRef();

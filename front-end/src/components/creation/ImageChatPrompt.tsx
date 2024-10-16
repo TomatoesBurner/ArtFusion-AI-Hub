@@ -2,6 +2,7 @@ import { ImagePromptDto } from "@/dtos/ImagePromptDto";
 import { Box, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { memo } from "react";
+import ImageChatPromptImages from "./ImageChatPromptImages";
 
 export const imageChatPromptImageMaxHeight: number = 200;
 export const imageChatPromptMessageMaxHeight: number = 300;
@@ -22,7 +23,7 @@ const ImageChatPrompt = ({ prompt }: ImageChatPromptProps) => {
         p={2}
         borderRadius={4}
         ml={"auto"}
-        width={"20%"}
+        maxWidth={"20%"}
         overflow={"hidden"}
         maxHeight={`${imageChatPromptMessageMaxHeight}px`}
       >
@@ -36,18 +37,8 @@ const ImageChatPrompt = ({ prompt }: ImageChatPromptProps) => {
       </Box>
 
       <Box bgcolor={"background.default"} p={2} borderRadius={4} width={"60%"}>
-        <Box maxHeight={`${imageChatPromptImageMaxHeight}px`}>
-          <Image
-            src={response.imageUrl || ""}
-            height={0}
-            width={0}
-            alt="Image"
-            style={{
-              height: `${imageChatPromptImageMaxHeight}px`,
-              width: "auto",
-            }}
-            unoptimized
-          />
+        <Box height={`${imageChatPromptImageMaxHeight}px`}>
+          <ImageChatPromptImages prompt={prompt} />
         </Box>
       </Box>
     </Stack>

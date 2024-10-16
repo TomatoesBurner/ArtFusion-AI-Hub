@@ -21,11 +21,10 @@ const ImageChatList = () => {
   const ipsId = useSelector(
     (state: RootState) => state.user.imagePromptSpaceId
   );
-  const { cursor: stateCursor } = useSelector(
-    (state: RootState) => state.images
-  );
+
   const imagePrompts =
     useSelector((state: RootState) => state.images.prompts) || [];
+  const stateCursor = imagePrompts[imagePrompts.length - 1]?.id || null;
 
   const [hasNextPage, setHasNextPage] = useState(true);
   const imagePromptsContainerRef: any = useRef();
@@ -37,7 +36,8 @@ const ImageChatList = () => {
     refetch: getAllImagePromptsRefetch,
   } = useQuery({
     queryKey: ["getAllImagePrompts"],
-    queryFn: () => ImageApi.getAllImagePrompts(ipsId, stateCursor || null, 3),
+    queryFn: () =>
+      ImageApi.getAllImagePrompts({ ipsId, cursor: stateCursor, limit: 3 }),
     enabled: false,
   });
 

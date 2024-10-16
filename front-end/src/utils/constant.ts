@@ -7,6 +7,8 @@ export const APP_PATH = {
   IMAGES: "/images",
   CREATE_VIDEOS: "/videos/create",
   CREATE_IMAGES: "/images/create",
+  IMAGE_MODELS: "/images/models",
+  VIDEO_MODELS: "/videos/models",
   SETTINGS: "/settings",
   PROFILE: "/settings/profile",
 };

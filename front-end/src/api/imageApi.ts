@@ -16,11 +16,15 @@ export interface MediaItem {
 
 export class ImageApi {
   // Fetch all image prompts with pagination
-  public static async getAllImagePrompts(
-    ipsId: string,
-    cursor: string | null = null,
-    limit: number = 10
-  ): Promise<ApiResponseDto<ImagePromptDto[]>> {
+  public static async getAllImagePrompts({
+    ipsId,
+    cursor = null,
+    limit = 10,
+  }: {
+    ipsId: string;
+    cursor: string | null;
+    limit: number;
+  }): Promise<ApiResponseDto<ImagePromptDto[]>> {
     return (
       await appApi.get(`/imagePromptSpaces/${ipsId}/imagePrompts`, {
         params: {
@@ -45,11 +49,15 @@ export class ImageApi {
   }
 
   // Create a new filtered image (argument response)
-  public static async createNewFilteredImage(
-    ipsId: string,
-    ipId: string,
-    input: CreateArgumentImagePromptResponseDto
-  ): Promise<ApiResponseDto<ArgumentImagePromptResponseDto>> {
+  public static async createNewFilteredImage({
+    ipsId,
+    ipId,
+    input,
+  }: {
+    ipsId: string;
+    ipId: string;
+    input: CreateArgumentImagePromptResponseDto;
+  }): Promise<ApiResponseDto<ArgumentImagePromptResponseDto>> {
     return (
       await appApi.post(
         `/imagePromptSpaces/${ipsId}/imagePrompts/${ipId}/argumentResponse`,
@@ -68,4 +76,3 @@ export class ImageApi {
     return response.data as ApiResponseDto<MediaItem[]>;
   }
 }
-
