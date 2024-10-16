@@ -23,7 +23,7 @@ const ImageChatPrompt = ({ prompt }: ImageChatPromptProps) => {
         p={2}
         borderRadius={4}
         ml={"auto"}
-        width={"20%"}
+        maxWidth={"20%"}
         overflow={"hidden"}
         maxHeight={`${imageChatPromptMessageMaxHeight}px`}
       >

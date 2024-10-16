@@ -10,6 +10,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  LinearProgress,
   ModalProps,
   Slider,
   Stack,
@@ -125,8 +126,20 @@ const ImagePhotoEditorModal = ({
     });
   };
 
+  const anyLoading = createArgumentImagePromptIsPending;
+
   return (
-    <Dialog maxWidth="lg" {...others}>
+    <Dialog
+      maxWidth={"lg"}
+      PaperProps={{
+        sx: {
+          width: "100%",
+        },
+      }}
+      {...others}
+    >
+      {anyLoading && <LinearProgress />}
+
       <DialogTitle>
         <Stack
           width={"100%"}
@@ -134,7 +147,7 @@ const ImagePhotoEditorModal = ({
           justifyContent={"space-between"}
         >
           <Typography variant="h6">Image Editor</Typography>
-          <IconButton onClick={handleClose}>
+          <IconButton disabled={anyLoading} onClick={handleClose}>
             <Close />
           </IconButton>
         </Stack>
@@ -142,10 +155,17 @@ const ImagePhotoEditorModal = ({
 
       <DialogContent>
         <Grid container gap={2}>
-          <Grid item>
+          <Grid item xs={8}>
             {imageSrc && (
-              <Box className="canvas-container">
+              <Box
+                m={"auto"}
+                className="canvas-container"
+                bgcolor={"background.default"}
+                width={"fit-content"}
+                // height={"fit-content"}
+              >
                 <canvas
+                  width={58}
                   ref={canvasRef}
                   onMouseDown={handlePointerDown}
                   onMouseMove={handlePointerMove}
@@ -156,10 +176,11 @@ const ImagePhotoEditorModal = ({
             )}
           </Grid>
 
-          <Grid item xs={"auto"}>
-            <Box className="controls" width={"200px"}>
+          <Grid item xs={3}>
+            <Box className="controls" minWidth={"200px"} width={"100%"}>
               <Typography gutterBottom>Brightness: {brightness}</Typography>
               <Slider
+                disabled={anyLoading}
                 valueLabelDisplay="auto"
                 min={0}
                 max={200}
@@ -169,6 +190,7 @@ const ImagePhotoEditorModal = ({
 
               <Typography gutterBottom>Contrast: {contrast}</Typography>
               <Slider
+                disabled={anyLoading}
                 valueLabelDisplay="auto"
                 min={0}
                 max={200}
@@ -178,6 +200,7 @@ const ImagePhotoEditorModal = ({
 
               <Typography gutterBottom>Saturate: {saturate}</Typography>
               <Slider
+                disabled={anyLoading}
                 valueLabelDisplay="auto"
                 min={0}
                 max={200}
@@ -187,6 +210,7 @@ const ImagePhotoEditorModal = ({
 
               <Typography gutterBottom>Grayscale: {grayscale}</Typography>
               <Slider
+                disabled={anyLoading}
                 valueLabelDisplay="auto"
                 min={0}
                 max={100}
@@ -196,6 +220,7 @@ const ImagePhotoEditorModal = ({
 
               <Typography gutterBottom>Rotate: {rotate}</Typography>
               <Slider
+                disabled={anyLoading}
                 valueLabelDisplay="auto"
                 min={0}
                 max={360}
@@ -205,6 +230,7 @@ const ImagePhotoEditorModal = ({
 
               <Typography gutterBottom>Zoom: {zoom}</Typography>
               <Slider
+                disabled={anyLoading}
                 valueLabelDisplay="auto"
                 min={0.1}
                 step={0.1}
@@ -220,6 +246,7 @@ const ImagePhotoEditorModal = ({
               >
                 <Typography>Flip Horizontal:</Typography>
                 <Switch
+                  disabled={anyLoading}
                   checked={flipHorizontal}
                   onChange={(e) => setFlipHorizontal(e.target.checked)}
                 />
@@ -232,6 +259,7 @@ const ImagePhotoEditorModal = ({
               >
                 <Typography>Flip Vertical:</Typography>
                 <Switch
+                  disabled={anyLoading}
                   checked={flipVertical}
                   onChange={(e) => setFlipVertical(e.target.checked)}
                 />
@@ -239,6 +267,7 @@ const ImagePhotoEditorModal = ({
 
               <Button
                 fullWidth
+                disabled={anyLoading}
                 startIcon={<RestartAlt />}
                 onClick={() => resetFilters()}
               >
@@ -256,10 +285,19 @@ const ImagePhotoEditorModal = ({
           mx={1}
           mb={1}
         >
-          <Button variant="contained" color="warning" onClick={handleClose}>
+          <Button
+            disabled={anyLoading}
+            variant="contained"
+            color="warning"
+            onClick={handleClose}
+          >
             Close
           </Button>
-          <Button variant="contained" onClick={handleSave}>
+          <Button
+            disabled={anyLoading}
+            variant="contained"
+            onClick={handleSave}
+          >
             Save
           </Button>
         </Stack>

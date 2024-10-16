@@ -1,6 +1,14 @@
 import { ImagePromptDto } from "@/dtos/ImagePromptDto";
 import { ImageDto, imageUtils } from "@/utils/imageUtils";
-import { Box, ButtonGroup, Menu, MenuItem, Modal, styled } from "@mui/material";
+import {
+  Box,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  Modal,
+  Stack,
+  styled,
+} from "@mui/material";
 import { saveAs } from "file-saver";
 import Image from "next/image";
 import React, { ComponentProps, SyntheticEvent } from "react";
@@ -9,6 +17,7 @@ import { ReactPhotoEditor } from "react-photo-editor";
 import ImagePhotoEditorModal from "./ImagePhotoEditorModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import "react-multi-carousel/lib/styles.css";
 
 type TBaseImageMenuOption = "view" | "download";
 type TResponseImageMenuOption = TBaseImageMenuOption | "filter";
@@ -16,7 +25,7 @@ type TArugmentResponseImageMenuOption = TBaseImageMenuOption;
 
 const PromptImage = styled(
   ({
-    alt = "",
+    alt = ".",
     ...others
   }: Omit<ComponentProps<typeof Image>, "alt"> & { alt?: string }) => (
     <Image width={0} height={0} alt={alt} unoptimized {...others} />
@@ -36,18 +45,22 @@ const carouselResponsive = {
     // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
     items: 5,
+    // items: 5,
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 3,
+    // items: 3,
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
     items: 2,
+    // items: 2,
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
+    // items: 1,
   },
 };
 
@@ -135,11 +148,27 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
       )}
 
       {argumentResponses && argumentResponses.length > 0 && (
-        <Carousel
-          arrows={true}
-          renderButtonGroupOutside={true}
-          customButtonGroup={<ButtonGroup />}
-          responsive={carouselResponsive}
+        // <>
+        //   <PromptImage
+        //     onClick={handleResponseImageClick}
+        //     src={response.imageUrl || ""}
+        //   />
+        //   {argumentResponses.map((argumentResponse) => (
+        //     <PromptImage
+        //       key={argumentResponse.id}
+        //       onClick={handleArgumenResponseImageClick}
+        //       src={argumentResponse.imageUrl || ""}
+        //     />
+        //   ))}
+        // </>
+        <Stack
+          height={"100%"}
+          direction={"row"}
+          gap={2}
+          sx={{
+            overflow: "hidden",
+            overflowX: "scroll",
+          }}
         >
           <PromptImage
             onClick={handleResponseImageClick}
@@ -152,7 +181,7 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
               src={argumentResponse.imageUrl || ""}
             />
           ))}
-        </Carousel>
+        </Stack>
       )}
 
       {/* Main Response image menu */}
