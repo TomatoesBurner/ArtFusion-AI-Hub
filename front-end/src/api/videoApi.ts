@@ -47,11 +47,18 @@ export class VideoApi {
     ).data as ApiResponseDto<VideoPromptDto>;
   }
 
+  // use for gallery
   public static async fetchVideo(
-    vpsId: string
+    vpsId: string,
+    limit: number = 100
   ): Promise<ApiResponseDto<VideoItem[]>> {
     const response = await appApi.get(
-      `/videoPromptSpaces/${vpsId}/videoPrompts`
+      `/videoPromptSpaces/${vpsId}/videoPrompts`,
+      {
+        params: {
+          limit: limit,
+        },
+      }
     );
     return response.data as ApiResponseDto<VideoItem[]>;
   }
