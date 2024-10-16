@@ -30,7 +30,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
           type: "image",
           url: item.response.imageUrl,
         }));
-        setMediaItems(extractedItems);
+        setMediaItems((prevItems) => [...prevItems, ...extractedItems]);
       } catch (error) {
         console.error("Error fetching image items:", error);
       } finally {
@@ -51,7 +51,8 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
       }
 
       try {
-        const videoResponse = await VideoApi.getAllVideoPrompts(vpsId);
+        const videoResponse = await VideoApi.fetchVideo(vpsId);
+        console.log(videoResponse);
         if (!videoResponse.data) {
           console.error("No data returned from video API");
           return;

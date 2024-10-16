@@ -7,6 +7,11 @@ import {
 import { VideoPromptCreateDto } from "@/dtos/VideoPromptCreateDto";
 import { CreateArgumentVideoPromptResponseDto } from "@/dtos/CreateArgumentVideoPromptResponseDto";
 
+export interface VideoItem {
+  id: string;
+  type: "video";
+  url: string;
+}
 export class VideoApi {
   public static async getAllVideoPrompts(
     vpsId: string,
@@ -40,5 +45,14 @@ export class VideoApi {
     return (
       await appApi.post(`/videoPromptSpaces/${vpsId}/videoPrompts`, input)
     ).data as ApiResponseDto<VideoPromptDto>;
+  }
+
+  public static async fetchVideo(
+    vpsId: string
+  ): Promise<ApiResponseDto<VideoItem[]>> {
+    const response = await appApi.get(
+      `/videoPromptSpaces/${vpsId}/videoPrompts`
+    );
+    return response.data as ApiResponseDto<VideoItem[]>;
   }
 }
