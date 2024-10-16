@@ -1,4 +1,7 @@
-import { ImagePromptDto } from "@/dtos/ImagePromptDto";
+import {
+  ArgumentImagePromptResponseDto,
+  ImagePromptDto,
+} from "@/dtos/ImagePromptDto";
 import { ImageDto, imageUtils } from "@/utils/imageUtils";
 import {
   Box,
@@ -11,13 +14,14 @@ import {
 } from "@mui/material";
 import { saveAs } from "file-saver";
 import Image from "next/image";
-import React, { ComponentProps, SyntheticEvent } from "react";
+import React, { ComponentProps, SyntheticEvent, useState } from "react";
 import Carousel from "react-multi-carousel";
 import { ReactPhotoEditor } from "react-photo-editor";
 import ImagePhotoEditorModal from "./ImagePhotoEditorModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import "react-multi-carousel/lib/styles.css";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 type TBaseImageMenuOption = "view" | "download";
 type TResponseImageMenuOption = TBaseImageMenuOption | "filter";
@@ -68,6 +72,8 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
   const ipsId = useSelector(
     (state: RootState) => state.user.imagePromptSpaceId
   );
+  const [selectedArgumentImage, setSelectedArgumentImage] =
+    useState<ArgumentImagePromptResponseDto | null>(null);
   const [showImageFilterModal, setShowImageFilterModal] = React.useState(false);
   const [editingImageFile, setEditingImageFile] = React.useState<
     File | undefined
@@ -80,12 +86,33 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
   ] = React.useState<null | HTMLElement>(null);
   const { response, argumentResponses } = prompt;
 
+  const {
+    isFetching: getPromptImageBlobFetching,
+    refetch: getPromptImageBlobRefetch,
+  } = useQuery({
+    queryKey: ["getPromptImageBlob"],
+    queryFn: () => imageUtils.getImageAsBlob(prompt.response.imageUrl!),
+    enabled: false,
+    retry: false,
+  });
+
+  const {
+    isFetching: getArgumentImageBlobFetching,
+    refetch: getArgumentImageBlobRefetch,
+  } = useQuery({
+    queryKey: ["getArgumentImageBlob"],
+    queryFn: () => imageUtils.getImageAsBlob(selectedArgumentImage?.imageUrl!),
+    enabled: false,
+    retry: false,
+  });
+
   const handleResponseIMageMenuClose = () => {
     setResponseImageMenuAnchorEl(null);
   };
 
   const handleArgumentResponseIMageMenuClose = () => {
-    setResponseImageMenuAnchorEl(null);
+    setArgumentResponseImageMenuAnchorEl(null);
+    setSelectedArgumentImage(null);
   };
 
   const handleResponseImageClick = (event: SyntheticEvent) => {
@@ -96,15 +123,14 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
     option: TResponseImageMenuOption
   ) => {
     if (option === "view") {
-      const blob = fetch(response.imageUrl!, {
-        headers: {
-          "Content-Type": "image/*",
-          Host: "art-fusion-ai-hub-dev.s3.ap-southeast-2.amazonaws.com",
-        },
-      }).then((res) => res.blob());
     } else if (option === "download") {
-      const blob = await imageUtils.getImageAsBlob(response.imageUrl!);
-      saveAs(blob, imageUtils.getImageNameFromImageDto(response as ImageDto));
+      const blob = await getPromptImageBlobRefetch();
+      if (blob.data) {
+        saveAs(
+          blob.data,
+          imageUtils.getImageNameFromImageDto(response as ImageDto)
+        );
+      }
     } else if (option === "filter") {
       const blob = await imageUtils.getImageAsBlob(response.imageUrl!);
       setEditingImageFile(
@@ -119,15 +145,31 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
     handleResponseIMageMenuClose();
   };
 
-  const handleArgumenResponseImageClick = (event: SyntheticEvent) => {
+  const handleArgumenResponseImageClick = (
+    event: SyntheticEvent,
+    selected: ArgumentImagePromptResponseDto
+  ) => {
     setArgumentResponseImageMenuAnchorEl(event.target as HTMLElement);
+    setSelectedArgumentImage(selected);
   };
 
-  const handleArgumentResponseImageMenuItemClick = (
+  const handleArgumentResponseImageMenuItemClick = async (
     option: TArugmentResponseImageMenuOption
   ) => {
     if (option === "view") {
     } else if (option === "download") {
+      if (selectedArgumentImage) {
+        // const blob = await imageUtils.getImageAsBlob(
+        //   selectedArgumentImage.imageUrl!
+        // );
+        const blob = await getArgumentImageBlobRefetch();
+        if (blob.data) {
+          saveAs(
+            blob.data,
+            imageUtils.getImageNameFromImageDto(response as ImageDto)
+          );
+        }
+      }
     }
 
     handleArgumentResponseIMageMenuClose();
@@ -148,19 +190,6 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
       )}
 
       {argumentResponses && argumentResponses.length > 0 && (
-        // <>
-        //   <PromptImage
-        //     onClick={handleResponseImageClick}
-        //     src={response.imageUrl || ""}
-        //   />
-        //   {argumentResponses.map((argumentResponse) => (
-        //     <PromptImage
-        //       key={argumentResponse.id}
-        //       onClick={handleArgumenResponseImageClick}
-        //       src={argumentResponse.imageUrl || ""}
-        //     />
-        //   ))}
-        // </>
         <Stack
           height={"100%"}
           direction={"row"}
@@ -177,7 +206,9 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
           {argumentResponses.map((argumentResponse) => (
             <PromptImage
               key={argumentResponse.id}
-              onClick={handleArgumenResponseImageClick}
+              onClick={(e) =>
+                handleArgumenResponseImageClick(e, argumentResponse)
+              }
               src={argumentResponse.imageUrl || ""}
             />
           ))}

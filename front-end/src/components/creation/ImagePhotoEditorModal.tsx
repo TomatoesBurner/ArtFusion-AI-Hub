@@ -1,5 +1,6 @@
 import { ImageApi } from "@/api/imageApi";
 import { CreateArgumentImagePromptResponseDto } from "@/dtos/CreateArgumentImagePromptResponseDto";
+import { imageSliceActions } from "@/store/slices/imagesSlice";
 import { Close, RestartAlt } from "@mui/icons-material";
 import {
   Box,
@@ -22,6 +23,7 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import React from "react";
 import { usePhotoEditor } from "react-photo-editor";
+import { useDispatch } from "react-redux";
 
 export type ImagePhotoEditorModalProps = {
   image: File | undefined;
@@ -36,6 +38,7 @@ const ImagePhotoEditorModal = ({
   onClose,
   ...others
 }: ImagePhotoEditorModalProps) => {
+  const dispatch = useDispatch();
   const {
     mutate: createArgumentImagePromptMutate,
     isPending: createArgumentImagePromptIsPending,
@@ -112,6 +115,12 @@ const ImagePhotoEditorModal = ({
                 enqueueSnackbar("Image saved successfully", {
                   variant: "success",
                 });
+                dispatch(
+                  imageSliceActions.addArgumentImageToImagePrompt({
+                    ipId: ipId,
+                    argumentImage: data.data,
+                  })
+                );
               })
               .catch(() => {
                 enqueueSnackbar("Failed to save image", { variant: "error" });

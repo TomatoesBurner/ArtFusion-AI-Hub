@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  ArgumentImagePromptResponseDto,
   ImagePromptDto,
   ImagePromptInputFilterDto,
 } from "@/dtos/ImagePromptDto";
@@ -82,6 +83,23 @@ const slice = createSlice({
       const { cursor, hasNext } = action.payload.pagination;
       state.cursor = cursor || null;
       state.hasNextPage = hasNext || false;
+    },
+
+    addArgumentImageToImagePrompt(
+      state,
+      action: {
+        payload: {
+          ipId: string;
+          argumentImage: ArgumentImagePromptResponseDto;
+        };
+      }
+    ) {
+      const { ipId, argumentImage } = action.payload;
+      const imagePrompt = state.prompts.find((ip) => ip.id === ipId);
+
+      if (imagePrompt) {
+        imagePrompt.argumentResponses.push(argumentImage);
+      }
     },
 
     clearState() {
