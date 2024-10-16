@@ -82,6 +82,11 @@ const slice = createSlice({
       state.hasNextPage = hasNext || false;
     },
 
+    deleteVideoPrompt(state, action: { payload: { vpId: string } }) {
+      const { vpId } = action.payload;
+      state.prompts = state.prompts.filter((vp) => vp.id !== vpId);
+    },
+
     clearState() {
       return initialState;
     },
