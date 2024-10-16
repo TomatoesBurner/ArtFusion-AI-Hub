@@ -3,31 +3,22 @@ import {
   ImagePromptDto,
 } from "@/dtos/ImagePromptDto";
 import { ImageDto, imageUtils } from "@/utils/imageUtils";
-import {
-  Box,
-  ButtonGroup,
-  Menu,
-  MenuItem,
-  Modal,
-  Stack,
-  styled,
-} from "@mui/material";
+import { Menu, MenuItem, Stack, styled } from "@mui/material";
 import { saveAs } from "file-saver";
 import Image from "next/image";
 import React, { ComponentProps, SyntheticEvent, useState } from "react";
-import Carousel from "react-multi-carousel";
-import { ReactPhotoEditor } from "react-photo-editor";
 import ImagePhotoEditorModal from "./ImagePhotoEditorModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import "react-multi-carousel/lib/styles.css";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import ImageViewModal from "./ImageViewModal";
 
 type TBaseImageMenuOption = "view" | "download";
 type TResponseImageMenuOption = TBaseImageMenuOption | "filter";
 type TArugmentResponseImageMenuOption = TBaseImageMenuOption;
 
-const PromptImage = styled(
+export const PromptImage = styled(
   ({
     alt = ".",
     ...others
@@ -42,30 +33,6 @@ const PromptImage = styled(
 
 export type ImageChatPromptImagesProps = {
   prompt: ImagePromptDto;
-};
-
-const carouselResponsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-    // items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    // items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    // items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    // items: 1,
-  },
 };
 
 const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
@@ -84,6 +51,8 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
     argumentResponseImageMenuAnchorEl,
     setArgumentResponseImageMenuAnchorEl,
   ] = React.useState<null | HTMLElement>(null);
+  const [showViewImageModal, setShowViewImageModal] = useState(false);
+
   const { response, argumentResponses } = prompt;
 
   const {
@@ -112,7 +81,6 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
 
   const handleArgumentResponseIMageMenuClose = () => {
     setArgumentResponseImageMenuAnchorEl(null);
-    setSelectedArgumentImage(null);
   };
 
   const handleResponseImageClick = (event: SyntheticEvent) => {
@@ -123,6 +91,7 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
     option: TResponseImageMenuOption
   ) => {
     if (option === "view") {
+      setShowViewImageModal(true);
     } else if (option === "download") {
       const blob = await getPromptImageBlobRefetch();
       if (blob.data) {
@@ -157,6 +126,7 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
     option: TArugmentResponseImageMenuOption
   ) => {
     if (option === "view") {
+      setShowViewImageModal(true);
     } else if (option === "download") {
       if (selectedArgumentImage) {
         // const blob = await imageUtils.getImageAsBlob(
@@ -178,6 +148,12 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
   const handleImageFilterModalClose = () => {
     setShowImageFilterModal(false);
     setEditingImageFile(undefined);
+    setSelectedArgumentImage(null);
+  };
+
+  const handleViewImageModalClose = () => {
+    setShowViewImageModal(false);
+    setSelectedArgumentImage(null);
   };
 
   return (
@@ -261,6 +237,20 @@ const ImageChatPromptImages = ({ prompt }: ImageChatPromptImagesProps) => {
           open={showImageFilterModal}
           image={editingImageFile}
           onClose={handleImageFilterModalClose}
+        />
+      )}
+
+      {showViewImageModal && (
+        <ImageViewModal
+          open={showViewImageModal}
+          imageUrl={
+            selectedArgumentImage
+              ? selectedArgumentImage.imageUrl!
+              : prompt.response.imageUrl!
+          }
+          imagePrompt={prompt}
+          argumentImage={selectedArgumentImage}
+          onClose={handleViewImageModalClose}
         />
       )}
     </>
