@@ -85,7 +85,7 @@ const VideoChatPrompt = ({ prompt, vpsId }: VideoChatPromptProps) => {
           }}
           size="small"
           color="error"
-          onClick={() => handelVideoDelete()}
+          onClick={handelVideoDelete}
         >
           <DeleteOutline />
         </IconButton>

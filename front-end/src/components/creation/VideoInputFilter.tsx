@@ -2,24 +2,23 @@ import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { videoSliceActions } from "../../store/slices/videosSlice";
 import {
-  Slider,
   Typography,
   Box,
   Paper,
-  TextField,
-  Select,
-  SelectChangeEvent,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  Stack,
+  Button,
+  CardMedia,
 } from "@mui/material";
 import { RootState } from "@/store/store";
 import SlideAndTextField from "../Common/SliderAndTextField/SlideAndTextField";
-import { aspectRatios } from "@/utils/constant";
+import NextLink from "next/link";
+import { videoModelList } from "@/app/(dashboard)/videos/models/page";
+import { APP_PATH } from "@/utils/constant";
 
 const VideoInputFilter = () => {
   const dispatch = useDispatch();
   const filter = useSelector((state: RootState) => state.videos.filter);
+  const videoModel = useSelector((state: RootState) => state.videos.model);
 
   const handlesamplingStepsChange = (value: number) => {
     dispatch(
@@ -59,11 +58,48 @@ const VideoInputFilter = () => {
     );
   };
 
+  const videoModelData = videoModelList.find(
+    (model) => model.value === videoModel
+  );
+
   return (
     <Paper component={Box} p={2} width={"100%"}>
-      <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+      <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
         Filters
       </Typography>
+
+      {videoModelData && (
+        <Box mb={3}>
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            mb={1}
+          >
+            <Typography variant="subtitle1">
+              Model: {videoModelData.title}
+            </Typography>
+
+            <Button
+              LinkComponent={NextLink}
+              href={APP_PATH.VIDEO_MODELS}
+              color="cGold"
+            >
+              {"Select New Model >"}
+            </Button>
+          </Stack>
+          <CardMedia
+            component="img"
+            sx={{
+              animationPlayState: "paused",
+            }}
+            height="200"
+            image={videoModelData.img}
+            alt={videoModelData.title}
+          />
+        </Box>
+      )}
+
       <SlideAndTextField
         label={" SamplingSteps"}
         value={filter.samplingSteps || 0}
