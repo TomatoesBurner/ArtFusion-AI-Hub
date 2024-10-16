@@ -144,14 +144,14 @@ const ImageFilterView = ({ selectedImage, onClose }) => {
         <Button onClick={viewImage} variant="contained" color="primary">
           View Original Image
         </Button>
-        <Button variant="contained" color="primary">
-          Download Image
-        </Button>
 
         <Button onClick={onClose} variant="outlined" color="secondary">
           Close
         </Button>
       </Box>
+      <Typography variant="body2" sx={{ marginTop: 2 }}>
+        Hint: Right Click to Download Your Creation in View Page
+      </Typography>
     </Box>
   );
 };

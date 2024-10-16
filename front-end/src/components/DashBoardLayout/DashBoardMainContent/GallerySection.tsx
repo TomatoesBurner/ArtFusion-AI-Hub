@@ -105,7 +105,14 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
       {/* Image Gallery Section */}
       <Paper
         elevation={3}
-        sx={{ padding: 2, borderRadius: 4, marginBottom: 3, marginTop: 3 }}
+        sx={{
+          padding: 2,
+          borderRadius: 4,
+          marginBottom: 3,
+          marginTop: 3,
+          maxHeight: 400,
+          overflowY: "auto",
+        }}
       >
         <Typography variant="h6" sx={{ marginBottom: 2 }}>
           Image Workbench
@@ -159,7 +166,10 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
       </Paper>
 
       {/* Video Gallery Section */}
-      <Paper elevation={3} sx={{ padding: 3, borderRadius: 4 }}>
+      <Paper
+        elevation={3}
+        sx={{ padding: 3, borderRadius: 4, maxHeight: 400, overflowY: "auto" }}
+      >
         <Typography variant="h6" sx={{ marginBottom: 2 }}>
           Video Gallery
         </Typography>
@@ -169,7 +179,6 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
               <Card
                 key={item.id}
                 sx={{ width: 200, cursor: "pointer", position: "relative" }}
-                onClick={() => handleMediaClick(item)}
               >
                 <CardMedia
                   component="video"
@@ -192,9 +201,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
                     right: 8,
                     color: "red",
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 1)",
-                    },
+                    "&:hover": { backgroundColor: "rgba(255, 255, 255, 1)" },
                   }}
                 >
                   <DeleteIcon />
