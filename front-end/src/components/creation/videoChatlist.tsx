@@ -2,13 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import VideoChatPrompt, {
   estimateVideoChatPromptHeight,
 } from "./VideoChatPrompt";
-import {
-  Box,
-  CircularProgress,
-  LinearProgress,
-  Paper,
-  Stack,
-} from "@mui/material";
+import { Box, CircularProgress, Paper, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { VideoApi } from "@/api/videoApi";
 import { RootState } from "@/store/store";
@@ -31,7 +25,6 @@ const VideoChatList = () => {
 
   const {
     isFetching: getAllVideoPromptsLoading,
-    // isLoading: getAllVideoPromptsLoading,
     data: getAllVideoPromptsData,
     refetch: getAllVideoPromptsRefetch,
   } = useQuery({
@@ -41,20 +34,10 @@ const VideoChatList = () => {
   });
 
   const virtualizer = useVirtualizer({
-    // paddingStart: 16,
-    // paddingEnd: 16,
     count: hasNextPage ? videoPrompts.length + 1 : videoPrompts.length,
     getScrollElement: () => videoPromptsContainerRef?.current || null,
-    // estimateSize: () => 0,
     estimateSize: () => estimateVideoChatPromptHeight,
     overscan: 0,
-    // measureElement: (
-    //   element: Element,
-    //   entry: ResizeObserverEntry | undefined,
-    //   instance: Virtualizer<Element, Element>
-    // ) => {
-    //   return element.clientHeight;
-    // },
   });
 
   const fetchVideoPrompts = () => {
@@ -101,8 +84,6 @@ const VideoChatList = () => {
     lastItemIndex,
     getAllVideoPromptsLoading,
     hasNextPage,
-    // lastItem,
-    // fetchVideoPrompts,
   ]);
 
   useEffect(() => {
@@ -138,17 +119,6 @@ const VideoChatList = () => {
         transform: "scaleY(-1)",
       }}
     >
-      {getAllVideoPromptsLoading && (
-        <LinearProgress
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-          }}
-        />
-      )}
-
       <Box
         height={`${virtualizer.getTotalSize()}px`}
         width={"100%"}
@@ -180,7 +150,10 @@ const VideoChatList = () => {
                   <CircularProgress />
                 </Stack>
               ) : (
-                <VideoChatPrompt prompt={prompt}></VideoChatPrompt>
+                <VideoChatPrompt
+                  prompt={prompt}
+                  vpsId={vpsId}
+                ></VideoChatPrompt>
               )}
             </Box>
           );

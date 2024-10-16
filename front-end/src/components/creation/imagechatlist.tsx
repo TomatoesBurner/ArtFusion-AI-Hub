@@ -2,13 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ImageChatPrompt, {
   estimateImageChatPromptHeight,
 } from "./ImageChatPrompt";
-import {
-  Box,
-  CircularProgress,
-  LinearProgress,
-  Paper,
-  Stack,
-} from "@mui/material";
+import { Box, CircularProgress, Paper, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { ImageApi } from "@/api/imageApi";
 import { RootState } from "@/store/store";
@@ -42,20 +36,10 @@ const ImageChatList = () => {
   });
 
   const virtualizer = useVirtualizer({
-    // paddingStart: 16,
-    // paddingEnd: 16,
     count: hasNextPage ? imagePrompts.length + 1 : imagePrompts.length,
     getScrollElement: () => imagePromptsContainerRef?.current || null,
-    // estimateSize: () => 0,
     estimateSize: () => estimateImageChatPromptHeight,
     overscan: 0,
-    // measureElement: (
-    //   element: Element,
-    //   entry: ResizeObserverEntry | undefined,
-    //   instance: Virtualizer<Element, Element>
-    // ) => {
-    //   return element.clientHeight;
-    // },
   });
 
   const fetchImagePrompts = () => {
@@ -102,8 +86,6 @@ const ImageChatList = () => {
     lastItemIndex,
     getAllImagePromptsLoading,
     hasNextPage,
-    // lastItem,
-    // fetchImagePrompts,
   ]);
 
   useEffect(() => {
@@ -139,17 +121,6 @@ const ImageChatList = () => {
         transform: "scaleY(-1)",
       }}
     >
-      {getAllImagePromptsLoading && (
-        <LinearProgress
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-          }}
-        />
-      )}
-
       <Box
         height={`${virtualizer.getTotalSize()}px`}
         width={"100%"}
@@ -181,7 +152,10 @@ const ImageChatList = () => {
                   <CircularProgress />
                 </Stack>
               ) : (
-                <ImageChatPrompt prompt={prompt}></ImageChatPrompt>
+                <ImageChatPrompt
+                  prompt={prompt}
+                  ipsId={ipsId}
+                ></ImageChatPrompt>
               )}
             </Box>
           );
