@@ -14,7 +14,7 @@ class PaginationInputDto extends BaseNoIdDto {
     constructor(data) {
         super();
         this.cursor = data?.cursor || null;
-        this.limit = parseInt(data?.limit) || 10;
+        this.limit = parseInt(data?.limit);
     }
 
     static fromRequest(data) {
