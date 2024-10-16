@@ -82,4 +82,16 @@ export class ImageApi {
 
     return response.data as ApiResponseDto<MediaItem[]>;
   }
+
+  public static async deleteImagePrompt({
+    ipsId,
+    ipId,
+  }: {
+    ipsId: string;
+    ipId: string;
+  }) {
+    return await appApi.delete(
+      `/imagePromptSpaces/${ipsId}/imagePrompts/${ipId}`
+    );
+  }
 }

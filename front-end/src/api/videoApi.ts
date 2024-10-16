@@ -62,4 +62,16 @@ export class VideoApi {
     );
     return response.data as ApiResponseDto<VideoItem[]>;
   }
+
+  public static async deleteVideoPrompt({
+    vpsId,
+    vpId,
+  }: {
+    vpsId: string;
+    vpId: string;
+  }) {
+    return await appApi.delete(
+      `/videoPromptSpaces/${vpsId}/videoPrompts/${vpId}`
+    );
+  }
 }
