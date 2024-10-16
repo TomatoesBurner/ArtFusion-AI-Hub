@@ -24,4 +24,10 @@ router.post(
     videoPromptController.createVideoPrompt
 );
 
+router.delete(
+    "/:vpsId/videoPrompts/:vpId",
+    authController.protect,
+    videoPromptController.deleteVideoPrompt
+);
+
 module.exports = router;

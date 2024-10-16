@@ -52,10 +52,28 @@ const createNewFilteredImage = catchAsync(async (req, res, next) => {
           });
 });
 
+const deleteImagePrompt = catchAsync(async (req, res, next) => {
+    const { error, data } = await imagePromptService.deleteImagePrompt({
+        userId: req.user._id,
+        ipsId: req.params.ipsId,
+        ipId: req.params.ipId,
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({
+        message: "Image prompt deleted",
+        data: data,
+    });
+});
+
 const controller = {
     getAllImagePrompts,
     createImagePrompt,
     createNewFilteredImage,
+    deleteImagePrompt,
 };
 
 module.exports = controller;
