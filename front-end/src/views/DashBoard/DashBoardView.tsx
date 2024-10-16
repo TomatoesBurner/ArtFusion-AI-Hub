@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, LinearProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { userSliceActions } from "@/store/slices/userSlice";
 import { AuthApi } from "@/api/authApi";
@@ -36,7 +36,7 @@ const DashBoardView = () => {
 
   // Show a loading state if user data is being fetched
   if (loading) {
-    return <Typography variant="body1">Loading user data...</Typography>;
+    return <LinearProgress />;
   }
 
   return (
