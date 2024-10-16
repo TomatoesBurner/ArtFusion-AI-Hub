@@ -66,13 +66,20 @@ export class ImageApi {
     ).data as ApiResponseDto<ArgumentImagePromptResponseDto>;
   }
 
-  // Fetch media items for a specific image prompt space (ipsId)
+  // use for gallery
   public static async fetchMediaItems(
-    ipsId: string
+    ipsId: string,
+    limit: number = 100
   ): Promise<ApiResponseDto<MediaItem[]>> {
     const response = await appApi.get(
-      `/imagePromptSpaces/${ipsId}/imagePrompts`
+      `/imagePromptSpaces/${ipsId}/imagePrompts`,
+      {
+        params: {
+          limit: limit,
+        },
+      }
     );
+
     return response.data as ApiResponseDto<MediaItem[]>;
   }
 }
