@@ -50,7 +50,7 @@ const ImageInputFilter = () => {
   );
 
   return (
-    <Paper component={Box} p={2} width={"100%"}>
+    <Paper component={Box} p={2} width={"100%"} overflow={"scroll"}>
       <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
         Filters
       </Typography>
@@ -62,12 +62,14 @@ const ImageInputFilter = () => {
             justifyContent={"space-between"}
             alignItems={"center"}
             mb={1}
+            width={"100%"}
           >
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" overflow={"ellipsis"}>
               Model: {imageModelData.title}
             </Typography>
 
             <Button
+              fullWidth
               LinkComponent={NextLink}
               href={APP_PATH.IMAGE_MODELS}
               color="cGold"

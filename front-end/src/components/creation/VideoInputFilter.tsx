@@ -8,6 +8,7 @@ import {
   Stack,
   Button,
   CardMedia,
+  Tooltip,
 } from "@mui/material";
 import { RootState } from "@/store/store";
 import SlideAndTextField from "../Common/SliderAndTextField/SlideAndTextField";
@@ -63,7 +64,7 @@ const VideoInputFilter = () => {
   );
 
   return (
-    <Paper component={Box} p={2} width={"100%"}>
+    <Paper component={Box} p={2} width={"100%"} overflow={"scroll"}>
       <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
         Filters
       </Typography>
@@ -76,11 +77,19 @@ const VideoInputFilter = () => {
             alignItems={"center"}
             mb={1}
           >
-            <Typography variant="subtitle1">
-              Model: {videoModelData.title}
-            </Typography>
+            <Tooltip title={`Model: ${videoModelData.title}`}>
+              <Typography
+                variant="subtitle1"
+                textOverflow={"ellipsis"}
+                overflow={"hidden"}
+                noWrap
+              >
+                Model: {videoModelData.title}
+              </Typography>
+            </Tooltip>
 
             <Button
+              fullWidth
               LinkComponent={NextLink}
               href={APP_PATH.VIDEO_MODELS}
               color="cGold"
