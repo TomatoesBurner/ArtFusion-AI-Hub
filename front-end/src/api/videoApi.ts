@@ -90,7 +90,7 @@ export class VideoApi {
 
     return (response.data || []).map((imagePrompt) => ({
       id: imagePrompt.id || "",
-      type: "image",
+      type: "video",
       url: imagePrompt.response.videoUrl || "",
     }));
   }

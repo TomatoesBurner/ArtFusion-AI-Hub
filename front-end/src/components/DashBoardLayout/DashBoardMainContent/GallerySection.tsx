@@ -34,7 +34,7 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
       queryFn: () => ImageApi.fetchImageMediaItems(ipsId),
     });
 
-  const { data: videoMediaItems, isFetching: videoMedaiaItemsFetching } =
+  const { data: videoMediaItems, isFetching: videoMediaItemsFetching } =
     useQuery({
       queryKey: ["getVideoMediaItems"],
       queryFn: () => VideoApi.fetchVideoMediaItems(vpsId),
@@ -196,13 +196,13 @@ const GallerySection = ({ ipsId, vpsId }: { ipsId: string; vpsId: string }) => {
         elevation={3}
         sx={{ padding: 3, borderRadius: 4, maxHeight: 400, overflowY: "auto" }}
       >
-        {videoMedaiaItemsFetching && (
+        {videoMediaItemsFetching && (
           <Stack justifyContent={"center"} alignItems={"center"}>
             <CircularProgress />
           </Stack>
         )}
 
-        {!videoMedaiaItemsFetching && (
+        {!videoMediaItemsFetching && (
           <>
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
               Video Gallery
