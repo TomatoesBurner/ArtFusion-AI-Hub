@@ -67,19 +67,34 @@ export class ImageApi {
   }
 
   // use for gallery
-  public static async fetchMediaItems(
+  public static async fetchImageMediaItems(
     ipsId: string,
     limit: number = 100
-  ): Promise<ApiResponseDto<MediaItem[]>> {
-    const response = await appApi.get(
-      `/imagePromptSpaces/${ipsId}/imagePrompts`,
-      {
+  ): Promise<MediaItem[]> {
+    const response = (
+      await appApi.get(`/imagePromptSpaces/${ipsId}/imagePrompts`, {
         params: {
           limit: limit,
         },
-      }
-    );
+      })
+    ).data as ApiResponseDto<ImagePromptDto[]>;
 
-    return response.data as ApiResponseDto<MediaItem[]>;
+    return (response.data || []).map((imagePrompt) => ({
+      id: imagePrompt.id || "",
+      type: "image",
+      url: imagePrompt.response.imageUrl || "",
+    }));
+  }
+
+  public static async deleteImagePrompt({
+    ipsId,
+    ipId,
+  }: {
+    ipsId: string;
+    ipId: string;
+  }) {
+    return await appApi.delete(
+      `/imagePromptSpaces/${ipsId}/imagePrompts/${ipId}`
+    );
   }
 }

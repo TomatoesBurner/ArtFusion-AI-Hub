@@ -100,6 +100,7 @@ const getAllImagePrompts = async ({ input, userId, ipsId }) => {
 
     const imagePrompts = await ImagePrompt.find({
         promptSpaceId: ipsId,
+        deletedAt: { $eq: null },
         ...query,
     })
         .limit(limit + 1)
@@ -275,6 +276,7 @@ const createNewFilteredImage = async ({ input, ipsId, ipId, userId }) => {
     const imagePrompt = await ImagePrompt.findOne({
         _id: ipId,
         promptSpaceId: ipsId,
+        deletedAt: null,
     });
 
     if (!imagePrompt) {
@@ -315,8 +317,45 @@ const createNewFilteredImage = async ({ input, ipsId, ipId, userId }) => {
     };
 };
 
+const deleteImagePrompt = async ({ userId, ipsId, ipId }) => {
+    // User has the permission on the image prompt space specified in the url
+    const imagePromptSpace = await PromptSpace.findOne({
+        _id: ipsId,
+        users: { $in: [userId] },
+        type: PROMPT_SPACE_TYPE.Image,
+    });
+
+    if (!imagePromptSpace) {
+        return {
+            error: new AppError("Image prompt space not found", 404),
+        };
+    }
+
+    // The image prompt is part of the promt space
+    const imagePrompt = await ImagePrompt.findOne({
+        _id: ipId,
+        promptSpaceId: ipsId,
+        deletedAt: null,
+    });
+
+    if (!imagePrompt) {
+        return {
+            error: new AppError("Image prompt not found", 404),
+        };
+    }
+
+    imagePrompt.deletedAt = new Date();
+
+    await imagePrompt.save();
+
+    return {
+        data: null,
+    };
+};
+
 module.exports = {
     getAllImagePrompts,
     createImagePrompt,
     createNewFilteredImage,
+    deleteImagePrompt,
 };

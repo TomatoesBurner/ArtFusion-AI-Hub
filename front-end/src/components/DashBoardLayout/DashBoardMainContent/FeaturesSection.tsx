@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import Link from "next/link";
@@ -13,9 +13,8 @@ const FeaturesSection = () => {
       <Box
         sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}
       >
-        <Box
+        <Paper
           sx={{
-            backgroundColor: "#1f1f1f",
             padding: 3,
             borderRadius: 2,
             flex: 1,
@@ -30,10 +29,9 @@ const FeaturesSection = () => {
           <Typography variant="body2" sx={{ marginTop: 1 }}>
             Start generating images with our easy-to-use tools.
           </Typography>
-        </Box>
-        <Box
+        </Paper>
+        <Paper
           sx={{
-            backgroundColor: "#1f1f1f",
             padding: 3,
             borderRadius: 2,
             flex: 1,
@@ -48,7 +46,7 @@ const FeaturesSection = () => {
           <Typography variant="body2" sx={{ marginTop: 1 }}>
             Explore video generation with various options.
           </Typography>
-        </Box>
+        </Paper>
       </Box>
 
       {/* <Box

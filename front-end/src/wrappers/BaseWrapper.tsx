@@ -11,7 +11,14 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CssBaseline } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 const BaseWrapper = ({ children }: { children: ReactNode }) => {
   return (

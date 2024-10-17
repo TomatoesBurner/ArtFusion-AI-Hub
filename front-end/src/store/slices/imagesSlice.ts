@@ -102,6 +102,11 @@ const slice = createSlice({
       }
     },
 
+    deleteImagePrompt(state, action: { payload: { ipId: string } }) {
+      const { ipId } = action.payload;
+      state.prompts = state.prompts.filter((ip) => ip.id !== ipId);
+    },
+
     clearState() {
       return initialState;
     },

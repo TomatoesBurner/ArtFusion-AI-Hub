@@ -32,6 +32,10 @@ router.post(
     imagePromptController.createNewFilteredImage
 );
 
-// TODO: The image filtering functionality, creating a new image
+router.delete(
+    "/:ipsId/imagePrompts/:ipId",
+    authController.protect,
+    imagePromptController.deleteImagePrompt
+);
 
 module.exports = router;

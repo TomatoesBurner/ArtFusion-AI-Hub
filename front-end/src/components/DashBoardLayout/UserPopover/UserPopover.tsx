@@ -8,13 +8,11 @@ import {
 } from "@mui/icons-material";
 import {
   Avatar,
-  Button,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
-  Popover,
 } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import React, { memo } from "react";
@@ -56,7 +54,7 @@ const UserPopover = () => {
   return (
     <>
       <IconButton onClick={handleUserMenuClick}>
-        <Avatar sx={{ bgcolor: "cGold.main", color: "text.primary" }}>
+        <Avatar sx={{ bgcolor: "cBlueGrey.main", color: "text.primary" }}>
           {initials}
         </Avatar>
       </IconButton>

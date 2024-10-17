@@ -47,6 +47,7 @@ const getAllVideoPrompts = async ({ input, userId, vpsId }) => {
 
     const videoPrompts = await VideoPrompt.find({
         promptSpaceId: vpsId,
+        deletedAt: { $eq: null },
         ...query,
     })
         .limit(limit + 1)
@@ -169,7 +170,41 @@ const createVideoPrompt = async ({ input, vpsId, userId }) => {
     }
 };
 
+const deleteVideoPrompt = async ({ userId, vpsId, vpId }) => {
+    const videoPromptSpace = await PromptSpace.findOne({
+        _id: vpsId,
+        users: { $in: [userId] },
+        type: PROMPT_SPACE_TYPE.Video,
+    });
+
+    if (!videoPromptSpace) {
+        return {
+            error: new AppError("Video prompt space not found", 404),
+        };
+    }
+
+    const videoPrompt = await VideoPrompt.findOne({
+        _id: vpId,
+        promptSpaceId: vpsId,
+        deletedAt: null,
+    });
+
+    if (!videoPrompt) {
+        return {
+            error: new AppError("Video prompt not found", 404),
+        };
+    }
+
+    videoPrompt.deletedAt = new Date();
+
+    await videoPrompt.save();
+
+    return {
+        data: null,
+    };
+};
 module.exports = {
     getAllVideoPrompts,
     createVideoPrompt,
+    deleteVideoPrompt,
 };

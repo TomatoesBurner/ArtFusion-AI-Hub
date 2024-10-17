@@ -19,4 +19,18 @@ export class UserApi {
       message: string;
     }>;
   }
+
+  public static async updateTheme(data: { theme: string }) {
+    return (
+      await appApi.post(
+        "/users/theme",
+        {},
+        {
+          params: { mode: data.theme },
+        }
+      )
+    ).data as ApiResponseDto<{
+      message: string;
+    }>;
+  }
 }

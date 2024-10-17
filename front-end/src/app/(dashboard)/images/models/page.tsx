@@ -20,7 +20,7 @@ interface IImageModel {
   img: string;
 }
 
-const models: IImageModel[] = [
+export const imageModelList: IImageModel[] = [
   { title: "Animate", value: ImageModel.Animate, img: "/images/animate.png" },
   {
     title: "Abstract art",
@@ -69,7 +69,7 @@ const ImageModels = () => {
         Image Models
       </Typography>
       <Grid container spacing={4} justifyContent="center">
-        {models.map((model, index) => (
+        {imageModelList.map((model, index) => (
           <Grid item key={index} xs={12} sm={6} md={3}>
             <Card
               component={Box}

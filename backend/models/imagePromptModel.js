@@ -47,6 +47,7 @@ const ImagePromptSchema = new mongoose.Schema(
         argumentResponses: [ArgumentImagePromptResponseSchema],
         promptSpaceId: { type: mongoose.Types.ObjectId, ref: "PromptSpace" },
         createdBy: { type: mongoose.Types.ObjectId, ref: "User" },
+        deletedAt: { type: Date, default: null },
     },
     { timestamps: true }
 );

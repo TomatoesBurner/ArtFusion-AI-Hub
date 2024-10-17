@@ -22,7 +22,7 @@ const slice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setThemeMode(state, action) {
+    setThemeMode(state, action: { payload: { themeMode: MuiThemeMode } }) {
       const { themeMode } = action.payload;
       state.themeMode = themeMode;
     },
