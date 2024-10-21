@@ -37,7 +37,7 @@ type MuiPaletteColor = {
 };
 
 declare module "@mui/material/styles/createPalette" {
-  export interface palette extends MuiPallete {
+  interface palette extends MuiPallete {
     cLightBlue?: MuiPaletteColor;
     cGold?: MuiPaletteColor;
     cBlueGrey?: MuiPaletteColor;
@@ -47,7 +47,7 @@ declare module "@mui/material/styles/createPalette" {
     cBlack?: MuiPaletteColor;
   }
 
-  export interface PaletteOptions extends MuiPaletteOptions {
+  interface PaletteOptions extends MuiPaletteOptions {
     cLightBlue?: MuiPaletteColor;
     cGold?: MuiPaletteColor;
     cBlueGrey?: MuiPaletteColor;
