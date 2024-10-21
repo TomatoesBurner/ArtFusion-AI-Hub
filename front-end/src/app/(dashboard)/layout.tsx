@@ -1,12 +1,15 @@
-import DashBoardLayout from '@/layouts/DashBoardLayout/DashBoardLayout';
-import React from 'react';
+"use client";
+
+import DashBoardLayout from "@/layouts/DashBoardLayout/DashBoardLayout";
+import AuthGuardWrapper from "@/wrappers/AuthGuardWrapper";
+import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <DashBoardLayout>
-            {children}
-        </DashBoardLayout>
-    );
-}
+  return (
+    <AuthGuardWrapper>
+      <DashBoardLayout>{children}</DashBoardLayout>
+    </AuthGuardWrapper>
+  );
+};
 
 export default Layout;

@@ -6,7 +6,7 @@ const userRouter = require("../routers/userRoutes"); // 确保路径正确
 const dotenv = require("dotenv");
 
 // 加载环境变量
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: "./.env" });
 
 // 创建 Express 应用程序
 const app = express();

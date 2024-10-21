@@ -3,6 +3,10 @@ import Link from "next/link";
 import { Grid, Button, Typography, Box } from "@mui/material";
 import { create } from "@mui/material/styles/createTransitions";
 
+// TODO:
+// Is this a dashboard auth user page? Then place into app/(dashboard)
+// app/(home) is for un authorised user, later also for server side render
+
 const mode_selection = () => {
   return (
     <Box

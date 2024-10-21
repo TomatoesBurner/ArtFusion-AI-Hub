@@ -1,14 +1,35 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
+  reactStrictMode: false,
+  async headers() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://127.0.0.1:3000/api/:path*', // Proxy to backend API
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
+          },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+        ],
       },
     ];
+  },
+
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*",
+        port: "",
+        pathname: "*/**",
+      },
+    ],
   },
 };
 
 export default nextConfig;
-

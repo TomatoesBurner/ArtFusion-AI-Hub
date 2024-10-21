@@ -4,6 +4,13 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const { promisify } = require("util");
 const sendEmail = require("./../utils/email");
+const authService = require("../services/authService");
+const { UserLoginDto } = require("../dtos/userLoginDto");
+const { UserRegisterDto } = require("../dtos/userRegisterDto");
+const { TokenRefreshInputDto } = require("../dtos/tokenRefreshInputDto");
+const { OAuthLoginDto } = require("../dtos/oAuthLoginDto");
+const { API_RESPONSE_CODE } = require("../utils/constant");
+const { ApiResponseDto } = require("../dtos/apiResponseDto");
 
 const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -33,42 +40,154 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 //signup
-exports.signup = catchAsync(async (req, res) => {
-    const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
+exports.signup = catchAsync(async (req, res, next) => {
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error } = await authService.register({
+        input: UserRegisterDto.fromRequest(req.body),
+        ipAddress,
+        userAgent,
     });
-    createSendToken(newUser, 201, req, res);
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({
+        data: data,
+    });
 });
 
 //login
 exports.login = catchAsync(async (req, res, next) => {
-    // const email = req.body.email;
-    const { email, password } = req.body;
-    // 1) Check if email and password exist
-    if (!email || !password) {
-        return next(new AppError("Please provide email and password!", 400));
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error, code } = await authService.login({
+        input: UserLoginDto.fromRequest(req.body),
+        ipAddress,
+        userAgent,
+    });
+
+    if (error) {
+        return next(error);
     }
-    // 2) Check if user exists && password is correct
-    const user = await User.findOne({ email }).select("+password");
-    // find a user by their email
-    if (!user || !(await user.correctPassword(password, user.password))) {
-        return next(new AppError("Incorrect email or password"), 401);
+
+    if (code) {
+        if (code === API_RESPONSE_CODE.requireTwoFactor) {
+            return res.status(200).json(
+                new ApiResponseDto({
+                    message: "Requires two factor authentication",
+                    code: code,
+                    data: data,
+                })
+            );
+        }
     }
-    // 3) If everything is OK,send token to client
-    createSendToken(user, 200, req, res);
+
+    res.status(200).json({
+        data: data,
+    });
+});
+
+// token refresh
+exports.tokenRefresh = catchAsync(async (req, res, next) => {
+    const ipAddress = req.ip;
+    const userAgent = req.get("User-Agent");
+    const { data, error } = await authService.refreshUserToken({
+        data: new TokenRefreshInputDto(req.body),
+        ipAddress,
+        userAgent,
+    });
+
+    if (error) {
+        return next(
+            new AppError(error, 401, API_RESPONSE_CODE.invalidRefreshToken)
+        );
+    }
+
+    res.status(200).json({
+        data: data,
+    });
 });
 
 //logout
-exports.logout = (req, res) => {
-    res.cookie("jwt", "loggedout", {
-        expires: new Date(Date.now() + 10 * 1000),
-        httpOnly: true,
+exports.logout = catchAsync(async (req, res, next) => {
+    const token = req.params.token;
+
+    if (!token) {
+        return next(new AppError("No token provided", 400));
+    }
+
+    const userId = req.user._id;
+
+    const { error } = await authService.logout({
+        data: {
+            userId,
+            refreshToken: token,
+        },
     });
-    res.status(200).json({ status: "success" });
-};
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({ status: "success", message: "Logged out" });
+});
+
+// OAuth login
+exports.oAuthLogin = catchAsync(async (req, res, next) => {
+    const { data, error } = await authService.oAuthLogin({
+        input: new OAuthLoginDto(req.body),
+        ipAddress: req.ip,
+        userAgent: req.get("User-Agent"),
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json({
+        data: data,
+    });
+});
+
+exports.enableTwoFactor = catchAsync(async (req, res, next) => {
+    const { error, data } = await authService.enableTwoFactor({
+        userId: req.user._id,
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json(
+        new ApiResponseDto({
+            status: "success",
+            message: "Two factor enabled",
+            data: data,
+        })
+    );
+});
+
+exports.verifyTwoFactor = catchAsync(async (req, res, next) => {
+    const { error, data } = await authService.verifyTwoFactor({
+        input: req.body,
+        ipAddress: req.ip,
+        userAgent: req.get("User-Agent"),
+    });
+
+    if (error) {
+        return next(error);
+    }
+
+    res.status(200).json(
+        new ApiResponseDto({
+            status: "success",
+            data: data,
+            message: "Two factor verified",
+        })
+    );
+});
 
 /**
  * Middleware to protect routes and ensure the user is authenticated.
@@ -77,7 +196,6 @@ exports.logout = (req, res) => {
  * If all checks pass, the user is allowed access to the protected route.
  */
 exports.protect = catchAsync(async (req, res, next) => {
-    // 1) Getting token and check of it's there
     let token;
     if (
         req.headers.authorization &&
@@ -95,9 +213,9 @@ exports.protect = catchAsync(async (req, res, next) => {
             )
         );
     }
-    // 2) Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    // 3) Check if user still exists
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
         return next(
@@ -107,7 +225,6 @@ exports.protect = catchAsync(async (req, res, next) => {
             )
         );
     }
-    // 4) Check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat)) {
         return next(
             new AppError(
@@ -176,7 +293,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
         return next(new AppError("Token is invalid or has expired", 400));
     }
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    // user.passwordConfirm = req.body.passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
@@ -201,7 +318,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     }
     // 3) If so, update password
     user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
+    // user.passwordConfirm = req.body.passwordConfirm;
     await user.save();
     // 4) Log user in, send JWT
     createSendToken(user, 200, req, res);

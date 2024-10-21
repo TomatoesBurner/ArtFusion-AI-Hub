@@ -14,7 +14,12 @@ export const appColours = {
   cGrey: "#898989",
   cGreyBlack: "#212121",
   cBlack: "#161717",
+  // Other
+  cBaseBgLight: "#161717",
+  cBaseBgDark: "#161717",
 };
+
+export const appColourKeys = Object.keys(appColours);
 
 export type MuiThemeMode = "dark" | "light";
 
@@ -40,7 +45,14 @@ const getBasePalette = (mode: MuiThemeMode): PaletteOptions => {
 const getLightPalette = (): PaletteOptions => {
   const basePalette = getBasePalette("light");
 
-  return createPalette(basePalette);
+  const lightPalette: PaletteOptions = {
+    background: {
+      default: appColours.cWhiteGrey,
+      // paper: appColours.cWhiteGrey,
+    },
+  };
+
+  return createPalette({ ...basePalette, ...lightPalette });
 };
 
 const getDarkPalette = (): PaletteOptions => {

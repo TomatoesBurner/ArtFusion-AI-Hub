@@ -21,7 +21,7 @@ interface IVideoModel {
   img: string;
 }
 
-const models: IVideoModel[] = [
+export const videoModelList: IVideoModel[] = [
   {
     title: "Natural scenery",
     value: VideoModel.NaturalScenery,
@@ -80,7 +80,7 @@ const ImageModels = () => {
         Video Models
       </Typography>
       <Grid container spacing={4} justifyContent="center">
-        {models.map((model, index) => (
+        {videoModelList.map((model, index) => (
           <Grid item key={index} xs={12} sm={6} md={3}>
             <Card
               component={Box}

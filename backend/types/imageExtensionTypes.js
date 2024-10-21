@@ -1,7 +1,12 @@
-export const IMAGE_EXTENSION = {
+const IMAGE_EXTENSION = {
     PNG: "png",
     JPG: "jpg",
     JPEG: "jpeg",
 };
 
-export const IMAGE_EXTENSION_VALUES = Object.values(IMAGE_EXTENSIONS);
+const IMAGE_EXTENSION_VALUES = Object.values(IMAGE_EXTENSION);
+
+module.exports = {
+    IMAGE_EXTENSION,
+    IMAGE_EXTENSION_VALUES,
+};

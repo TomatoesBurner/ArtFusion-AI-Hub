@@ -1,7 +1,4 @@
-//HOW TO CALL THIS API
-//Make a POST request with body for example: {"text_prompt": "A young boy eating a chocolate"}
-//Send the request to this API URL: http://localhost:3000/api/v1/video-prompt
-//You can test the API with Postman
+//API docs can be access in: https://documenter.getpostman.com/view/34479210/2sAXqs83D2
 
 const express = require("express");
 const router = express.Router();
@@ -17,7 +14,6 @@ router.post("/", async (req, res) => {
     }
 
     const requestBody = {
-        // key: "UgFdYJIjF6AzvJx8sMg4i9EfcgSMGvZlHyIkuFeMk8GcV35KBCGI5Sf2ok2l", //API key
         key: "XTBQisoBZAhY5En42W74MjvTrN8dAazWV8udk5KpoF29dhG3xijjculBExZf", // API key
         model_id: "zeroscope",
         prompt: text_prompt, // Use the prompt from the request body
@@ -51,6 +47,49 @@ router.post("/", async (req, res) => {
 
         // Send the generated video URL or data back to the frontend
         res.status(200).json(response.data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Video generation failed" });
+    }
+});
+
+// Route for text-to-video generation
+router.post("/backup", async (req, res) => {
+    const { text_prompt } = req.body; // Expecting text input from the request
+
+    // Check if text_prompt is provided
+    if (!text_prompt) {
+        return res.status(500).json({ error: "Video generation failed" });
+    }
+
+    try {
+        const { Client } = await import("@gradio/client");
+        const app = await Client.connect(
+            "https://videocrafter-videocrafter.hf.space/"
+        );
+
+        const result = await app.predict(1, [
+            text_prompt,
+            16, // Sampling steps (numeric value between 1 and 60)
+            15, // CFG scale (numeric value between 1.0 and 30.0)
+            0.8, // ETA (numeric value between 0.0 and 1.0)
+            8, // FPS (frames per second, between 4 and 32)
+        ]);
+
+        var video_id = result.data[0][0].name;
+        var video_url =
+            "https://videocrafter-videocrafter.hf.space/file=" + video_id;
+        // Output the generated video data
+        console.log(result.data);
+
+        // Send the generated video URL or data back to the frontend
+        res.status(200).json({
+            status: "Success.",
+            data: {
+                video_url: video_url,
+            },
+            message: "Video generation success.",
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Video generation failed" });
