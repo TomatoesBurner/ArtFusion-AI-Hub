@@ -6,7 +6,7 @@ import { CircleLoader } from "react-spinners";
 const AppLoader = () => {
   const theme = useTheme();
 
-  const color = theme.palette.cGold.main;
+  const color = (theme.palette as any).cGold.main;
 
   return (
     <Box

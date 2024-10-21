@@ -4,20 +4,47 @@ import {
   ImagePromptDto,
   ImagePromptInputFilterDto,
 } from "@/dtos/ImagePromptDto";
-import { aspectRatios } from "@/utils/constant";
+import { aspectRatios, ImageModel } from "@/utils/constant";
 import { PaginationResponseDto } from "@/dtos/PaginationResponseDto";
 
 // TODO: decide where this really comes from
-export enum ImageModel {
-  Animate = "animate",
-  AbstractArt = "abstract_art",
-  OilPaintingStyle = "oil_painting_style",
-  Sketch = "sketch",
-  Cyberpunk = "cyberpunk",
-  RetroStyle = "retro_style",
-  RococoStyle = "rococo_style",
-  Realism = "realism",
+
+export interface IImageModel {
+  title: string;
+  value: ImageModel;
+  img: string;
 }
+
+export const imageModelList: IImageModel[] | never = [
+  { title: "Animate", value: ImageModel.Animate, img: "/images/animate.png" },
+  {
+    title: "Abstract art",
+    value: ImageModel.AbstractArt,
+    img: "/images/abstract.png",
+  },
+  {
+    title: "Oil painting style",
+    value: ImageModel.OilPaintingStyle,
+    img: "/images/oil.png",
+  },
+  { title: "Sketch", value: ImageModel.Sketch, img: "/images/sketch.png" },
+  {
+    title: "Cyberpunk",
+    value: ImageModel.Cyberpunk,
+    img: "/images/cyberpunk.png",
+  },
+  {
+    title: "Retro style",
+    value: ImageModel.RetroStyle,
+    img: "/images/retro.png",
+  },
+  {
+    title: "Rococo style",
+    value: ImageModel.RococoStyle,
+    img: "/images/rococo.png",
+  },
+  { title: "Realism", value: ImageModel.Realism, img: "/images/realism.png" },
+];
 
 /**
  * Represent the filter type that user can set in the image prompt page

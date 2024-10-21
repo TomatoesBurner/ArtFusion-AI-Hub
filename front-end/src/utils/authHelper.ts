@@ -4,6 +4,8 @@ const isTokenValid = (token: TokenDto | null) => {
   return token != null && new Date(token.expiresAt) > new Date();
 };
 
-export default {
+const authHelper = {
   isTokenValid,
 };
+
+export default authHelper;

@@ -10,14 +10,20 @@ import {
 } from "@mui/material";
 import { appApi } from "@/api/baseApi";
 import { enqueueSnackbar } from "notistack";
+import { MediaItem } from "@/api/imageApi";
 
-const ImageFilterView = ({ selectedImage, onClose }) => {
+export type ImageFilterViewProps = {
+  selectedImage: MediaItem;
+  onClose: () => void;
+};
+
+const ImageFilterView = ({ selectedImage, onClose }: ImageFilterViewProps) => {
   const [filters, setFilters] = useState({
     blur: 0,
     brightness: 100,
   });
 
-  const handleFilterChange = (filter, value) => {
+  const handleFilterChange = (filter: string, value: number | number[]) => {
     setFilters((prevFilters) => ({ ...prevFilters, [filter]: value }));
   };
 
