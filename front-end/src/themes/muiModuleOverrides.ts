@@ -30,30 +30,43 @@ declare module "@mui/material/Button" {
   }
 }
 
-type MuiPaletteColor = {
-  light: string;
-  main: string;
-  dark: string;
-};
-
-declare module "@mui/material/styles/createPalette" {
-  interface palette extends MuiPallete {
-    cLightBlue?: MuiPaletteColor;
-    cGold?: MuiPaletteColor;
-    cBlueGrey?: MuiPaletteColor;
-    cWhiteGrey?: MuiPaletteColor;
-    cGrey?: MuiPaletteColor;
-    cGreyBlack?: MuiPaletteColor;
-    cBlack?: MuiPaletteColor;
+declare module "@mui/material/styles" {
+  interface Palette {
+    cLightBlue: MuiPallete;
+    cGold: MuiPallete["primary"];
+    cBlueGrey: MuiPallete["primary"];
+    cWhiteGrey: MuiPallete["primary"];
+    cGrey: MuiPallete["primary"];
+    cGreyBlack: MuiPallete["primary"];
+    cBlack: MuiPallete["primary"];
   }
 
-  interface PaletteOptions extends MuiPaletteOptions {
-    cLightBlue?: MuiPaletteColor;
-    cGold?: MuiPaletteColor;
-    cBlueGrey?: MuiPaletteColor;
-    cWhiteGrey?: MuiPaletteColor;
-    cGrey?: MuiPaletteColor;
-    cGreyBlack?: MuiPaletteColor;
-    cBlack?: MuiPaletteColor;
+  interface PaletteOptions {
+    cLightBlue?: MuiPaletteOptions["primary"];
+    cGold?: MuiPaletteOptions["primary"];
+    cBlueGrey?: MuiPaletteOptions["primary"];
+    cWhiteGrey?: MuiPaletteOptions["primary"];
+    cGrey?: MuiPaletteOptions["primary"];
+    cGreyBlack?: MuiPaletteOptions["primary"];
+    cBlack?: MuiPaletteOptions["primary"];
   }
+  // interface palette extends MuiPallete {
+  //   cLightBlue?: MuiPaletteColor;
+  //   cGold?: MuiPaletteColor;
+  //   cBlueGrey?: MuiPaletteColor;
+  //   cWhiteGrey?: MuiPaletteColor;
+  //   cGrey?: MuiPaletteColor;
+  //   cGreyBlack?: MuiPaletteColor;
+  //   cBlack?: MuiPaletteColor;
+  // }
+
+  // interface PaletteOptions extends MuiPaletteOptions {
+  //   cLightBlue?: MuiPaletteColor;
+  //   cGold?: MuiPaletteColor;
+  //   cBlueGrey?: MuiPaletteColor;
+  //   cWhiteGrey?: MuiPaletteColor;
+  //   cGrey?: MuiPaletteColor;
+  //   cGreyBlack?: MuiPaletteColor;
+  //   cBlack?: MuiPaletteColor;
+  // }
 }
