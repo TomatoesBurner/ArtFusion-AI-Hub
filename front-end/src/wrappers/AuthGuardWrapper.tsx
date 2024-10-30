@@ -1,3 +1,5 @@
+"use client";
+
 import useAuth from "@/hooks/useAuth";
 import { APP_PATH } from "@/utils/constant";
 import AppLoader from "@/views/Common/Loader/AppLoader";

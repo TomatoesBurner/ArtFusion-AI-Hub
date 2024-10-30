@@ -1,8 +1,8 @@
 import React from "react";
 import DashBoardView from "@/views/DashBoard/DashBoardView";
 
-const UserDashboard = () => {
+const Page = () => {
   return <DashBoardView />;
 };
 
-export default UserDashboard;
+export default Page;

@@ -1,6 +1,9 @@
 import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { videoSliceActions } from "../../store/slices/videosSlice";
+import {
+  videoModelList,
+  videoSliceActions,
+} from "../../store/slices/videosSlice";
 import {
   Typography,
   Box,
@@ -13,7 +16,6 @@ import {
 import { RootState } from "@/store/store";
 import SlideAndTextField from "../Common/SliderAndTextField/SlideAndTextField";
 import NextLink from "next/link";
-import { videoModelList } from "@/app/(dashboard)/videos/models/page";
 import { APP_PATH } from "@/utils/constant";
 
 const VideoInputFilter = () => {

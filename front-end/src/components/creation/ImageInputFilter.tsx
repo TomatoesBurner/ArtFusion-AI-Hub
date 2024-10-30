@@ -16,8 +16,7 @@ import {
 } from "@mui/material";
 import { RootState } from "@/store/store";
 import SlideAndTextField from "../Common/SliderAndTextField/SlideAndTextField";
-import { APP_PATH, aspectRatios } from "@/utils/constant";
-import { imageModelList } from "@/app/(dashboard)/images/models/page";
+import { APP_PATH, aspectRatios, imageModelList } from "@/utils/constant";
 import NextLink from "next/link";
 
 const ImageInputFilter = () => {

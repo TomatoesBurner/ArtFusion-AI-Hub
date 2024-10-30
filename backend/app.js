@@ -69,6 +69,9 @@ app.use("/api/v1/video-prompt", textToVideoApiRoutes);
 app.use("/api/v1/imagePromptSpaces", imagePromptSpaceRoutes);
 // Text to video API
 app.use("/api/v1/videoPromptSpaces", videoPromptSpaceRoutes);
+app.get("/", (req, res) => {
+    res.send("Welcome to the backend of this project cits5206!");
+});
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
@@ -77,7 +80,3 @@ app.all("*", (req, res, next) => {
 app.use(globalErrorHandler);
 
 module.exports = app;
-
-app.get("/", (req, res) => {
-    res.send("Welcome to the backend of this project cits5206!");
-});

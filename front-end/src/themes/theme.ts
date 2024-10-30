@@ -1,4 +1,4 @@
-import { createTheme, PaletteOptions } from "@mui/material";
+import { createTheme, Palette, PaletteOptions } from "@mui/material/styles";
 import createPalette, {
   PaletteColor,
   SimplePaletteColorOptions,
@@ -23,7 +23,26 @@ export const appColourKeys = Object.keys(appColours);
 
 export type MuiThemeMode = "dark" | "light";
 
-const getBasePalette = (mode: MuiThemeMode): PaletteOptions => {
+const getAugmentAppColours = () => {
+  const palette = createPalette({});
+
+  const argumentedAppColours: {
+    [key: string]: PaletteColor;
+  } = {};
+
+  Object.keys(appColours).forEach((key) => {
+    argumentedAppColours[key] = palette.augmentColor({
+      color: {
+        main: appColours[key as keyof typeof appColours],
+      },
+      name: key,
+    });
+  });
+
+  return argumentedAppColours;
+};
+
+const getBasePalette = (mode: MuiThemeMode): Palette => {
   const palette = createPalette({ mode: mode });
 
   const argumentedAppColours: {
@@ -42,9 +61,7 @@ const getBasePalette = (mode: MuiThemeMode): PaletteOptions => {
   return createPalette({ mode: mode, ...argumentedAppColours });
 };
 
-const getLightPalette = (): PaletteOptions => {
-  const basePalette = getBasePalette("light");
-
+const getLightPaletteOptions = (): PaletteOptions => {
   const lightPalette: PaletteOptions = {
     background: {
       default: appColours.cWhiteGrey,
@@ -52,12 +69,18 @@ const getLightPalette = (): PaletteOptions => {
     },
   };
 
-  return createPalette({ ...basePalette, ...lightPalette });
+  return {
+    mode: "light",
+    ...getAugmentAppColours(),
+    ...lightPalette,
+  };
 };
 
-const getDarkPalette = (): PaletteOptions => {
-  const basePalette = getBasePalette("dark");
+const getLightPalette = (): Palette => {
+  return createPalette(getLightPaletteOptions());
+};
 
+const getDarkPaletteOptions = (): PaletteOptions => {
   const darkPalette: PaletteOptions = {
     background: {
       default: appColours.cBlack,
@@ -65,18 +88,27 @@ const getDarkPalette = (): PaletteOptions => {
     },
   };
 
-  return createPalette({ ...basePalette, ...darkPalette });
+  return {
+    mode: "dark",
+    ...getAugmentAppColours(),
+    ...darkPalette,
+  };
+};
+
+const getDarkPalette = (): Palette => {
+  // return createPalette({ ...basePalette, ...darkPalette });
+  return createPalette(getDarkPaletteOptions());
 };
 
 const createMuiTheme = (mode: MuiThemeMode) => {
   if (mode === "dark") {
     return createTheme({
-      palette: getDarkPalette(),
+      palette: getDarkPaletteOptions(),
       typography: getBaseTypographyOverrides(),
     });
   } else {
     return createTheme({
-      palette: getLightPalette(),
+      palette: getLightPaletteOptions(),
     });
   }
 };

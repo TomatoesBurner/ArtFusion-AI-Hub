@@ -6,8 +6,7 @@ import ImageInputFilter from "@/components/creation/ImageInputFilter";
 import { APP_BAR_HEIGHT } from "@/utils/constant";
 import PromptSubmitBox from "@/components/Common/PromptSubmitBox/PromptSubmitBox";
 import withImagePromptCreate from "@/hoc/withImagePromptCreate";
-import ImageChatList from "@/components/creation/ImageChatList";
-
+import ImageChatList from "@/components/creation/imagechatlist";
 const ImagePromptSubmitBox = withImagePromptCreate(PromptSubmitBox);
 
 const ImageCreationView = () => {
