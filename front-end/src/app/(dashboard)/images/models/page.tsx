@@ -17,6 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { APP_PATH } from "@/utils/constant";
+import Image from "next/image";
 
 const Page = () => {
   const router = useRouter();
@@ -47,7 +48,7 @@ const Page = () => {
               <CardMedia
                 component="img"
                 height="200"
-                image={model.img}
+                image={`${model.img}`}
                 alt={model.title}
               />
               <CardContent>

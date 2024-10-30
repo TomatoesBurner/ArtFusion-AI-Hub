@@ -64,7 +64,7 @@ export default function Home() {
             </Typography>
           </Link>
           <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
-            <Link href="/mode" passHref>
+            <Link href="/login" passHref>
               <Button
                 variant="outlined"
                 color="inherit"

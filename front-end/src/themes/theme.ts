@@ -71,7 +71,7 @@ const getLightPaletteOptions = (): PaletteOptions => {
 
   return {
     mode: "light",
-    // ...getAugmentAppColours(),
+    ...getAugmentAppColours(),
     ...lightPalette,
   };
 };
@@ -90,7 +90,7 @@ const getDarkPaletteOptions = (): PaletteOptions => {
 
   return {
     mode: "dark",
-    // ...getAugmentAppColours,
+    ...getAugmentAppColours(),
     ...darkPalette,
   };
 };
