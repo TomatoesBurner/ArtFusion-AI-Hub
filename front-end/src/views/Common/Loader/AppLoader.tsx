@@ -27,7 +27,8 @@ const AppLoader = () => {
           }}
         >
           <Image
-            src="/images/Logo.png"
+            priority
+            src="/images/logo.png"
             alt="Logo"
             width={100}
             height={100}

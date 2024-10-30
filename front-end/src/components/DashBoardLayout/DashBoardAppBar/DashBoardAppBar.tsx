@@ -181,6 +181,7 @@ const DashBoardAppBar = () => {
         {/* Left app icon and name */}
         <Link href={APP_PATH.DASHBOARD}>
           <Image
+            priority
             src="/images/logo.png"
             alt="logo"
             width={48}
