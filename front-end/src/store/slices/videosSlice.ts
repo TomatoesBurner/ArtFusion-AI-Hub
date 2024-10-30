@@ -17,6 +17,51 @@ export enum VideoModel {
   VintageStyle = "vintage_style",
 }
 
+export interface IVideoModel {
+  title: string;
+  value: VideoModel;
+  img: string;
+}
+
+export const videoModelList: IVideoModel[] = [
+  {
+    title: "Natural scenery",
+    value: VideoModel.NaturalScenery,
+    img: "/images/ns.gif",
+  },
+  {
+    title: "Fantasy style",
+    value: VideoModel.FantasyStyle,
+    img: "/images/fs.gif",
+  },
+  {
+    title: "Abstract art",
+    value: VideoModel.AbstractArt,
+    img: "/images/aa.gif",
+  },
+  {
+    title: "Kaleidoscope",
+    value: VideoModel.Kaleidoscope,
+    img: "/images/ka.gif",
+  },
+  {
+    title: "Realistic animation",
+    value: VideoModel.RealisticAnimation,
+    img: "/images/ra.gif",
+  },
+  { title: "Pixel art", value: VideoModel.PixelArt, img: "/images/pa.gif" },
+  {
+    title: "Experimental art",
+    value: VideoModel.ExperimentalArt,
+    img: "/images/ea.gif",
+  },
+  {
+    title: "Vintage style",
+    value: VideoModel.VintageStyle,
+    img: "/images/vs.gif",
+  },
+];
+
 type VideoPromptFilter = VideoPromptInputFilterDto;
 
 /**

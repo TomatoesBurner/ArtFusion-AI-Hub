@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import DashBoardLayout from "@/layouts/DashBoardLayout/DashBoardLayout";
 import AuthGuardWrapper from "@/wrappers/AuthGuardWrapper";

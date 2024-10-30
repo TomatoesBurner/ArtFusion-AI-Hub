@@ -55,7 +55,7 @@ const withVideoPromptCreate = <T extends PromptSubmitBoxProps>(
         },
         {
           onSuccess: (data) => {
-            if (data.data) {
+            if (data?.data) {
               dispatch(
                 videoSliceActions.addPromptToFront({
                   prompt: data.data!,

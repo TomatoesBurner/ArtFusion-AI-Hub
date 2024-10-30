@@ -146,7 +146,7 @@ const Settings: React.FC = () => {
       console.log("Update response:", response); // 打印响应
       dispatch(userSliceActions.setUser({ user: response.data }));
       // Update local state with the new user information
-      setFormData(response.data);
+      setFormData(response.data as any);
       // Optionally refresh the page
       //window.location.reload();
       enqueueSnackbar("Settings updated successfully", { variant: "success" });

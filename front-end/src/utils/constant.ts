@@ -1,3 +1,14 @@
+export enum ImageModel {
+  Animate = "animate",
+  AbstractArt = "abstract_art",
+  OilPaintingStyle = "oil_painting_style",
+  Sketch = "sketch",
+  Cyberpunk = "cyberpunk",
+  RetroStyle = "retro_style",
+  RococoStyle = "rococo_style",
+  Realism = "realism",
+}
+
 export const APP_PATH = {
   HOME: "/",
   LOGIN: "/login",
@@ -49,3 +60,40 @@ export const aspectRatios = [
 
 export const APP_NAME = "GTL Studio";
 export const APP_BAR_HEIGHT = "64px";
+
+export interface IImageModel {
+  title: string;
+  value: ImageModel;
+  img: string;
+}
+
+export const imageModelList: IImageModel[] = [
+  { title: "Animate", value: ImageModel.Animate, img: "/images/animate.png" },
+  {
+    title: "Abstract art",
+    value: ImageModel.AbstractArt,
+    img: "/images/abstract.png",
+  },
+  {
+    title: "Oil painting style",
+    value: ImageModel.OilPaintingStyle,
+    img: "/images/oil.png",
+  },
+  { title: "Sketch", value: ImageModel.Sketch, img: "/images/sketch.png" },
+  {
+    title: "Cyberpunk",
+    value: ImageModel.Cyberpunk,
+    img: "/images/cyberpunk.png",
+  },
+  {
+    title: "Retro style",
+    value: ImageModel.RetroStyle,
+    img: "/images/retro.png",
+  },
+  {
+    title: "Rococo style",
+    value: ImageModel.RococoStyle,
+    img: "/images/rococo.png",
+  },
+  { title: "Realism", value: ImageModel.Realism, img: "/images/realism.png" },
+];

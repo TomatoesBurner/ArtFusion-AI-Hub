@@ -9,48 +9,17 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import { ImageModel, imageSliceActions } from "@/store/slices/imagesSlice";
+import {
+  IImageModel,
+  imageModelList,
+  imageSliceActions,
+} from "@/store/slices/imagesSlice";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { APP_PATH } from "@/utils/constant";
+import Image from "next/image";
 
-interface IImageModel {
-  title: string;
-  value: ImageModel;
-  img: string;
-}
-
-export const imageModelList: IImageModel[] = [
-  { title: "Animate", value: ImageModel.Animate, img: "/images/animate.png" },
-  {
-    title: "Abstract art",
-    value: ImageModel.AbstractArt,
-    img: "/images/abstract.png",
-  },
-  {
-    title: "Oil painting style",
-    value: ImageModel.OilPaintingStyle,
-    img: "/images/oil.png",
-  },
-  { title: "Sketch", value: ImageModel.Sketch, img: "/images/sketch.png" },
-  {
-    title: "Cyberpunk",
-    value: ImageModel.Cyberpunk,
-    img: "/images/cyberpunk.png",
-  },
-  {
-    title: "Retro style",
-    value: ImageModel.RetroStyle,
-    img: "/images/retro.png",
-  },
-  {
-    title: "Rococo style",
-    value: ImageModel.RococoStyle,
-    img: "/images/rococo.png",
-  },
-  { title: "Realism", value: ImageModel.Realism, img: "/images/realism.png" },
-];
-const ImageModels = () => {
+const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -79,7 +48,7 @@ const ImageModels = () => {
               <CardMedia
                 component="img"
                 height="200"
-                image={model.img}
+                image={`${model.img}`}
                 alt={model.title}
               />
               <CardContent>
@@ -95,4 +64,4 @@ const ImageModels = () => {
   );
 };
 
-export default ImageModels;
+export default Page;
