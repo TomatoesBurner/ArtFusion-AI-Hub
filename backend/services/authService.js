@@ -163,7 +163,7 @@ const _createInitialPromptSpaceForuser = async (user, session) => {
                 createdBy: userId,
             },
         ],
-        { session }
+        { session, ordered: true }
     );
 
     return {
