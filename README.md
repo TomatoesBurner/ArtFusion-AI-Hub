@@ -1,6 +1,10 @@
 # ArtFusion-AI-Hub
 
-[![Deployed Link](https://img.shields.io/badge/Deployed%20Link-Click%20Here-brightgreen)](https://art-fusion-ai-hub.netlify.app)
+<a href="https://art-fusion-ai-hub.netlify.app" target="_blank">
+  <img src="https://img.shields.io/badge/Deployed%20Link-Click%20Here-brightgreen" alt="Deployed Link">
+</a>
+
+<br/>
 
 ArtFusion-AI-Hub is an innovative AI-powered application that allows users to generate and manage AI-generated images and videos through a seamless chat-like interface. Leveraging third-party APIs, this platform provides tools for creating, editing, and organizing AI-generated content while offering a modern user experience with features like two-factor authentication, dark/light themes, and more.
 
