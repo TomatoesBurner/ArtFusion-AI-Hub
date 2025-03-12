@@ -1,6 +1,6 @@
 # ArtFusion-AI-Hub
 
-<a href="https://art-fusion-ai-hub.netlify.app" target="_blank">
+<a href="https://art-fusion-ai-hub.netlify.app" target="_blank" rel="noopener noreferrer">
   <img src="https://img.shields.io/badge/Deployed%20Link-Click%20Here-brightgreen" alt="Deployed Link">
 </a>
 
